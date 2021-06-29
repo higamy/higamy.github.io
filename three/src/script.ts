@@ -1,6 +1,8 @@
 // npm install @types/node --save-dev
 // npm i --save-dev @types/three
 // tsc three/src/script.ts -w
+// npx webpack --config ./three/src/webpack.config.js
+
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 
@@ -15,12 +17,27 @@ const geometry = new THREE.BoxGeometry();
 const material = new THREE.MeshBasicMaterial({ color: 0x00ff00, opacity: 0.25 });
 
 // instantiate a loader
-var loader = new THREE.TextureLoader();
+//var loader = new THREE.TextureLoader();
 //allow cross origin loading
-loader.crossOrigin = '';
+//loader.setCrossOrigin("anonymous");
+//loader.load("https://higamy.github.io/three/dist/imgs/grid.png", function (texture) { material.map = texture },)
+const texture = new THREE.TextureLoader().load("https://higamy.github.io/three/dist/imgs/grid.png")
+material.map = texture
 
-loader.load("imgs/grid.png", function (texture) { material.map = texture },)
+// Material can have an .envMap to be added which adds a reflection of an image to the surface
+// With multiple textures can define whether to add or multiply them together
+// When changing material properties after original creation, need to set material.needsipdate = true
+// so that on the next render frame the properties will be updated.
 
+// The mesh standard material (the most realistic material) can have a displacementMap, bumpMap, roughnessMap and metalnessMap applied
+// (like in blender)
+
+// To add shadows, from lights, a few settings need to be updated including adding a light shadow, saying that
+// an object can cast shadow, and also saying that an object can receive a shadow being cast onto it.
+
+// Can set the max angle and distance that the orbit controls can rotate around. E.g. restrict so that the user can only see 1 side of a scene
+
+// Can also have interesting controls like drag controls and first person style (point lock)
 
 const cube = new THREE.Mesh(geometry, material);
 scene.add(cube);
@@ -31,6 +48,10 @@ scene.add(line);
 
 camera.position.z = 5;
 
+
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true
+
 function animate() {
     requestAnimationFrame(animate);
     renderer.render(scene, camera);
@@ -38,6 +59,8 @@ function animate() {
     cube.rotation.y += 0.005;
     line.rotation.x += 0.005;
     line.rotation.y += 0.005;
+
+    controls.update(); // This must be called or the damping will not work
 }
 animate();
 
@@ -48,8 +71,6 @@ function setCubeColour() {
     cube.material.color = new THREE.Color(setBoxColour.value);
 }
 setCubeColour()
-
-const controls = new OrbitControls(camera, renderer.domElement);
 
 var axesHelper = new THREE.AxesHelper(5)
 scene.add(axesHelper)

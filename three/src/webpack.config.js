@@ -3,7 +3,7 @@
 const path = require('path');
 
 module.exports = {
-    mode: 'production',
+    mode: 'development', //production
     module: {
         rules: [
             {
@@ -21,5 +21,10 @@ module.exports = {
         filename: 'bundle.js',
         path: path.resolve(__dirname, '../dist'),
     },
-    watch: true
+    watch: true,
+    devServer: {
+        contentBase: path.join(__dirname, 'dist'),
+        compress: true,
+        port: 9000,
+    }
 };
