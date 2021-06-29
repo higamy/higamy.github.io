@@ -6,6 +6,7 @@
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader'
+import { MTLLoader } from 'three/examples/jsm/loaders/MTLLoader'
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -41,11 +42,11 @@ material.map = texture
 // Can also have interesting controls like drag controls and first person style (point lock)
 
 const cube = new THREE.Mesh(geometry, material);
-scene.add(cube);
+//scene.add(cube);
 
 const edges = new THREE.EdgesGeometry(geometry);
 const line = new THREE.LineSegments(edges, new THREE.LineBasicMaterial({ color: 0xffffff, linewidth: 4 }));
-scene.add(line);
+//scene.add(line);
 
 camera.position.z = 5;
 
@@ -85,6 +86,7 @@ scene.add(light);
 const lightHelper = new THREE.PointLightHelper(light)
 scene.add(lightHelper)
 
+/*
 const material_char: THREE.MeshStandardMaterial = new THREE.MeshStandardMaterial({ color: 0x00ffff, wireframe: false })
 material_char.side = THREE.DoubleSide
 
@@ -105,5 +107,34 @@ objLoader.load(
     },
     (error) => {
         console.log(error);
+    }
+)
+*/
+
+const mtlLoader = new MTLLoader();
+mtlLoader.load('https://higamy.github.io/three/dist/models/character v2.mtl',
+    (materials) => {
+        materials.preload();
+
+        const objLoader: OBJLoader = new OBJLoader();
+        objLoader.setMaterials(materials);
+        objLoader.load(
+            'https://higamy.github.io/three/dist/models/character v2.obj',
+            (object) => {
+                scene.add(object);
+            },
+            (xhr) => {
+                console.log((xhr.loaded / xhr.total * 100) + '% loaded');
+            },
+            (error) => {
+                console.log('An error happened');
+            }
+        );
+    },
+    (xhr) => {
+        console.log((xhr.loaded / xhr.total * 100) + '% loaded');
+    },
+    (error) => {
+        console.log('An error happened');
     }
 )
