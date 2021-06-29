@@ -5,6 +5,7 @@
 
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader'
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -74,3 +75,29 @@ setCubeColour()
 
 var axesHelper = new THREE.AxesHelper(5)
 scene.add(axesHelper)
+
+/* MODELS */
+
+const light = new THREE.PointLight(0xffffff, 1, 100);
+light.position.set(50, 50, 50);
+scene.add(light);
+
+const objLoader: OBJLoader = new OBJLoader();
+objLoader.load(
+    'https://higamy.github.io/three/dist/models/character.obj',
+    (object) => {
+        //(<THREE.Mesh>object.children[0]).material = material
+        // object.traverse(function (child) {
+        //  if ((<THREE.Mesh>child).isMesh) {
+        //      (<THREE.Mesh>child).material = material
+        //  }
+        // })
+        scene.add(object);
+    },
+    (xhr) => {
+        console.log((xhr.loaded / xhr.total * 100) + '% loaded')
+    },
+    (error) => {
+        console.log(error);
+    }
+)
