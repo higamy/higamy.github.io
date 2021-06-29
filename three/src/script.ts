@@ -79,14 +79,20 @@ scene.add(axesHelper)
 /* MODELS */
 
 const light = new THREE.PointLight(0xffffff, 1, 100);
-light.position.set(50, 50, 50);
+light.position.set(10, 10, 10);
 scene.add(light);
+
+const lightHelper = new THREE.PointLightHelper(light)
+scene.add(lightHelper)
+
+const material_char: THREE.MeshStandardMaterial = new THREE.MeshStandardMaterial({ color: 0x00ffff, wireframe: false })
+material_char.side = THREE.DoubleSide
 
 const objLoader: OBJLoader = new OBJLoader();
 objLoader.load(
     'https://higamy.github.io/three/dist/models/character.obj',
     (object) => {
-        //(<THREE.Mesh>object.children[0]).material = material
+        (<THREE.Mesh>object.children[0]).material = material_char
         // object.traverse(function (child) {
         //  if ((<THREE.Mesh>child).isMesh) {
         //      (<THREE.Mesh>child).material = material
