@@ -8,7 +8,7 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader'
 import { MTLLoader } from 'three/examples/jsm/loaders/MTLLoader'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
-
+import { GUI } from 'three/examples/jsm/libs/dat.gui.module'
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -56,17 +56,7 @@ camera.position.z = 5;
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true
 
-function animate() {
-    requestAnimationFrame(animate);
-    renderer.render(scene, camera);
-    cube.rotation.x += 0.005;
-    cube.rotation.y += 0.005;
-    line.rotation.x += 0.005;
-    line.rotation.y += 0.005;
 
-    controls.update(); // This must be called or the damping will not work
-}
-animate();
 
 const setBoxColour: HTMLInputElement = <HTMLInputElement>document.getElementById('setBoxColour');
 setBoxColour.addEventListener('input', setCubeColour)
@@ -85,7 +75,7 @@ Different model formats are shown below.
 Beyond the below, you can also compress model saving in Blender by checking "compression"
 This uses something called DRACO. It will make the model 1/3 smaller, but it will need to be decompressed
 on the client side, so would only be worth it for larger models (> 1MB??)
-
+FBX can also be imported
 */
 
 const light = new THREE.PointLight(0xffffff, 1, 100);
@@ -153,6 +143,7 @@ mtlLoader.load('https://higamy.github.io/three/dist/models/character v2.mtl',
 // The gltf format includes the texture with the model so it doesn't need to be matched up
 // It also potentially reduces file size although this isn't clear that it is true.
 
+/*
 const loader = new GLTFLoader()
 loader.load(
     'https://higamy.github.io/three/dist/models/character.glb',
@@ -180,3 +171,132 @@ loader.load(
         console.log(error);
     }
 );
+*/
+
+let mixer: THREE.AnimationMixer
+let modelReady = false;
+let animationActions: THREE.AnimationAction[] = new Array()
+let activeAction: THREE.AnimationAction
+let lastAction: THREE.AnimationAction
+const gltfLoader: GLTFLoader = new GLTFLoader();
+
+gltfLoader.load(
+    'https://higamy.github.io/three/dist/models/Character/Character@Idle.glb',
+    (gltf) => {
+        // gltf.scene.scale.set(.01, .01, .01)
+        mixer = new THREE.AnimationMixer(gltf.scene);
+        console.log(gltf)
+
+        //let animationAction = mixer.clipAction(gltf.animations[0]);
+        //animationActions.push(animationAction)
+        //animationsFolder.add(animations, "default")
+        //activeAction = animationActions[0]
+
+        scene.add(gltf.scene);
+
+        //add an animation from another file
+        gltfLoader.load('https://higamy.github.io/three/dist/models/Character/Character@Walking.glb',
+            (gltf) => {
+                console.log("loaded samba")
+                let animationAction = mixer.clipAction((gltf as any).animations[0]);
+                animationActions.push(animationAction)
+                animationsFolder.add(animations, "samba")
+                activeAction = animationActions[0]
+
+                //add an animation from another file
+                gltfLoader.load('https://higamy.github.io/three/dist/models/Character/Character@Running.glb',
+                    (gltf) => {
+                        console.log("loaded bellydance")
+                        let animationAction = mixer.clipAction((gltf as any).animations[0]);
+                        animationActions.push(animationAction)
+                        animationsFolder.add(animations, "bellydance")
+
+                        //add an animation from another file
+                        gltfLoader.load('https://higamy.github.io/three/dist/models/Character/Character@Running.glb',
+                            (gltf) => {
+                                console.log("loaded goofyrunning");
+                                let animationAction = mixer.clipAction(gltf.animations[0]);
+                                animationActions.push(animationAction)
+                                animationsFolder.add(animations, "goofyrunning")
+
+                                modelReady = true
+                            },
+                            (xhr) => {
+                                console.log((xhr.loaded / xhr.total * 100) + '% loaded')
+                            },
+                            (error) => {
+                                console.log(error);
+                            }
+                        )
+                    },
+                    (xhr) => {
+                        console.log((xhr.loaded / xhr.total * 100) + '% loaded')
+                    },
+                    (error) => {
+                        console.log(error);
+                    }
+                )
+            },
+            (xhr) => {
+                console.log((xhr.loaded / xhr.total * 100) + '% loaded')
+            },
+            (error) => {
+                console.log(error);
+            }
+        )
+    },
+    (xhr) => {
+        console.log((xhr.loaded / xhr.total * 100) + '% loaded')
+    },
+    (error) => {
+        console.log(error);
+    }
+)
+
+var animations = {
+    default: function () {
+        setAction(animationActions[0])
+    },
+    samba: function () {
+        setAction(animationActions[1])
+    },
+    bellydance: function () {
+        setAction(animationActions[2])
+    },
+    goofyrunning: function () {
+        setAction(animationActions[3])
+    },
+}
+
+const setAction = (toAction: THREE.AnimationAction) => {
+    if (toAction != activeAction) {
+        lastAction = activeAction
+        activeAction = toAction
+        //lastAction.stop()
+        lastAction.fadeOut(1)
+        activeAction.reset()
+        activeAction.fadeIn(1)
+        activeAction.play()
+    }
+}
+
+const gui = new GUI()
+const animationsFolder = gui.addFolder("Animations")
+animationsFolder.open()
+
+const clock: THREE.Clock = new THREE.Clock()
+
+function animate() {
+    requestAnimationFrame(animate);
+    renderer.render(scene, camera);
+    cube.rotation.x += 0.005;
+    cube.rotation.y += 0.005;
+    line.rotation.x += 0.005;
+    line.rotation.y += 0.005;
+
+    if (modelReady) mixer.update(clock.getDelta());
+
+    controls.update(); // This must be called or the damping will not work
+
+}
+animate();
