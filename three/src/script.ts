@@ -187,10 +187,10 @@ gltfLoader.load(
         mixer = new THREE.AnimationMixer(gltf.scene);
         console.log(gltf)
 
-        //let animationAction = mixer.clipAction(gltf.animations[0]);
-        //animationActions.push(animationAction)
-        //animationsFolder.add(animations, "default")
-        //activeAction = animationActions[0]
+        let animationAction = mixer.clipAction(gltf.animations[0]);
+        animationActions.push(animationAction)
+        animationsFolder.add(animations, "default")
+        activeAction = animationActions[0]
 
         scene.add(gltf.scene);
 
@@ -201,7 +201,6 @@ gltfLoader.load(
                 let animationAction = mixer.clipAction((gltf as any).animations[0]);
                 animationActions.push(animationAction)
                 animationsFolder.add(animations, "samba")
-                activeAction = animationActions[0]
 
                 //add an animation from another file
                 gltfLoader.load('https://higamy.github.io/three/dist/models/Character/Character@Running.glb',
