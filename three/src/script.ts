@@ -60,7 +60,7 @@ function add_floor() {
     plane.receiveShadow = true
     scene.add(plane);
 }
-add_floor();
+//add_floor();
 
 function add_house() {
     new GLTFLoader().load('https://higamy.github.io/models/scene.glb',
