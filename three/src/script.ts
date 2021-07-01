@@ -51,7 +51,7 @@ scene.add(lightHelper)
 
 /* Floor */
 function add_floor() {
-    var geo = new THREE.PlaneGeometry(10, 10);
+    var geo = new THREE.PlaneGeometry(30, 30);
 
     var planeMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff });
 
@@ -60,8 +60,17 @@ function add_floor() {
     plane.receiveShadow = true
     scene.add(plane);
 }
-
 add_floor();
+
+function add_house() {
+    new GLTFLoader().load('https://higamy.github.io/three/dist/models/House.glb',
+        (gltf) => {
+            gltf.scene.scale.set(.1, .1, .1);
+            gltf.scene.position.set(-5, 0, -5);
+            scene.add(gltf.scene);
+        })
+}
+add_house()
 
 let mixer: THREE.AnimationMixer
 let modelReady = false;
