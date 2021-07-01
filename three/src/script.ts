@@ -26,8 +26,9 @@ const material = new THREE.MeshBasicMaterial({ color: 0x00ff00, opacity: 0.25 })
 
 
 
-camera.position.z = 5;
-
+camera.position.x = 3;
+camera.position.y = 3;
+camera.position.z = 3;
 
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true
@@ -51,8 +52,9 @@ scene.add(lightHelper)
 /* Floor */
 function add_floor() {
     var geo = new THREE.PlaneGeometry(10, 10);
-    const texture = new THREE.TextureLoader().load("https://higamy.github.io/three/dist/imgs/grid.png")
-    var planeMaterial = new THREE.MeshStandardMaterial({ map: texture });
+
+    var planeMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff });
+
     var plane = new THREE.Mesh(geo, planeMaterial);
     plane.rotateX(- Math.PI / 2);
     plane.receiveShadow = true
@@ -80,6 +82,7 @@ gltfLoader.load(
         gltf.scene.traverse(function (node) {
             if ((<THREE.Mesh>node).isMesh) {
                 node.castShadow = true;
+                node.frustumCulled = false;
                 //node.receiveShadow = true;
             }
         });
