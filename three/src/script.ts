@@ -66,7 +66,7 @@ function add_house() {
     new GLTFLoader().load('https://higamy.github.io/models/scene.glb',
         (gltf) => {
             gltf.scene.scale.set(.1, .1, .1);
-            gltf.scene.position.set(-5, 0, -5);
+            //gltf.scene.position.set(-5, 0, -5);
             scene.add(gltf.scene);
         })
 }
