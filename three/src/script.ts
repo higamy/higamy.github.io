@@ -73,7 +73,10 @@ function add_house() {
                     node.frustumCulled = false;
                     //node.receiveShadow = true;
                 }
-                console.log(node)
+                console.log(node.name)
+                if (node.name == 'Ground') {
+                    node.receiveShadow = true;
+                }
             });
 
             gltf.scene.scale.set(.1, .1, .1);
