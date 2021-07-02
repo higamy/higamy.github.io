@@ -16,7 +16,7 @@ module.exports = {
     resolve: {
         extensions: ['.tsx', '.ts', '.js'],
     },
-    entry: './three/src/script.ts',
+    entry: ['./three/src/script.ts', './three/src/cannonDebugRenderer.ts'],
     output: {
         filename: 'bundle.js',
         path: path.resolve(__dirname, '../dist'),

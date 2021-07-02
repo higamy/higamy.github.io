@@ -10,9 +10,18 @@ import { MTLLoader } from 'three/examples/jsm/loaders/MTLLoader'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
 import { GUI } from 'three/examples/jsm/libs/dat.gui.module'
 import { threadId } from 'worker_threads';
+import * as CANNON from 'cannon'
+import CannonDebugRenderer from './cannonDebugRenderer.js'
+
+const world = new CANNON.World()
+world.gravity.set(0, -9.81, 0)
+
 
 const scene = new THREE.Scene();
+scene.background = new THREE.Color(0xcdf2f7);
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+
+const cannonDebugRenderer = new CannonDebugRenderer(scene, world);
 
 const renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
@@ -20,11 +29,6 @@ renderer.shadowMap.enabled = true
 renderer.shadowMap.type = THREE.PCFSoftShadowMap
 
 document.body.appendChild(renderer.domElement);
-
-const geometry = new THREE.BoxGeometry();
-const material = new THREE.MeshBasicMaterial({ color: 0x00ff00, opacity: 0.25 });
-
-
 
 camera.position.x = 3;
 camera.position.y = 3;
@@ -68,14 +72,13 @@ function add_house() {
 
             gltf.scene.traverse(function (node) {
                 if ((<THREE.Mesh>node).isMesh) {
-                    //node.receiveShadow = true;
-                    //node.castShadow = true;
                     node.frustumCulled = false;
-                    //node.receiveShadow = true;
                 }
-                console.log(node.name)
                 if (node.name == 'Ground') {
                     node.receiveShadow = true;
+                }
+                else {
+                    node.castShadow = true;
                 }
             });
 
@@ -99,9 +102,14 @@ gltfLoader.load(
     (gltf) => { scene.add(gltf.scene); }
 )
 */
+let player;
+
 gltfLoader.load(
     'https://higamy.github.io/three/dist/models/Character/Character@Idle.glb',
     (gltf) => {
+        player = gltf.scene;
+        console.log(player)
+
         gltf.scene.traverse(function (node) {
             if ((<THREE.Mesh>node).isMesh) {
                 node.castShadow = true;
@@ -179,6 +187,11 @@ gltfLoader.load(
     }
 )
 
+const cubeShape = new CANNON.Box(new CANNON.Vec3(.5, .5, .5))
+const cubeBody = new CANNON.Body({ mass: 1 });
+cubeBody.addShape(cubeShape)
+world.addBody(cubeBody)
+
 var animations = {
     default: function () {
         setAction(animationActions[0])
@@ -206,6 +219,17 @@ const setAction = (toAction: THREE.AnimationAction) => {
     }
 }
 
+window.addEventListener('resize', onWindowResize, false);
+
+function onWindowResize() {
+
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+
+    renderer.setSize(window.innerWidth, window.innerHeight);
+
+}
+
 const gui = new GUI()
 const animationsFolder = gui.addFolder("Animations")
 animationsFolder.open()
@@ -213,11 +237,22 @@ animationsFolder.open()
 const clock: THREE.Clock = new THREE.Clock()
 
 function animate() {
+
     requestAnimationFrame(animate);
     renderer.render(scene, camera);
+
+    // Physics
+    let delta = clock.getDelta()
+    if (delta > .1) delta = .1
+    world.step(delta)
+    cannonDebugRenderer.update()
 
     if (modelReady) mixer.update(clock.getDelta());
 
     controls.update(); // This must be called or the damping will not work
+
+    //player.position.set(cubeBody.position.x, cubeBody.position.y, cubeBody.position.z);
+    //player.quaternion.set(cubeBody.quaternion.x, cubeBody.quaternion.y, cubeBody.quaternion.z, cubeBody.quaternion.w);
 }
 animate();
+
