@@ -51,7 +51,7 @@ const sceneMeshes = new Array()
 
 /* Floor */
 function add_floor() {
-    var geo = new THREE.PlaneGeometry(300, 300);
+    var geo = new THREE.PlaneGeometry(3000, 3000);
 
     var planeMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff });
 
@@ -120,7 +120,7 @@ function onMouseMove(event: MouseEvent) {
 
     if (intersects.length > 0) {
         //console.log(sceneMeshes.length + " " + intersects.length)
-        console.log(intersects[0].object.userData.name)
+        console.log(intersects[0].object.name)
     }
 }
 
