@@ -5,23 +5,13 @@
 
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
-import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader'
-import { MTLLoader } from 'three/examples/jsm/loaders/MTLLoader'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
 import { GUI } from 'three/examples/jsm/libs/dat.gui.module'
-import { threadId } from 'worker_threads';
-import * as CANNON from 'cannon'
-import CannonDebugRenderer from './cannonDebugRenderer.js'
-
-const world = new CANNON.World()
-world.gravity.set(0, -9.81, 0)
 
 
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0xcdf2f7);
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-
-const cannonDebugRenderer = new CannonDebugRenderer(scene, world);
 
 const renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
@@ -41,21 +31,27 @@ controls.target = new THREE.Vector3(0, 1, 0)
 var axesHelper = new THREE.AxesHelper(5)
 scene.add(axesHelper)
 
-const light = new THREE.SpotLight(0xffffff, 1, 1000);
+const light = new THREE.DirectionalLight(0xFFFFE0, 0.5);
 light.castShadow = true;
-light.shadow.mapSize.width = 1024; // 4096 max
-light.shadow.mapSize.height = 1024;
+light.shadow.mapSize.width = 256; // 4096 max
+light.shadow.mapSize.height = 256;
 light.shadow.camera.near = 0.5;
-light.shadow.camera.far = 100
+light.shadow.camera.far = 1000
+light.shadow.camera.right = 50;
 light.position.set(10, 10, 10);
 scene.add(light);
 
-const lightHelper = new THREE.SpotLightHelper(light)
+const lightHelper = new THREE.DirectionalLightHelper(light)
 scene.add(lightHelper)
+
+const ambient_light = new THREE.AmbientLight(0x404040); // soft white light
+scene.add(ambient_light);
+
+const sceneMeshes = new Array()
 
 /* Floor */
 function add_floor() {
-    var geo = new THREE.PlaneGeometry(30, 30);
+    var geo = new THREE.PlaneGeometry(300, 300);
 
     var planeMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff });
 
@@ -64,7 +60,7 @@ function add_floor() {
     plane.receiveShadow = true
     scene.add(plane);
 }
-//add_floor();
+add_floor();
 
 function add_house() {
     new GLTFLoader().load('https://higamy.github.io/models/scene.glb',
@@ -80,6 +76,8 @@ function add_house() {
                 else {
                     node.castShadow = true;
                 }
+
+                sceneMeshes.push(<THREE.Mesh>node)
             });
 
             gltf.scene.scale.set(.1, .1, .1);
@@ -91,133 +89,6 @@ add_house()
 
 let mixer: THREE.AnimationMixer
 let modelReady = false;
-let animationActions: THREE.AnimationAction[] = new Array()
-let activeAction: THREE.AnimationAction
-let lastAction: THREE.AnimationAction
-const gltfLoader: GLTFLoader = new GLTFLoader();
-
-/*
-gltfLoader.load(
-    'https://higamy.github.io/three/dist/models/Character/Character@Idle.glb',
-    (gltf) => { scene.add(gltf.scene); }
-)
-*/
-let player;
-
-gltfLoader.load(
-    'https://higamy.github.io/three/dist/models/Character/Character@Idle.glb',
-    (gltf) => {
-        player = gltf.scene;
-        console.log(player)
-
-        gltf.scene.traverse(function (node) {
-            if ((<THREE.Mesh>node).isMesh) {
-                node.castShadow = true;
-                node.frustumCulled = false;
-                //node.receiveShadow = true;
-            }
-        });
-
-
-        //gltf.scene.scale.set(.001, .001, .001)
-        mixer = new THREE.AnimationMixer(gltf.scene);
-
-        let animationAction = mixer.clipAction(gltf.animations[0]);
-        animationActions.push(animationAction)
-        animationsFolder.add(animations, "default")
-        activeAction = animationActions[0]
-        activeAction.play()
-        scene.add(gltf.scene);
-
-        //add an animation from another file
-        gltfLoader.load('https://higamy.github.io/three/dist/models/Character/Character@Walking.glb',
-            (gltf) => {
-                console.log("loaded samba")
-                let animationAction = mixer.clipAction((gltf as any).animations[0]);
-                animationActions.push(animationAction)
-                animationsFolder.add(animations, "samba")
-
-                //add an animation from another file
-                gltfLoader.load('https://higamy.github.io/three/dist/models/Character/Character@Running.glb',
-                    (gltf) => {
-                        console.log("loaded bellydance")
-                        let animationAction = mixer.clipAction((gltf as any).animations[0]);
-                        animationActions.push(animationAction)
-                        animationsFolder.add(animations, "bellydance")
-
-                        //add an animation from another file
-                        gltfLoader.load('https://higamy.github.io/three/dist/models/Character/Character@Running.glb',
-                            (gltf) => {
-                                console.log("loaded goofyrunning");
-                                let animationAction = mixer.clipAction(gltf.animations[0]);
-                                animationActions.push(animationAction)
-                                animationsFolder.add(animations, "goofyrunning")
-
-                                modelReady = true
-                            },
-                            (xhr) => {
-                                console.log((xhr.loaded / xhr.total * 100) + '% loaded')
-                            },
-                            (error) => {
-                                console.log(error);
-                            }
-                        )
-                    },
-                    (xhr) => {
-                        console.log((xhr.loaded / xhr.total * 100) + '% loaded')
-                    },
-                    (error) => {
-                        console.log(error);
-                    }
-                )
-            },
-            (xhr) => {
-                console.log((xhr.loaded / xhr.total * 100) + '% loaded')
-            },
-            (error) => {
-                console.log(error);
-            }
-        )
-    },
-    (xhr) => {
-        console.log((xhr.loaded / xhr.total * 100) + '% loaded')
-    },
-    (error) => {
-        console.log(error);
-    }
-)
-
-const cubeShape = new CANNON.Box(new CANNON.Vec3(.5, .5, .5))
-const cubeBody = new CANNON.Body({ mass: 1 });
-cubeBody.addShape(cubeShape)
-world.addBody(cubeBody)
-
-var animations = {
-    default: function () {
-        setAction(animationActions[0])
-    },
-    samba: function () {
-        setAction(animationActions[1])
-    },
-    bellydance: function () {
-        setAction(animationActions[2])
-    },
-    goofyrunning: function () {
-        setAction(animationActions[3])
-    },
-}
-
-const setAction = (toAction: THREE.AnimationAction) => {
-    if (toAction != activeAction) {
-        lastAction = activeAction
-        activeAction = toAction
-        //lastAction.stop()
-        lastAction.fadeOut(1)
-        activeAction.reset()
-        activeAction.fadeIn(1)
-        activeAction.play()
-    }
-}
 
 window.addEventListener('resize', onWindowResize, false);
 
@@ -230,9 +101,28 @@ function onWindowResize() {
 
 }
 
-const gui = new GUI()
-const animationsFolder = gui.addFolder("Animations")
-animationsFolder.open()
+renderer.domElement.addEventListener('mousemove', onMouseMove, false);
+
+
+const raycaster = new THREE.Raycaster();
+
+function onMouseMove(event: MouseEvent) {
+    const mouse = {
+        x: (event.clientX / renderer.domElement.clientWidth) * 2 - 1,
+        y: -(event.clientY / renderer.domElement.clientHeight) * 2 + 1
+    }
+
+    //console.log(mouse)
+
+    raycaster.setFromCamera(mouse, camera);
+
+    const intersects = raycaster.intersectObjects(sceneMeshes, false);
+
+    if (intersects.length > 0) {
+        //console.log(sceneMeshes.length + " " + intersects.length)
+        console.log(intersects[0].object.userData.name)
+    }
+}
 
 const clock: THREE.Clock = new THREE.Clock()
 
@@ -243,11 +133,7 @@ function animate() {
 
     // Physics
     let delta = clock.getDelta()
-    if (delta > .1) delta = .1
-    world.step(delta)
-    cannonDebugRenderer.update()
-
-    if (modelReady) mixer.update(clock.getDelta());
+    if (modelReady) mixer.update(delta);
 
     controls.update(); // This must be called or the damping will not work
 
