@@ -62,27 +62,47 @@ function add_floor() {
 }
 add_floor();
 
+const SCENE_SCALE_FACTOR = 0.1
+
 function add_house() {
     new GLTFLoader().load('https://higamy.github.io/models/scene.glb',
         (gltf) => {
+
+            gltf.scene.scale.set(SCENE_SCALE_FACTOR, SCENE_SCALE_FACTOR, SCENE_SCALE_FACTOR);
+            scene.add(gltf.scene);
 
             gltf.scene.traverse(function (node) {
                 if ((<THREE.Mesh>node).isMesh) {
                     node.frustumCulled = false;
                 }
+
                 if (node.name == 'Ground') {
                     node.receiveShadow = true;
+                }
+                else if (node.name.includes('Container')) {
+                    console.log(node.name)
+                    node.visible = false;
+
+                    // Add a light
+                    let light = new THREE.SpotLight(0xFFFF99, 0.5, 0, Math.PI / 8)
+                    light.position.set(node.position.x * SCENE_SCALE_FACTOR, 5 + node.position.y * SCENE_SCALE_FACTOR, node.position.z * SCENE_SCALE_FACTOR)
+                    light.target = node;
+                    scene.add(light)
+
+                    const lightHelper = new THREE.SpotLightHelper(light)
+                    scene.add(lightHelper)
                 }
                 else {
                     node.castShadow = true;
                 }
 
+
                 sceneMeshes.push(<THREE.Mesh>node)
             });
 
-            gltf.scene.scale.set(.1, .1, .1);
+
             //gltf.scene.position.set(-5, 0, -5);
-            scene.add(gltf.scene);
+
         })
 }
 add_house()
