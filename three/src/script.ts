@@ -10,7 +10,8 @@ import { TWEEN } from 'three/examples/jsm/libs/tween.module.min'
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 
 const scene = new THREE.Scene();
-scene.background = new THREE.Color(0xcdf2f7);
+const background_colour: number = 0x95776d;
+scene.background = new THREE.Color(background_colour);
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 
 const renderer = new THREE.WebGLRenderer();
@@ -24,7 +25,7 @@ camera.position.x = 3;
 camera.position.y = 6;
 camera.position.z = 6;
 
-let controls_active: boolean = true
+let viewing_exhibit: boolean = false;
 
 const projectNameTitle: HTMLElement = document.getElementById('projectNameTitle');
 const projectDescriptionContainer: HTMLElement = document.getElementById('projectDescriptionContainer');
@@ -34,7 +35,6 @@ closeDescriptionButton.addEventListener('click', () => {
     currently_selected_exhibit.deselect();
 })
 
-const camera_start_position = camera.position;
 
 var axesHelper = new THREE.AxesHelper(5)
 //scene.add(axesHelper)
@@ -52,8 +52,12 @@ scene.add(light);
 const lightHelper = new THREE.DirectionalLightHelper(light)
 //scene.add(lightHelper)
 
-const ambient_light = new THREE.AmbientLight(0x404040); // soft white light
-//scene.add(ambient_light);
+const ambient_light = new THREE.AmbientLight(0x404040, 2); // soft white light
+scene.add(ambient_light);
+
+const near = 1;
+const far = 30;
+scene.fog = new THREE.Fog(background_colour, near, far);
 
 const containerMeshes = new Array
 
@@ -140,6 +144,9 @@ class Exhibit {
 
         projectNameTitle.innerHTML = this.name;
         projectDescriptionContainer.classList.remove('hidden');
+
+        viewing_exhibit = true;
+        controls.enabled = false;
     }
 
     deselect() {
@@ -154,6 +161,10 @@ class Exhibit {
             .to(this.startTarget, 1000)
             .easing(TWEEN.Easing.Quadratic.Out)
             .start();
+
+        currently_selected_exhibit = null;
+        viewing_exhibit = false;
+        controls.enabled = true;
     }
 }
 
@@ -245,6 +256,8 @@ if (window.PointerEvent) {
 
 const raycaster = new THREE.Raycaster();
 function onMouseMove(event: MouseEvent) {
+    if (viewing_exhibit) return;
+
     const intersects = getMouseTarget(event)
 
     for (let exhibit of exhibits) {
@@ -268,6 +281,8 @@ if (window.PointerEvent) {
 }
 
 function onClick(event: MouseEvent) {
+    if (viewing_exhibit) return;
+
     const intersects = getMouseTarget(event);
 
     if (intersects.length > 0) {
