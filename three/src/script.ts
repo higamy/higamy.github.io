@@ -64,7 +64,7 @@ function add_floor() {
 }
 add_floor();
 
-const SCENE_SCALE_FACTOR = 0.1
+const SCENE_SCALE_FACTOR = 1
 const spot_light_helpers = new Array()
 let exhibits = new Array()
 const MAX_SPOTLIGHT_INTENSITY = 0.5;
