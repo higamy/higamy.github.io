@@ -7,7 +7,7 @@ import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
 import { GUI } from 'three/examples/jsm/libs/dat.gui.module'
-
+import { TWEEN } from 'three/examples/jsm/libs/tween.module.min'
 
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0xcdf2f7);
@@ -21,8 +21,10 @@ renderer.shadowMap.type = THREE.PCFSoftShadowMap
 document.body.appendChild(renderer.domElement);
 
 camera.position.x = 3;
-camera.position.y = 3;
-camera.position.z = 3;
+camera.position.y = 6;
+camera.position.z = 6;
+
+const camera_start_position = camera.position;
 
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true
@@ -45,9 +47,9 @@ const lightHelper = new THREE.DirectionalLightHelper(light)
 scene.add(lightHelper)
 
 const ambient_light = new THREE.AmbientLight(0x404040); // soft white light
-scene.add(ambient_light);
+//scene.add(ambient_light);
 
-const sceneMeshes = new Array()
+const containerMeshes = new Array()
 
 /* Floor */
 function add_floor() {
@@ -63,6 +65,48 @@ function add_floor() {
 add_floor();
 
 const SCENE_SCALE_FACTOR = 0.1
+const spot_light_helpers = new Array()
+let exhibits = new Array()
+const MAX_SPOTLIGHT_INTENSITY = 0.5;
+const LIGHT_INTENSITY_CHANGE_TIME = 250;
+
+class Exhibit {
+    light: THREE.Light
+    container: THREE.Object3D
+    activated: boolean
+    current_tween: TWEEN.tween
+
+    constructor(light: THREE.Light, container: THREE.Object3D) {
+        this.light = light;
+        this.container = container;
+    }
+
+    activate() {
+        if (!this.activated) {
+            this.activated = true;
+            if (this.current_tween) TWEEN.remove(this.current_tween)
+
+            this.current_tween = new TWEEN.Tween(this.light)
+                .to({ intensity: MAX_SPOTLIGHT_INTENSITY }, LIGHT_INTENSITY_CHANGE_TIME)
+                .start()
+        }
+    }
+
+    deactivate() {
+        if (this.activated) {
+            this.activated = false;
+            if (this.current_tween) TWEEN.remove(this.current_tween)
+            this.current_tween = new TWEEN.Tween(this.light)
+                .to({ intensity: 0 }, LIGHT_INTENSITY_CHANGE_TIME)
+                .start()
+        }
+    }
+
+    select() {
+        console.log(this)
+        camera.position.set(this.container.position.x * SCENE_SCALE_FACTOR, this.container.position.y * SCENE_SCALE_FACTOR, this.container.position.z * SCENE_SCALE_FACTOR);
+    }
+}
 
 function add_house() {
     new GLTFLoader().load('https://higamy.github.io/models/scene.glb',
@@ -84,20 +128,29 @@ function add_house() {
                     node.visible = false;
 
                     // Add a light
-                    let light = new THREE.SpotLight(0xFFFF99, 0.5, 0, Math.PI / 8)
-                    light.position.set(node.position.x * SCENE_SCALE_FACTOR, 5 + node.position.y * SCENE_SCALE_FACTOR, node.position.z * SCENE_SCALE_FACTOR)
+                    let light = new THREE.SpotLight(0xFFFF99, 0, 0, Math.PI / 12, 0.5);
+                    light.position.set(node.position.x * SCENE_SCALE_FACTOR, 10 + node.position.y * SCENE_SCALE_FACTOR, node.position.z * SCENE_SCALE_FACTOR)
                     light.target = node;
+                    light.castShadow = true;
                     scene.add(light)
 
                     const lightHelper = new THREE.SpotLightHelper(light)
                     scene.add(lightHelper)
+
+                    // Store a reference to the spot light
+                    const exhibit = new Exhibit(light, node)
+                    node.userData.exhibit = exhibit;
+
+                    exhibits.push(exhibit);
+                    spot_light_helpers.push(lightHelper);
+                    containerMeshes.push(<THREE.Mesh>node);
                 }
                 else {
                     node.castShadow = true;
                 }
 
 
-                sceneMeshes.push(<THREE.Mesh>node)
+
             });
 
 
@@ -121,26 +174,48 @@ function onWindowResize() {
 
 }
 
-renderer.domElement.addEventListener('mousemove', onMouseMove, false);
+// HOVER
 
-
-const raycaster = new THREE.Raycaster();
-
-function onMouseMove(event: MouseEvent) {
+function getMouseTarget(event: MouseEvent) {
     const mouse = {
         x: (event.clientX / renderer.domElement.clientWidth) * 2 - 1,
         y: -(event.clientY / renderer.domElement.clientHeight) * 2 + 1
     }
 
-    //console.log(mouse)
-
     raycaster.setFromCamera(mouse, camera);
 
-    const intersects = raycaster.intersectObjects(sceneMeshes, false);
+    return raycaster.intersectObjects(containerMeshes, false);
+}
+
+renderer.domElement.addEventListener('mousemove', onMouseMove, false);
+const raycaster = new THREE.Raycaster();
+function onMouseMove(event: MouseEvent) {
+    const intersects = getMouseTarget(event)
+
+    for (let exhibit of exhibits) {
+        exhibit.deactivate();
+    }
 
     if (intersects.length > 0) {
-        //console.log(sceneMeshes.length + " " + intersects.length)
-        console.log(intersects[0].object.name)
+        //console.log(intersects[0])
+        //console.log(intersects[0].object.name)
+
+        let exhibit = <Exhibit>intersects[0].object.userData.exhibit
+        exhibit.activate()
+    }
+}
+
+// CLICK
+
+renderer.domElement.addEventListener('click', onClick, false);
+
+function onClick(event: MouseEvent) {
+    const intersects = getMouseTarget(event)
+
+
+    if (intersects.length > 0) {
+        let exhibit = <Exhibit>intersects[0].object.userData.exhibit
+        exhibit.select()
     }
 }
 
@@ -159,6 +234,14 @@ function animate() {
 
     //player.position.set(cubeBody.position.x, cubeBody.position.y, cubeBody.position.z);
     //player.quaternion.set(cubeBody.quaternion.x, cubeBody.quaternion.y, cubeBody.quaternion.z, cubeBody.quaternion.w);
+
+    for (let lightHelper of spot_light_helpers) {
+        lightHelper.update();
+    }
+    TWEEN.update()
+    // for (let exhibit of exhibits) {
+    //    exhibit.update_intensity(delta)
+    // }
 }
 animate();
 
