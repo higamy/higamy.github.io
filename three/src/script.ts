@@ -122,6 +122,8 @@ class Exhibit {
     }
 
     select() {
+        console.log(this);
+
         currently_selected_exhibit = this;
 
         // Backup original view settings
@@ -309,6 +311,10 @@ function animate() {
     // for (let exhibit of exhibits) {
     //    exhibit.update_intensity(delta)
     // }
+
+    if (currently_selected_exhibit) {
+        currently_selected_exhibit.container.rotateY(0.01)
+    }
 
     controls.update();
 
