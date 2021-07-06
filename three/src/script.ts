@@ -5,7 +5,6 @@
 
 import * as THREE from 'three'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
-import { GUI } from 'three/examples/jsm/libs/dat.gui.module'
 import { TWEEN } from 'three/examples/jsm/libs/tween.module.min'
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 
@@ -35,10 +34,6 @@ closeDescriptionButton.addEventListener('click', () => {
     currently_selected_exhibit.deselect();
 })
 
-
-var axesHelper = new THREE.AxesHelper(5)
-//scene.add(axesHelper)
-
 const light = new THREE.DirectionalLight(0xFFFFE0, 0.5);
 light.castShadow = true;
 light.shadow.mapSize.width = 256; // 4096 max
@@ -62,22 +57,17 @@ scene.fog = new THREE.Fog(background_colour, near, far);
 const containerMeshes = new Array
 
 const controls = new OrbitControls(camera, renderer.domElement);
-/* Floor */
-function add_floor() {
-    var geo = new THREE.PlaneGeometry(3000, 3000);
+controls.enableDamping = true;
+controls.enableRotate = false;
+controls.enableZoom = false;
+controls.screenSpacePanning = false;
 
-    var planeMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff });
-
-    var plane = new THREE.Mesh(geo, planeMaterial);
-    plane.rotateX(- Math.PI / 2);
-    plane.receiveShadow = true
-    scene.add(plane);
-
-
+controls.mouseButtons = {
+    LEFT: THREE.MOUSE.PAN,
+    MIDDLE: THREE.MOUSE.PAN,
+    RIGHT: THREE.MOUSE.PAN
 }
-//add_floor();
-
-camera.lookAt(new THREE.Vector3())
+//camera.lookAt(new THREE.Vector3())
 
 const spot_light_helpers = new Array()
 let exhibits = new Array()
@@ -128,6 +118,8 @@ class Exhibit {
     }
 
     select() {
+        this.activate();
+
         console.log(this);
 
         currently_selected_exhibit = this;
@@ -159,6 +151,8 @@ class Exhibit {
     }
 
     deselect() {
+        this.deactivate();
+
         projectDescriptionContainer.classList.add('hidden');
 
         new TWEEN.Tween(camera.position)
@@ -339,7 +333,7 @@ function animate() {
     // }
 
     if (currently_selected_exhibit) {
-        const rotation_amount = Math.PI * 2 * delta / 10;
+        const rotation_amount = Math.PI * 2 * delta / 20;
         selected_exhibit_rotation = selected_exhibit_rotation + rotation_amount;
         currently_selected_exhibit.container.rotateY(rotation_amount);
     }
