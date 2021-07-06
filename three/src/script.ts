@@ -8,6 +8,9 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
 import { TWEEN } from 'three/examples/jsm/libs/tween.module.min'
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 
+// Disable the right click menu
+window.addEventListener("contextmenu", e => e.preventDefault());
+
 const scene = new THREE.Scene();
 const background_colour: number = 0x95776d;
 scene.background = new THREE.Color(background_colour);
@@ -67,6 +70,11 @@ controls.mouseButtons = {
     MIDDLE: THREE.MOUSE.PAN,
     RIGHT: THREE.MOUSE.PAN
 }
+
+// Mobile settings
+controls.touches.ONE = THREE.TOUCH.PAN;
+controls.touches.TWO = THREE.TOUCH.PAN;
+
 //camera.lookAt(new THREE.Vector3())
 
 const spot_light_helpers = new Array()
@@ -140,8 +148,7 @@ class Exhibit {
         new TWEEN.Tween(controls.target)
             .to({ x: endPosition.x, y: endPosition.y, z: endPosition.z - 1 }, zoom_in_out_time)
             .easing(easing_method)
-            .start();
-
+            .start()
 
         projectNameTitle.innerHTML = this.name;
         projectDescriptionContainer.classList.remove('hidden');
@@ -158,7 +165,10 @@ class Exhibit {
         new TWEEN.Tween(camera.position)
             .to(this.startPosition, zoom_in_out_time)
             .easing(easing_method)
-            .start();
+            .start()
+            .onComplete(() => {
+                controls.enabled = true;
+            });
 
         new TWEEN.Tween(controls.target)
             .to(this.startTarget, zoom_in_out_time)
@@ -178,11 +188,9 @@ class Exhibit {
             .start();
 
         this.container.rotateY(-selected_exhibit_rotation);
-        console.log(selected_exhibit_rotation);
 
         currently_selected_exhibit = null;
         viewing_exhibit = false;
-        controls.enabled = true;
     }
 }
 
