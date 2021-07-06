@@ -82,8 +82,12 @@ camera.lookAt(new THREE.Vector3())
 const spot_light_helpers = new Array()
 let exhibits = new Array()
 let currently_selected_exhibit: Exhibit;
+let selected_exhibit_rotation: number = 0;
+const easing_method = TWEEN.Easing.Quadratic.InOut
+
 const MAX_SPOTLIGHT_INTENSITY = 0.5;
 const LIGHT_INTENSITY_CHANGE_TIME = 250;
+const zoom_in_out_time = 2000;
 
 class Exhibit {
     light: THREE.Light
@@ -93,11 +97,13 @@ class Exhibit {
     name: string
     startTarget: THREE.Vector3;
     startPosition: THREE.Vector3;
+    startRotation: THREE.Euler;
 
     constructor(light: THREE.Light, container: THREE.Object3D, projectName: string) {
         this.light = light;
         this.container = container;
         this.name = projectName;
+        this.startRotation = container.rotation;
     }
 
     activate() {
@@ -125,6 +131,7 @@ class Exhibit {
         console.log(this);
 
         currently_selected_exhibit = this;
+        selected_exhibit_rotation = 0;
 
         // Backup original view settings
         this.startTarget = controls.target;
@@ -132,15 +139,15 @@ class Exhibit {
 
         let endPosition = new THREE.Vector3(this.container.position.x - 2, this.container.position.y + 1, this.container.position.z + 3)
         new TWEEN.Tween(camera.position)
-            .to({ x: endPosition.x, y: endPosition.y, z: endPosition.z }, 1000)
-            .easing(TWEEN.Easing.Quadratic.Out)
+            .to({ x: endPosition.x, y: endPosition.y, z: endPosition.z }, zoom_in_out_time)
+            .easing(easing_method)
             .start();
 
 
         // Tween
         new TWEEN.Tween(controls.target)
-            .to({ x: endPosition.x, y: endPosition.y, z: endPosition.z - 1 }, 1000)
-            .easing(TWEEN.Easing.Quadratic.Out)
+            .to({ x: endPosition.x, y: endPosition.y, z: endPosition.z - 1 }, zoom_in_out_time)
+            .easing(easing_method)
             .start();
 
 
@@ -155,14 +162,29 @@ class Exhibit {
         projectDescriptionContainer.classList.add('hidden');
 
         new TWEEN.Tween(camera.position)
-            .to(this.startPosition, 1000)
-            .easing(TWEEN.Easing.Quadratic.Out)
+            .to(this.startPosition, zoom_in_out_time)
+            .easing(easing_method)
             .start();
 
         new TWEEN.Tween(controls.target)
-            .to(this.startTarget, 1000)
-            .easing(TWEEN.Easing.Quadratic.Out)
+            .to(this.startTarget, zoom_in_out_time)
+            .easing(easing_method)
             .start();
+
+        /* new TWEEN.Tween(this.container.rotation)
+             .to(this.startRotation, zoom_in_out_time)
+             .easing(TWEEN.Easing.Quadratic.Out)
+             .start();
+ */
+
+        //this.container.rotateY(currently_selected_exhibit.container.rotation.y - currently_selected_exhibit.startRotation.y)
+        new TWEEN.Tween(this.container.rotation)
+            //   .to({ 'y': })
+            .easing(easing_method)
+            .start();
+
+        this.container.rotateY(-selected_exhibit_rotation);
+        console.log(selected_exhibit_rotation);
 
         currently_selected_exhibit = null;
         viewing_exhibit = false;
@@ -184,8 +206,12 @@ function add_house() {
                     node.receiveShadow = true;
                 }
                 else if (node.name.includes('Container')) {
-                    console.log(node.name)
-                    node.visible = false;
+                    console.log(node.name);
+                    // node.visible = false;
+                    (<THREE.Mesh>node).material = new THREE.MeshPhongMaterial({
+                        opacity: 0,
+                        transparent: true,
+                    });
 
                     // Add a light
                     let light = new THREE.SpotLight(0xFFFF99, 0, 0, Math.PI / 12, 0.5);
@@ -313,7 +339,9 @@ function animate() {
     // }
 
     if (currently_selected_exhibit) {
-        currently_selected_exhibit.container.rotateY(0.01)
+        const rotation_amount = Math.PI * 2 * delta / 10;
+        selected_exhibit_rotation = selected_exhibit_rotation + rotation_amount;
+        currently_selected_exhibit.container.rotateY(rotation_amount);
     }
 
     controls.update();
