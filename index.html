@@ -3,12 +3,18 @@
 
 <head>
     <meta charset="utf-8">
-    <title>Higamy's portfolio</title>
+    <title>Will's portfolio</title>
     <link rel="stylesheet" href="styles.css">
 
     <section id="projectDescriptionContainer" class="hidden">
-        <button id='closeDescriptionButton' class="btn">&#10006</button>
-        <h2 id="projectNameTitle">Project Name</h2>
+        <div id="controlsDiv">
+            <button id='closeDescriptionButton' class="btn btn-control">&#10006</button>
+        </div>
+        <div id="detailsContainer">
+            <h2 id="projectNameTitle">Project Name</h2>
+            <div id="projectDescription"></div>
+            <button id="viewProjectButton" class="btn">View Project</button>
+        </div>
     </section>
 
 </head>

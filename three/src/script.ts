@@ -32,15 +32,29 @@ let viewing_exhibit: boolean = false;
 const projectNameTitle: HTMLElement = document.getElementById('projectNameTitle');
 const projectDescriptionContainer: HTMLElement = document.getElementById('projectDescriptionContainer');
 const closeDescriptionButton: HTMLElement = document.getElementById('closeDescriptionButton');
+const projectDescription: HTMLElement = document.getElementById('projectDescription');
+const viewProjectButton: HTMLElement = document.getElementById('viewProjectButton');
+
+const ProjectDescriptions = {
+    'Pokemon': "A utility for the game Pokemon. Type in the opponent pokemon's name and see what you should pick to beat this pokemon.",
+    'House': 'An app allowing users to search properties for sale within the UK, with options to filter out properties based on travel time to user provided locations.'
+}
+
+const ProjectURLS = {
+    'Pokemon': 'https://pokopponent.herokuapp.com/',
+    'House': 'https://pyproperty.herokuapp.com/'
+}
+
 
 closeDescriptionButton.addEventListener('click', () => {
     currently_selected_exhibit.deselect();
 })
 
 const light = new THREE.DirectionalLight(0xFFFFE0, 0.5);
+const LIGHT_SHADOW_MAP_SIZE = 1028; // 4096 max
 light.castShadow = true;
-light.shadow.mapSize.width = 256; // 4096 max
-light.shadow.mapSize.height = 256;
+light.shadow.mapSize.width = LIGHT_SHADOW_MAP_SIZE;
+light.shadow.mapSize.height = LIGHT_SHADOW_MAP_SIZE;
 light.shadow.camera.near = 0.5;
 light.shadow.camera.far = 1000
 light.shadow.camera.right = 50;
@@ -95,13 +109,13 @@ class Exhibit {
     name: string
     startTarget: THREE.Vector3;
     startPosition: THREE.Vector3;
-    startRotation: THREE.Euler;
+    startRotation: THREE.Quaternion;
 
     constructor(light: THREE.Light, container: THREE.Object3D, projectName: string) {
         this.light = light;
         this.container = container;
         this.name = projectName;
-        this.startRotation = container.rotation;
+        this.startRotation = container.quaternion.clone();
     }
 
     activate() {
@@ -128,13 +142,11 @@ class Exhibit {
     select() {
         this.activate();
 
-        console.log(this);
-
         currently_selected_exhibit = this;
         selected_exhibit_rotation = 0;
 
         // Backup original view settings
-        this.startTarget = controls.target;
+        this.startTarget = controls.target.clone();
         this.startPosition = camera.position.clone();
 
         let endPosition = new THREE.Vector3(this.container.position.x - 2, this.container.position.y + 1, this.container.position.z + 3)
@@ -151,6 +163,9 @@ class Exhibit {
             .start()
 
         projectNameTitle.innerHTML = this.name;
+        const projDescriptionText = this.name in ProjectDescriptions ? ProjectDescriptions[this.name] : 'Cannot find project description.'
+        projectDescription.innerHTML = projDescriptionText
+        viewProjectButton.onclick = () => { window.open(ProjectURLS[this.name]) }
         projectDescriptionContainer.classList.remove('hidden');
 
         viewing_exhibit = true;
@@ -182,12 +197,12 @@ class Exhibit {
  */
 
         //this.container.rotateY(currently_selected_exhibit.container.rotation.y - currently_selected_exhibit.startRotation.y)
-        new TWEEN.Tween(this.container.rotation)
-            //   .to({ 'y': })
+        new TWEEN.Tween(this.container.quaternion)
+            .to(this.startRotation, zoom_in_out_time)
             .easing(easing_method)
             .start();
 
-        this.container.rotateY(-selected_exhibit_rotation);
+        //this.container.rotateY(-selected_exhibit_rotation);
 
         currently_selected_exhibit = null;
         viewing_exhibit = false;
@@ -216,8 +231,10 @@ function add_house() {
                     });
 
                     // Add a light
-                    let light = new THREE.SpotLight(0xFFFF99, 0, 0, Math.PI / 12, 0.5);
-                    light.position.set(node.position.x, 10 + node.position.y, node.position.z)
+                    let light = new THREE.SpotLight(0xFFFF99, 0, 0, Math.PI / 24, 0.5);
+                    light.position.set(node.position.x, 20 + node.position.y, node.position.z)
+                    light.shadow.mapSize.width = LIGHT_SHADOW_MAP_SIZE / 4;
+                    light.shadow.mapSize.height = LIGHT_SHADOW_MAP_SIZE / 4;
                     light.target = node;
                     light.castShadow = true;
                     scene.add(light)
@@ -312,6 +329,7 @@ if (window.PointerEvent) {
 
 function onClick(event: MouseEvent) {
     if (viewing_exhibit) return;
+    if (!controls.enabled) return;
 
     const intersects = getMouseTarget(event);
 

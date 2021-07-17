@@ -1,35 +1,56 @@
 body{
     margin: 0;
     overflow: hidden;
+    font-family: "Sharp Sans", sans-serif;
+}
+
+#controlsDiv{
+    margin: auto 0px ;
 }
 
 .hidden{
-    display: none;
-}
-
-#projectNameTitle{
-    text-align: center;
+    display: none !important;
 }
 
 #projectDescriptionContainer{
+    margin: auto;
     position: absolute;
-    left: 10%;
-    top: 100px;
-    height: 80%;
-    width: 40%;
+    top: 0; left: 0; bottom: 0; right: 0;
     border-radius: 10px;
-    background: #dac7c780;
+    /*background: #dac7c780;*/
+    padding: 20px;
+    display: flex;
 }
 
-#closeDescriptionButton{
-    width: 30px;
-    height: 30px;
-    position: relative;
-    top: 10px;
-    left: 10px;
-    border-radius: 50%;
+#projectNameTitle{
+    font-size: 3rem;
+}
+
+#projectDescription{
+    margin-left: 20px;
+}
+
+#detailsContainer{
+    max-width: 600px;
+    margin: auto 20px;
 }
 
 .btn:hover{
     background-color: lightgray;
+}
+
+.btn-control{
+    background-color: rgba(255,255,255,0.4);
+    border: none;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+}
+
+#viewProjectButton{
+    width: 200px;
+    height: 50px;
+    margin: 20px auto;
+    display: block;
+    border-radius: 10px;
 }
