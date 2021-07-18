@@ -36,13 +36,13 @@ const projectDescription: HTMLElement = document.getElementById('projectDescript
 const viewProjectButton: HTMLElement = document.getElementById('viewProjectButton');
 
 const ProjectDescriptions = {
-    'Pokemon': "A utility for the game Pokemon. Type in the opponent pokemon's name and see what you should pick to beat this pokemon.",
-    'House': 'An app allowing users to search properties for sale within the UK, with options to filter out properties based on travel time to user provided locations.'
+    'Pokopponent': "A utility for the game Pokemon. Type in the opponent pokemon's name and see what you should pick to beat this pokemon.",
+    'PyProperty': 'An app allowing users to search properties for sale within the UK, with options to filter out properties based on travel time to user provided locations.'
 }
 
 const ProjectURLS = {
-    'Pokemon': 'https://pokopponent.herokuapp.com/',
-    'House': 'https://pyproperty.herokuapp.com/'
+    'Pokopponent': 'https://pokopponent.herokuapp.com/',
+    'PyProperty': 'https://pyproperty.herokuapp.com/'
 }
 
 
@@ -142,18 +142,19 @@ class Exhibit {
     select() {
         this.activate();
 
-        currently_selected_exhibit = this;
-        selected_exhibit_rotation = 0;
-
         // Backup original view settings
         this.startTarget = controls.target.clone();
         this.startPosition = camera.position.clone();
 
-        let endPosition = new THREE.Vector3(this.container.position.x - 2, this.container.position.y + 1, this.container.position.z + 3)
+        let endPosition = new THREE.Vector3(this.container.position.x - 1, this.container.position.y, this.container.position.z + 3)
         new TWEEN.Tween(camera.position)
             .to({ x: endPosition.x, y: endPosition.y, z: endPosition.z }, zoom_in_out_time)
             .easing(easing_method)
-            .start();
+            .start()
+            .onComplete(() => {
+                currently_selected_exhibit = this;
+                selected_exhibit_rotation = 0;
+            });;
 
 
         // Tween
