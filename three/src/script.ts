@@ -243,7 +243,8 @@ function add_house() {
                     const lightHelper = new THREE.SpotLightHelper(light)
                     //scene.add(lightHelper)
 
-                    const projectName: string = node.name.replace('Container', '')
+                    let projectName: string = node.name.replace('Container', '')
+                    projectName = projectName.replace('_', ' ');
 
                     // Store a reference to the spot light
                     const exhibit = new Exhibit(light, node, projectName)
