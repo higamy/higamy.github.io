@@ -37,12 +37,14 @@ const viewProjectButton: HTMLElement = document.getElementById('viewProjectButto
 
 const ProjectDescriptions = {
     'Pokopponent': "A utility for the game Pokemon. Type in the opponent pokemon's name and see what you should pick to beat this pokemon.",
-    'PyProperty': 'An app allowing users to search properties for sale within the UK, with options to filter out properties based on travel time to user provided locations.'
+    'PyProperty': 'An app allowing users to search properties for sale within the UK, with options to filter out properties based on travel time to user provided locations.',
+    'AI Racer': 'A car racing game with opponent AI trained using deep reinforcement learning.'
 }
 
 const ProjectURLS = {
     'Pokopponent': 'https://pokopponent.herokuapp.com/',
-    'PyProperty': 'https://pyproperty.herokuapp.com/'
+    'PyProperty': 'https://pyproperty.herokuapp.com/',
+    'AI Racer': 'https://simmer.io/@higamy/ai-racer'
 }
 
 
