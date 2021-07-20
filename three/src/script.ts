@@ -47,6 +47,21 @@ const ProjectURLS = {
     'AI Racer': 'https://simmer.io/@higamy/ai-racer'
 }
 
+const ProjectTechnologies = {
+    'Pokopponent': ['Python'],
+    'PyProperty': ['Python'],
+    'AI Racer': ['Unity', 'Blender']
+}
+
+const LOGO_START_SCALE = 0;
+const LOGO_ACTIVATED_SCALE = 0.3;
+
+const LogoOffsets = {
+    1: [0],
+    2: [-0.5, 0.5],
+    3: [-1, 0, 1]
+}
+
 
 closeDescriptionButton.addEventListener('click', () => {
     currently_selected_exhibit.deselect();
@@ -62,9 +77,6 @@ light.shadow.camera.far = 1000
 light.shadow.camera.right = 50;
 light.position.set(10, 10, 10);
 scene.add(light);
-
-const lightHelper = new THREE.DirectionalLightHelper(light)
-//scene.add(lightHelper)
 
 const ambient_light = new THREE.AmbientLight(0x404040, 2); // soft white light
 scene.add(ambient_light);
@@ -93,7 +105,6 @@ controls.touches.TWO = THREE.TOUCH.PAN;
 
 //camera.lookAt(new THREE.Vector3())
 
-const spot_light_helpers = new Array()
 let exhibits = new Array()
 let currently_selected_exhibit: Exhibit;
 let selected_exhibit_rotation: number = 0;
@@ -112,6 +123,7 @@ class Exhibit {
     startTarget: THREE.Vector3;
     startPosition: THREE.Vector3;
     startRotation: THREE.Quaternion;
+    logos: TechLogo[];
 
     constructor(light: THREE.Light, container: THREE.Object3D, projectName: string) {
         this.light = light;
@@ -127,7 +139,7 @@ class Exhibit {
 
             this.current_tween = new TWEEN.Tween(this.light)
                 .to({ intensity: MAX_SPOTLIGHT_INTENSITY }, LIGHT_INTENSITY_CHANGE_TIME)
-                .start()
+                .start();
         }
     }
 
@@ -173,6 +185,10 @@ class Exhibit {
 
         viewing_exhibit = true;
         controls.enabled = false;
+
+        for (let logo of this.logos) {
+            logo.select();
+        }
     }
 
     deselect() {
@@ -209,10 +225,51 @@ class Exhibit {
 
         currently_selected_exhibit = null;
         viewing_exhibit = false;
+
+        for (let logo of this.logos) {
+            logo.deselect();
+        }
+    }
+
+    set_logos(logos: TechLogo[]) {
+        this.logos = logos;
     }
 }
 
-function add_house() {
+class TechLogo {
+    mesh: THREE.Object3D;
+    selected: boolean;
+    x_rotation_speed: number;
+    y_rotation_speed: number;
+    z_rotation_speed: number;
+
+    constructor(mesh: THREE.Object3D) {
+        this.mesh = mesh;
+
+        // Assign a random rotation speed on x, y, z for the logo
+        // This will be activated when this exhibit is selected
+        this.x_rotation_speed = Math.random();
+        this.y_rotation_speed = Math.random();
+        this.z_rotation_speed = Math.random();
+    }
+
+    select() {
+        this.selected = true;
+        new TWEEN.Tween(this.mesh.scale)
+            .to({ x: LOGO_ACTIVATED_SCALE, y: LOGO_ACTIVATED_SCALE, z: LOGO_ACTIVATED_SCALE }, zoom_in_out_time)
+            .start()
+    }
+
+    deselect() {
+        this.selected = true;
+        new TWEEN.Tween(this.mesh.scale)
+            .to({ x: LOGO_START_SCALE, y: LOGO_START_SCALE, z: LOGO_START_SCALE }, zoom_in_out_time)
+            .start()
+    }
+
+}
+
+function add_project_models() {
     new GLTFLoader().load('https://higamy.github.io/models/scene.glb',
         (gltf) => {
             scene.add(gltf.scene);
@@ -227,7 +284,6 @@ function add_house() {
                 }
                 else if (node.name.includes('Container')) {
                     console.log(node.name);
-                    // node.visible = false;
                     (<THREE.Mesh>node).material = new THREE.MeshPhongMaterial({
                         opacity: 0,
                         transparent: true,
@@ -240,10 +296,8 @@ function add_house() {
                     light.shadow.mapSize.height = LIGHT_SHADOW_MAP_SIZE / 4;
                     light.target = node;
                     light.castShadow = true;
-                    scene.add(light)
+                    scene.add(light);
 
-                    const lightHelper = new THREE.SpotLightHelper(light)
-                    //scene.add(lightHelper)
 
                     let projectName: string = node.name.replace('Container', '')
                     projectName = projectName.replace('_', ' ');
@@ -253,23 +307,53 @@ function add_house() {
                     node.userData.exhibit = exhibit;
 
                     exhibits.push(exhibit);
-                    spot_light_helpers.push(lightHelper);
                     containerMeshes.push(<THREE.Mesh>node);
+
+                    // Add the tech stack
+                    let all_logos: TechLogo[] = []
+
+                    for (let [index, tech] of ProjectTechnologies[projectName].entries()) {
+                        console.log(index, projectName, tech)
+                        let logo_mesh: THREE.Mesh = <THREE.Mesh>logos[tech].clone();
+
+                        logo_mesh.position.set(node.position.x + LogoOffsets[ProjectTechnologies[projectName].length][index], node.position.y + 1, node.position.z);
+                        logo_mesh.scale.set(LOGO_START_SCALE, LOGO_START_SCALE, LOGO_START_SCALE);
+
+                        scene.add(logo_mesh);
+
+                        all_logos.push(new TechLogo(logo_mesh))
+                    }
+                    exhibit.set_logos(all_logos);
+
+                    console.log(exhibit);
+
                 }
                 else {
                     node.castShadow = true;
                 }
 
-
-
             });
-
-
-            //gltf.scene.position.set(-5, 0, -5);
-
         })
 }
-add_house()
+
+const logos = {};
+function add_logos() {
+    new GLTFLoader().load('https://higamy.github.io/models/Logos.glb',
+        (gltf) => {
+            //scene.add(gltf.scene);
+
+            gltf.scene.traverse(function (node) {
+                if (node != gltf.scene) {
+                    logos[node.name] = <THREE.Mesh>node;
+                }
+            })
+
+            console.log(logos);
+
+            add_project_models();
+        })
+}
+add_logos();
 
 let mixer: THREE.AnimationMixer
 let modelReady = false;
@@ -353,26 +437,26 @@ function animate() {
 
     //player.position.set(cubeBody.position.x, cubeBody.position.y, cubeBody.position.z);
     //player.quaternion.set(cubeBody.quaternion.x, cubeBody.quaternion.y, cubeBody.quaternion.z, cubeBody.quaternion.w);
-
-    for (let lightHelper of spot_light_helpers) {
-        lightHelper.update();
-    }
     TWEEN.update()
-    // for (let exhibit of exhibits) {
-    //    exhibit.update_intensity(delta)
-    // }
 
     if (currently_selected_exhibit) {
+        // Rotate the exibit
         const rotation_amount = Math.PI * 2 * delta / 20;
         selected_exhibit_rotation = selected_exhibit_rotation + rotation_amount;
         currently_selected_exhibit.container.rotateY(rotation_amount);
+
+        // Rotate the tech logos
+        for (let logo of currently_selected_exhibit.logos) {
+            logo.mesh.rotateX(delta * logo.x_rotation_speed);
+            logo.mesh.rotateY(delta * logo.y_rotation_speed);
+            logo.mesh.rotateZ(delta * logo.z_rotation_speed);
+        }
     }
 
     controls.update();
 
     renderer.render(scene, camera);
     requestAnimationFrame(animate);
-
 }
 animate();
 
