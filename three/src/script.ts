@@ -12,11 +12,13 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 window.addEventListener("contextmenu", e => e.preventDefault());
 
 const scene = new THREE.Scene();
-const background_colour: number = 0x95776d;
-scene.background = new THREE.Color(background_colour);
+//const background_colour: number = 0x00ccff;//0x95776d;
+//scene.background = new THREE.Color(background_colour);
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 
-const renderer = new THREE.WebGLRenderer();
+const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+renderer.autoClear = false;
+renderer.setClearColor(0x000000, 0.0);
 renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.shadowMap.enabled = true
 renderer.shadowMap.type = THREE.PCFSoftShadowMap
@@ -83,7 +85,7 @@ scene.add(ambient_light);
 
 const near = 1;
 const far = 30;
-scene.fog = new THREE.Fog(background_colour, near, far);
+//scene.fog = new THREE.Fog(background_colour, near, far);
 
 const containerMeshes = new Array
 
@@ -251,6 +253,15 @@ class TechLogo {
         this.x_rotation_speed = Math.random();
         this.y_rotation_speed = Math.random();
         this.z_rotation_speed = Math.random();
+
+        // Create the outline
+        //@ts-ignore
+        var outlineGeometry = this.mesh.geometry
+        var outlineMaterial1 = new THREE.MeshBasicMaterial({ color: 0xff0000, side: THREE.BackSide });
+        var outlineMesh = new THREE.Mesh(outlineGeometry, outlineMaterial1);
+        outlineMesh.position.set(this.mesh.position.x, this.mesh.position.y, this.mesh.position.z);
+        outlineMesh.scale.set(LOGO_ACTIVATED_SCALE * 1.05, LOGO_ACTIVATED_SCALE * 1.05, LOGO_ACTIVATED_SCALE * 1.05);
+        //scene.add(outlineMesh);
     }
 
     select() {
@@ -275,6 +286,7 @@ function add_project_models() {
             scene.add(gltf.scene);
 
             gltf.scene.traverse(function (node) {
+
                 if ((<THREE.Mesh>node).isMesh) {
                     node.frustumCulled = false;
                 }
