@@ -295,9 +295,14 @@ function add_project_models() {
                     node.receiveShadow = true;
                 }
 
-                console.log(node.name);
-                if (node.name == 'Camera') {
+                if (node.name.includes('Camera')) {
+                    console.log(node.parent.name)
                     console.log("Camera!")
+                    const geometry = new THREE.SphereGeometry(1, 8, 8);
+                    const material = new THREE.MeshBasicMaterial({ color: 0xffff00 });
+                    const sphere = new THREE.Mesh(geometry, material);
+                    node.getWorldPosition(sphere.position);
+                    scene.add(sphere);
                 }
 
                 else if (node.name.includes('Container')) {
