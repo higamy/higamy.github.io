@@ -294,6 +294,12 @@ function add_project_models() {
                 if (node.name == 'Ground') {
                     node.receiveShadow = true;
                 }
+
+                console.log(node.name);
+                if (node.name == 'Camera') {
+                    console.log("Camera!")
+                }
+
                 else if (node.name.includes('Container')) {
                     console.log(node.name);
                     (<THREE.Mesh>node).material = new THREE.MeshPhongMaterial({

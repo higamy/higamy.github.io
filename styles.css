@@ -1,9 +1,9 @@
 
 html{
     background: #11e8bb; /* Old browsers */
-    background: -moz-linear-gradient(top,  #11e8bb 0%, #8200c9 100%); /* FF3.6-15 */
-    background: -webkit-linear-gradient(top,  #11e8bb 0%,#8200c9 100%); /* Chrome10-25,Safari5.1-6 */
-    background: linear-gradient(to bottom,  #11e8bb 0%,#8200c9 100%); 
+    background: -moz-linear-gradient(top,  #91ecf8 0%, #2eb8ee 100%); /* FF3.6-15 */
+    background: -webkit-linear-gradient(top,  #91ecf8 0%, #2eb8ee  100%); /* Chrome10-25,Safari5.1-6 */
+    background: linear-gradient(to bottom,  #91ecf8 0%, #2eb8ee  100%); 
 }
 
 body{
