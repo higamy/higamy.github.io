@@ -76,9 +76,9 @@ body{
 }
 
 #viewProjectButton{
-    width: 200px;
-    height: 50px;
     margin: 20px auto;
     display: block;
     border-radius: 10px;
+    font-size: 2rem;
+    padding: 10px 20px;
 }

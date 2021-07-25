@@ -37,6 +37,13 @@ controls.enableRotate = true;
 controls.enableZoom = true;
 controls.enablePan = false;
 controls.enabled = false;
+controls.minDistance = 2;
+controls.maxDistance = 10;
+controls.rotateSpeed = 0.4;
+//controls.minAzimuthAngle = -Math.PI / 2;
+//controls.maxAzimuthAngle = Math.PI / 2;
+controls.minPolarAngle = Math.PI / 4;
+controls.maxPolarAngle = 3 * Math.PI / 4;
 
 /*
 controls.mouseButtons = {
@@ -502,7 +509,7 @@ function animate() {
     let delta = clock.getDelta()
     if (modelReady) mixer.update(delta);
 
-    TWEEN.update()
+
 
     if (currently_selected_exhibit) {
         // Rotate the exibit
@@ -518,10 +525,17 @@ function animate() {
         }
     }
 
+    render();
     requestAnimationFrame(animate);
-    renderer.render(scene, camera);
+
     controls.update();
 
 }
+
+function render() {
+    renderer.render(scene, camera);
+    TWEEN.update()
+}
+
 animate();
 
