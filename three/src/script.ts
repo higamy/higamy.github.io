@@ -8,6 +8,12 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
 import { TWEEN } from 'three/examples/jsm/libs/tween.module.min'
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 
+
+// Custom modulo function
+function mod(n, m) {
+    return ((n % m) + m) % m;
+}
+
 // Disable the right click menu
 window.addEventListener("contextmenu", e => e.preventDefault());
 
@@ -25,15 +31,29 @@ renderer.shadowMap.type = THREE.PCFSoftShadowMap
 
 document.body.appendChild(renderer.domElement);
 
-camera.position.x = 3;
-camera.position.y = 6;
-camera.position.z = 6;
+const controls = new OrbitControls(camera, document.documentElement);
+controls.enableDamping = true;
+controls.enableRotate = true;
+controls.enableZoom = true;
+controls.enablePan = false;
+controls.enabled = false;
+
+/*
+controls.mouseButtons = {
+    LEFT: THREE.MOUSE.PAN,
+    MIDDLE: THREE.MOUSE.PAN,
+    RIGHT: THREE.MOUSE.PAN
+}
+
+// Mobile settings
+controls.touches.ONE = THREE.TOUCH.PAN;
+controls.touches.TWO = THREE.TOUCH.PAN;
+*/
 
 let viewing_exhibit: boolean = false;
 
 const projectNameTitle: HTMLElement = document.getElementById('projectNameTitle');
 const projectDescriptionContainer: HTMLElement = document.getElementById('projectDescriptionContainer');
-const closeDescriptionButton: HTMLElement = document.getElementById('closeDescriptionButton');
 const projectDescription: HTMLElement = document.getElementById('projectDescription');
 const viewProjectButton: HTMLElement = document.getElementById('viewProjectButton');
 
@@ -55,6 +75,8 @@ const ProjectTechnologies = {
     'AI Racer': ['Unity', 'Blender']
 }
 
+let cameraPositions = {}
+
 const LOGO_START_SCALE = 0;
 const LOGO_ACTIVATED_SCALE = 0.3;
 
@@ -63,11 +85,6 @@ const LogoOffsets = {
     2: [-0.5, 0.5],
     3: [-1, 0, 1]
 }
-
-
-closeDescriptionButton.addEventListener('click', () => {
-    currently_selected_exhibit.deselect();
-})
 
 const light = new THREE.DirectionalLight(0xFFFFE0, 0.5);
 const LIGHT_SHADOW_MAP_SIZE = 1028; // 4096 max
@@ -85,29 +102,16 @@ scene.add(ambient_light);
 
 const near = 1;
 const far = 30;
-//scene.fog = new THREE.Fog(background_colour, near, far);
+const background_colour: number = 0x00ccff;//0x95776d;
+scene.fog = new THREE.Fog(background_colour, near, far);
 
 const containerMeshes = new Array
 
-const controls = new OrbitControls(camera, renderer.domElement);
-controls.enableDamping = true;
-controls.enableRotate = false;
-controls.enableZoom = false;
-controls.screenSpacePanning = false;
-
-controls.mouseButtons = {
-    LEFT: THREE.MOUSE.PAN,
-    MIDDLE: THREE.MOUSE.PAN,
-    RIGHT: THREE.MOUSE.PAN
-}
-
-// Mobile settings
-controls.touches.ONE = THREE.TOUCH.PAN;
-controls.touches.TWO = THREE.TOUCH.PAN;
 
 //camera.lookAt(new THREE.Vector3())
 
-let exhibits = new Array()
+let exhibits: Exhibit[] = new Array();
+let currently_selected_exhibit_number = 0;
 let currently_selected_exhibit: Exhibit;
 let selected_exhibit_rotation: number = 0;
 const easing_method = TWEEN.Easing.Quadratic.InOut
@@ -156,13 +160,16 @@ class Exhibit {
     }
 
     select() {
+        controls.enabled = false;
         this.activate();
 
         // Backup original view settings
         this.startTarget = controls.target.clone();
         this.startPosition = camera.position.clone();
 
-        let endPosition = new THREE.Vector3(this.container.position.x - 1, this.container.position.y, this.container.position.z + 3)
+        let endPosition = cameraPositions[this.name];
+        console.log(cameraPositions);
+        console.log(this.name);
         new TWEEN.Tween(camera.position)
             .to({ x: endPosition.x, y: endPosition.y, z: endPosition.z }, zoom_in_out_time)
             .easing(easing_method)
@@ -175,18 +182,21 @@ class Exhibit {
 
         // Tween
         new TWEEN.Tween(controls.target)
-            .to({ x: endPosition.x, y: endPosition.y, z: endPosition.z - 1 }, zoom_in_out_time)
+            .to({ x: this.container.position.x, y: this.container.position.y, z: this.container.position.z }, zoom_in_out_time)
             .easing(easing_method)
             .start()
+            .onComplete(() => {
+                controls.enabled = true;
+            });
 
         projectNameTitle.innerHTML = this.name;
-        const projDescriptionText = this.name in ProjectDescriptions ? ProjectDescriptions[this.name] : 'Cannot find project description.'
-        projectDescription.innerHTML = projDescriptionText
-        viewProjectButton.onclick = () => { window.open(ProjectURLS[this.name]) }
+        const projDescriptionText = this.name in ProjectDescriptions ? ProjectDescriptions[this.name] : 'Cannot find project description.';
+        projectDescription.innerHTML = projDescriptionText;
+        viewProjectButton.onclick = () => { window.open(ProjectURLS[this.name]) };
         projectDescriptionContainer.classList.remove('hidden');
 
         viewing_exhibit = true;
-        controls.enabled = false;
+        //controls.enabled = false;
 
         for (let logo of this.logos) {
             logo.select();
@@ -197,20 +207,21 @@ class Exhibit {
         this.deactivate();
 
         projectDescriptionContainer.classList.add('hidden');
-
-        new TWEEN.Tween(camera.position)
-            .to(this.startPosition, zoom_in_out_time)
-            .easing(easing_method)
-            .start()
-            .onComplete(() => {
-                controls.enabled = true;
-            });
-
-        new TWEEN.Tween(controls.target)
-            .to(this.startTarget, zoom_in_out_time)
-            .easing(easing_method)
-            .start();
-
+        /*
+                new TWEEN.Tween(camera.position)
+                    .to(this.startPosition, zoom_in_out_time)
+                    .easing(easing_method)
+                    .start()
+                    .onComplete(() => {
+                        controls.enabled = true;
+                    });
+                    */
+        /*
+                new TWEEN.Tween(controls.target)
+                    .to(this.startTarget, zoom_in_out_time)
+                    .easing(easing_method)
+                    .start();
+        */
         /* new TWEEN.Tween(this.container.rotation)
              .to(this.startRotation, zoom_in_out_time)
              .easing(TWEEN.Easing.Quadratic.Out)
@@ -280,6 +291,13 @@ class TechLogo {
 
 }
 
+function getProjectName(inputName: string) {
+    inputName = inputName.replace('Container', '');
+    inputName = inputName.replace('_', ' ');
+
+    return inputName
+}
+
 function add_project_models() {
     new GLTFLoader().load('https://higamy.github.io/models/scene.glb',
         (gltf) => {
@@ -296,13 +314,11 @@ function add_project_models() {
                 }
 
                 if (node.name.includes('Camera')) {
-                    console.log(node.parent.name)
-                    console.log("Camera!")
-                    const geometry = new THREE.SphereGeometry(1, 8, 8);
-                    const material = new THREE.MeshBasicMaterial({ color: 0xffff00 });
-                    const sphere = new THREE.Mesh(geometry, material);
-                    node.getWorldPosition(sphere.position);
-                    scene.add(sphere);
+                    let camPos = new THREE.Vector3();
+                    node.getWorldPosition(camPos);
+                    //camPos = camera.worldToLocal(camPos);
+                    const projectName = getProjectName(node.parent.name);
+                    cameraPositions[projectName] = camPos;
                 }
 
                 else if (node.name.includes('Container')) {
@@ -322,8 +338,7 @@ function add_project_models() {
                     scene.add(light);
 
 
-                    let projectName: string = node.name.replace('Container', '')
-                    projectName = projectName.replace('_', ' ');
+                    let projectName: string = getProjectName(node.name);
 
                     // Store a reference to the spot light
                     const exhibit = new Exhibit(light, node, projectName)
@@ -356,6 +371,8 @@ function add_project_models() {
                 }
 
             });
+
+            exhibits[currently_selected_exhibit_number].select();
         })
 }
 
@@ -374,9 +391,29 @@ function add_logos() {
             console.log(logos);
 
             add_project_models();
+
+
         })
 }
 add_logos();
+
+// Buttons to change to the next animation
+const previousProject: HTMLElement = document.getElementById('previousProject');
+const nextProject: HTMLElement = document.getElementById('nextProject');
+
+previousProject.addEventListener('click', () => {
+    exhibits[currently_selected_exhibit_number].deselect();
+    currently_selected_exhibit_number = currently_selected_exhibit_number - 1;
+    currently_selected_exhibit_number = mod(currently_selected_exhibit_number, exhibits.length);
+    exhibits[currently_selected_exhibit_number].select();
+})
+
+nextProject.addEventListener('click', () => {
+    exhibits[currently_selected_exhibit_number].deselect();
+    currently_selected_exhibit_number = currently_selected_exhibit_number + 1;
+    currently_selected_exhibit_number = mod(currently_selected_exhibit_number, exhibits.length);
+    exhibits[currently_selected_exhibit_number].select();
+})
 
 let mixer: THREE.AnimationMixer
 let modelReady = false;
@@ -393,7 +430,7 @@ function onWindowResize() {
 }
 
 // HOVER
-
+/*
 function getMouseTarget(event: MouseEvent) {
     const mouse = {
         x: (event.clientX / renderer.domElement.clientWidth) * 2 - 1,
@@ -404,17 +441,20 @@ function getMouseTarget(event: MouseEvent) {
 
     return raycaster.intersectObjects(containerMeshes, false);
 }
+*/
 
-
+/*
 if (window.PointerEvent) {
     renderer.domElement.addEventListener('pointermove', onMouseMove, false);
 } else {
     renderer.domElement.addEventListener('mousemove', onMouseMove, false);
 }
+*/
 
+/*
 const raycaster = new THREE.Raycaster();
 function onMouseMove(event: MouseEvent) {
-    if (viewing_exhibit) return;
+    //if (viewing_exhibit) return;
 
     const intersects = getMouseTarget(event)
 
@@ -430,17 +470,20 @@ function onMouseMove(event: MouseEvent) {
         exhibit.activate()
     }
 }
+*/
 
 // CLICK
+/*
 if (window.PointerEvent) {
     renderer.domElement.addEventListener('pointerdown', onClick, false);
 } else {
     renderer.domElement.addEventListener('mousedown', onClick, false);
 }
-
+*/
+/*
 function onClick(event: MouseEvent) {
-    if (viewing_exhibit) return;
-    if (!controls.enabled) return;
+    //if (viewing_exhibit) return;
+    //if (!controls.enabled) return;
 
     const intersects = getMouseTarget(event);
 
@@ -449,6 +492,7 @@ function onClick(event: MouseEvent) {
         exhibit.select()
     }
 }
+*/
 
 const clock: THREE.Clock = new THREE.Clock()
 
@@ -458,8 +502,6 @@ function animate() {
     let delta = clock.getDelta()
     if (modelReady) mixer.update(delta);
 
-    //player.position.set(cubeBody.position.x, cubeBody.position.y, cubeBody.position.z);
-    //player.quaternion.set(cubeBody.quaternion.x, cubeBody.quaternion.y, cubeBody.quaternion.z, cubeBody.quaternion.w);
     TWEEN.update()
 
     if (currently_selected_exhibit) {
@@ -476,10 +518,10 @@ function animate() {
         }
     }
 
+    requestAnimationFrame(animate);
+    renderer.render(scene, camera);
     controls.update();
 
-    renderer.render(scene, camera);
-    requestAnimationFrame(animate);
 }
 animate();
 

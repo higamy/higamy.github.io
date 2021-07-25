@@ -5,24 +5,30 @@
     <meta charset="utf-8">
     <title>Will's portfolio</title>
     <link rel="stylesheet" href="styles.css">
-    <!-- 
-       <link rel="shortcut icon" type="image/png" href="https://higamy.github.io/img/favicon.png">
-   -->
     <link rel="shortcut icon" type="image/x-icon" href="https://higamy.github.io/favicon.ico">
-    <section id="projectDescriptionContainer" class="hidden">
-        <div id="controlsDiv">
-            <button id='closeDescriptionButton' class="btn btn-control">&#10006</button>
-        </div>
-        <div id="detailsContainer">
-            <h2 id="projectNameTitle">Project Name</h2>
-            <div id="projectDescription"></div>
-            <button id="viewProjectButton" class="btn">View Project</button>
-        </div>
-    </section>
 
 </head>
 
 <body>
+
+    <main>
+
+        <section id="projectDescriptionContainer" class="hidden">
+            <div id="detailsContainer">
+                <h2 id="projectNameTitle">Project Name</h2>
+                <div id="projectDescription"></div>
+                <button id="viewProjectButton" class="btn">View Project</button>
+            </div>
+        </section>
+
+        <div id="controlsContainerOuter">
+            <div id="controlsContainerInner">
+                <button class="btn btn-control" id="previousProject">&#x2190</button>
+                <button class="btn btn-control" id="nextProject">&#x2192</button>
+            </div>
+        </div>
+
+    </main>
     <script src="three/dist/bundle.js"></script>
     <!--
             <div>

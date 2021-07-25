@@ -20,6 +20,18 @@ body{
     display: none !important;
 }
 
+#controlsContainerOuter{
+    margin: auto;
+    position: absolute;
+    left: 50%;
+    bottom: 50px;
+}
+
+#controlsContainerInner{
+    position: relative;
+    left: -50%;
+}
+
 #projectDescriptionContainer{
     margin: auto;
     position: absolute;
@@ -50,6 +62,8 @@ body{
     border: none;
 }
 
+
+
 .btn:hover{
     background-color: lightgray;
 }
@@ -58,6 +72,7 @@ body{
     width: 60px;
     height: 60px;
     border-radius: 50%;
+    text-align: center;
 }
 
 #viewProjectButton{
