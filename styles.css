@@ -110,3 +110,20 @@ body{
     font-size: 2rem;
     padding: 10px 20px;
 }
+
+/* Technology details section */
+#techDetailsContainer{
+    margin: auto;
+    position: absolute;
+    top: 20%;
+    left: 50%;
+}
+
+#techTitle, #techDescription{
+    position: relative;
+    left: -50%;
+}
+
+#techDescription{
+    white-space: pre-line;
+}

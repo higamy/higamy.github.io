@@ -11,6 +11,7 @@ Loading screen
 Hover on tech shows what it was used for this project
 Add animations and stop rotation
 Better models
+Toast popup when opening project, to warn it may take some time.
 
 */
 
@@ -74,6 +75,11 @@ const projectDescriptionContainer: HTMLElement = document.getElementById('projec
 const projectDescription: HTMLElement = document.getElementById('projectDescription');
 const viewProjectButton: HTMLElement = document.getElementById('viewProjectButton');
 
+const techDetailsContainer: HTMLElement = document.getElementById('techDetailsContainer');
+const techTitle: HTMLElement = document.getElementById('techTitle');
+const techDescription: HTMLElement = document.getElementById('techDescription');
+
+
 const ProjectDescriptions = {
     'Pokopponent': "A utility for the game Pokemon. Type in the opponent pokemon's name and see what you should pick to beat this pokemon.",
     'PyProperty': 'An app allowing users to search properties for sale within the UK, with options to filter out properties based on travel time to user provided locations.',
@@ -93,8 +99,8 @@ const ProjectTechnologies = {
 }
 
 const ProjectTechnologiesFull = {
-    'Pokopponent': { 'Python': 'Some description' },
-    'PyProperty': { 'Python': 'Some other description' },
+    'Pokopponent': { 'Python': 'A Flask app, using fuzzywuzzy to make partial matches from the user inputs.\nStyling using Bootstrap.' },
+    'PyProperty': { 'Python': 'Zoopla and Google Maps APIs called using requests.\nMongo DB used to cache Google Maps journey times to prevent excessive usage.' },
     'AI Racer': {
         'Blender': 'Making models',
         'Unity': 'GameEngine'
@@ -373,10 +379,6 @@ function add_project_models() {
                     }
                     exhibit.set_logos(logos_this_project);
 
-                    console.log(all_logos);
-
-                    console.log(exhibit);
-
                 }
                 else {
                     node.castShadow = true;
@@ -399,8 +401,6 @@ function add_logos() {
                     logos[node.name] = <THREE.Mesh>node;
                 }
             })
-            console.log(logos);
-
             add_project_models();
         })
 }
@@ -469,7 +469,12 @@ function onMouseMove(event: MouseEvent) {
     const intersects = getMouseTarget(event);
 
     if (intersects.length > 0) {
-        console.log(intersects[0].object.userData)
+        techDetailsContainer.classList.remove('hidden');
+        techTitle.innerHTML = intersects[0].object.userData.name;
+        techDescription.innerHTML = intersects[0].object.userData.Description;
+    }
+    else {
+        techDetailsContainer.classList.add('hidden');
     }
 }
 
