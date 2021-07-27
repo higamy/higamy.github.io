@@ -94,16 +94,19 @@ const ProjectURLS = {
 
 const ProjectTechnologies = {
     'Pokopponent': ['Python'],
-    'PyProperty': ['Python'],
+    'PyProperty': ['Python', 'Mongo DB'],
     'AI Racer': ['Unity', 'Blender']
 }
 
 const ProjectTechnologiesFull = {
     'Pokopponent': { 'Python': 'A Flask app, using fuzzywuzzy to make partial matches from the user inputs.\nStyling using Bootstrap.' },
-    'PyProperty': { 'Python': 'Zoopla and Google Maps APIs called using requests.\nMongo DB used to cache Google Maps journey times to prevent excessive usage.' },
+    'PyProperty': {
+        'Python': 'Zoopla and Google Maps APIs called using requests.',
+        'Mongo DB': 'Caching of Google Maps journey times to prevent excessive API usage.\nIf a similar journey to the requested journey exists in the cache it will be loaded.'
+    },
     'AI Racer': {
-        'Blender': 'Making models',
-        'Unity': 'GameEngine'
+        'Blender': 'I created all the models of the cars, tracks etc in Blender.',
+        'Unity': 'This was the GameEngine used, coded in C#.\nReinforcement learning was conducted using Unity ML Agents.'
     }
 }
 
