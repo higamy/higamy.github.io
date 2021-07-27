@@ -92,22 +92,21 @@ const ProjectURLS = {
     'AI Racer': 'https://simmer.io/@higamy/ai-racer'
 }
 
-const ProjectTechnologies = {
-    'Pokopponent': ['Python'],
-    'PyProperty': ['Python', 'Mongo DB'],
-    'AI Racer': ['Unity', 'Blender']
-}
-
 const ProjectTechnologiesFull = {
     'Pokopponent': { 'Python': 'A Flask app, using fuzzywuzzy to make partial matches from the user inputs.\nStyling using Bootstrap.' },
     'PyProperty': {
         'Python': 'Zoopla and Google Maps APIs called using requests.',
-        'Mongo DB': 'Caching of Google Maps journey times to prevent excessive API usage.\nIf a similar journey to the requested journey exists in the cache it will be loaded.'
+        'MongoDB': 'Caching of Google Maps journey times to prevent excessive API usage.\nIf a similar journey to the requested journey exists in the cache it will be loaded.'
     },
     'AI Racer': {
         'Blender': 'I created all the models of the cars, tracks etc in Blender.',
         'Unity': 'This was the GameEngine used, coded in C#.\nReinforcement learning was conducted using Unity ML Agents.'
     }
+}
+
+let ProjectTechnologies = {}
+for (let tech of Object.keys(ProjectTechnologiesFull)) {
+    ProjectTechnologies[tech] = Object.keys(ProjectTechnologiesFull[tech]);
 }
 
 let cameraPositions = {}
