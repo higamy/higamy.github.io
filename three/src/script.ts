@@ -3,6 +3,17 @@
 // tsc three/src/script.ts -w
 // npx webpack --config ./three/src/webpack.config.js
 
+
+/*
+TODO:
+
+Loading screen
+Hover on tech shows what it was used for this project
+Add animations and stop rotation
+Better models
+
+*/
+
 import * as THREE from 'three'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
 import { TWEEN } from 'three/examples/jsm/libs/tween.module.min'
@@ -57,7 +68,6 @@ controls.touches.ONE = THREE.TOUCH.PAN;
 controls.touches.TWO = THREE.TOUCH.PAN;
 */
 
-let viewing_exhibit: boolean = false;
 
 const projectNameTitle: HTMLElement = document.getElementById('projectNameTitle');
 const projectDescriptionContainer: HTMLElement = document.getElementById('projectDescriptionContainer');
@@ -80,6 +90,15 @@ const ProjectTechnologies = {
     'Pokopponent': ['Python'],
     'PyProperty': ['Python'],
     'AI Racer': ['Unity', 'Blender']
+}
+
+const ProjectTechnologiesFull = {
+    'Pokopponent': { 'Python': 'Some description' },
+    'PyProperty': { 'Python': 'Some other description' },
+    'AI Racer': {
+        'Blender': 'Making models',
+        'Unity': 'GameEngine'
+    }
 }
 
 let cameraPositions = {}
@@ -126,6 +145,7 @@ const easing_method = TWEEN.Easing.Quadratic.InOut
 const MAX_SPOTLIGHT_INTENSITY = 0.5;
 const LIGHT_INTENSITY_CHANGE_TIME = 250;
 const zoom_in_out_time = 2000;
+document.documentElement.style.setProperty('--switch-project-transition-time', zoom_in_out_time + "ms");
 
 class Exhibit {
     light: THREE.Light
@@ -196,14 +216,15 @@ class Exhibit {
                 controls.enabled = true;
             });
 
-        projectNameTitle.innerHTML = this.name;
-        const projDescriptionText = this.name in ProjectDescriptions ? ProjectDescriptions[this.name] : 'Cannot find project description.';
-        projectDescription.innerHTML = projDescriptionText;
+        const setDescriptionText = function () {
+            projectNameTitle.innerHTML = this.name;
+            const projDescriptionText = this.name in ProjectDescriptions ? ProjectDescriptions[this.name] : 'Cannot find project description.';
+            projectDescription.innerHTML = projDescriptionText;
+        }.bind(this);
+        setTimeout(setDescriptionText, zoom_in_out_time / 2);
+
         viewProjectButton.onclick = () => { window.open(ProjectURLS[this.name]) };
         projectDescriptionContainer.classList.remove('hidden');
-
-        viewing_exhibit = true;
-        //controls.enabled = false;
 
         for (let logo of this.logos) {
             logo.select();
@@ -214,37 +235,12 @@ class Exhibit {
         this.deactivate();
 
         projectDescriptionContainer.classList.add('hidden');
-        /*
-                new TWEEN.Tween(camera.position)
-                    .to(this.startPosition, zoom_in_out_time)
-                    .easing(easing_method)
-                    .start()
-                    .onComplete(() => {
-                        controls.enabled = true;
-                    });
-                    */
-        /*
-                new TWEEN.Tween(controls.target)
-                    .to(this.startTarget, zoom_in_out_time)
-                    .easing(easing_method)
-                    .start();
-        */
-        /* new TWEEN.Tween(this.container.rotation)
-             .to(this.startRotation, zoom_in_out_time)
-             .easing(TWEEN.Easing.Quadratic.Out)
-             .start();
- */
-
-        //this.container.rotateY(currently_selected_exhibit.container.rotation.y - currently_selected_exhibit.startRotation.y)
         new TWEEN.Tween(this.container.quaternion)
             .to(this.startRotation, zoom_in_out_time)
             .easing(easing_method)
             .start();
 
-        //this.container.rotateY(-selected_exhibit_rotation);
-
         currently_selected_exhibit = null;
-        viewing_exhibit = false;
 
         for (let logo of this.logos) {
             logo.deselect();
@@ -305,6 +301,9 @@ function getProjectName(inputName: string) {
     return inputName
 }
 
+// Add the tech stack
+let all_logos: TechLogo[] = []
+
 function add_project_models() {
     new GLTFLoader().load('https://higamy.github.io/models/scene.glb',
         (gltf) => {
@@ -347,6 +346,7 @@ function add_project_models() {
 
                     let projectName: string = getProjectName(node.name);
 
+
                     // Store a reference to the spot light
                     const exhibit = new Exhibit(light, node, projectName)
                     node.userData.exhibit = exhibit;
@@ -354,8 +354,7 @@ function add_project_models() {
                     exhibits.push(exhibit);
                     containerMeshes.push(<THREE.Mesh>node);
 
-                    // Add the tech stack
-                    let all_logos: TechLogo[] = []
+                    let logos_this_project: TechLogo[] = []
 
                     for (let [index, tech] of ProjectTechnologies[projectName].entries()) {
                         console.log(index, projectName, tech)
@@ -366,9 +365,15 @@ function add_project_models() {
 
                         scene.add(logo_mesh);
 
-                        all_logos.push(new TechLogo(logo_mesh))
+                        logo_mesh.userData['Description'] = ProjectTechnologiesFull[projectName][tech];
+
+                        const tl: TechLogo = new TechLogo(logo_mesh);
+                        all_logos.push(tl);
+                        logos_this_project.push(tl);
                     }
-                    exhibit.set_logos(all_logos);
+                    exhibit.set_logos(logos_this_project);
+
+                    console.log(all_logos);
 
                     console.log(exhibit);
 
@@ -394,12 +399,9 @@ function add_logos() {
                     logos[node.name] = <THREE.Mesh>node;
                 }
             })
-
             console.log(logos);
 
             add_project_models();
-
-
         })
 }
 add_logos();
@@ -408,19 +410,20 @@ add_logos();
 const previousProject: HTMLElement = document.getElementById('previousProject');
 const nextProject: HTMLElement = document.getElementById('nextProject');
 
-previousProject.addEventListener('click', () => {
+function switchProject(value_change: number = 1) {
     exhibits[currently_selected_exhibit_number].deselect();
-    currently_selected_exhibit_number = currently_selected_exhibit_number - 1;
+    currently_selected_exhibit_number = currently_selected_exhibit_number + value_change;
     currently_selected_exhibit_number = mod(currently_selected_exhibit_number, exhibits.length);
     exhibits[currently_selected_exhibit_number].select();
-})
 
-nextProject.addEventListener('click', () => {
-    exhibits[currently_selected_exhibit_number].deselect();
-    currently_selected_exhibit_number = currently_selected_exhibit_number + 1;
-    currently_selected_exhibit_number = mod(currently_selected_exhibit_number, exhibits.length);
-    exhibits[currently_selected_exhibit_number].select();
-})
+    projectDescriptionContainer.classList.remove('fading');
+    void projectDescriptionContainer.offsetWidth; // Bit of a hack that adds a tiny delay between changing classes so that the animation fires
+    projectDescriptionContainer.classList.add('fading');
+}
+previousProject.addEventListener('click', () => { switchProject(-1) })
+nextProject.addEventListener('click', () => { switchProject(1) })
+
+
 
 let mixer: THREE.AnimationMixer
 let modelReady = false;
@@ -437,7 +440,7 @@ function onWindowResize() {
 }
 
 // HOVER
-/*
+const raycaster = new THREE.Raycaster();
 function getMouseTarget(event: MouseEvent) {
     const mouse = {
         x: (event.clientX / renderer.domElement.clientWidth) * 2 - 1,
@@ -446,38 +449,29 @@ function getMouseTarget(event: MouseEvent) {
 
     raycaster.setFromCamera(mouse, camera);
 
-    return raycaster.intersectObjects(containerMeshes, false);
-}
-*/
-
-/*
-if (window.PointerEvent) {
-    renderer.domElement.addEventListener('pointermove', onMouseMove, false);
-} else {
-    renderer.domElement.addEventListener('mousemove', onMouseMove, false);
-}
-*/
-
-/*
-const raycaster = new THREE.Raycaster();
-function onMouseMove(event: MouseEvent) {
-    //if (viewing_exhibit) return;
-
-    const intersects = getMouseTarget(event)
-
-    for (let exhibit of exhibits) {
-        exhibit.deactivate();
+    let all_meshes: THREE.Mesh[] = []
+    for (let logo of all_logos) {
+        all_meshes.push(<THREE.Mesh>logo.mesh);
     }
+
+    return raycaster.intersectObjects(all_meshes, false);
+}
+
+
+if (window.PointerEvent) {
+    document.documentElement.addEventListener('pointermove', onMouseMove, false);
+} else {
+    document.documentElement.addEventListener('mousemove', onMouseMove, false);
+}
+
+function onMouseMove(event: MouseEvent) {
+
+    const intersects = getMouseTarget(event);
 
     if (intersects.length > 0) {
-        //console.log(intersects[0])
-        //console.log(intersects[0].object.name)
-
-        let exhibit = <Exhibit>intersects[0].object.userData.exhibit
-        exhibit.activate()
+        console.log(intersects[0].object.userData)
     }
 }
-*/
 
 // CLICK
 /*
@@ -509,8 +503,6 @@ function animate() {
     let delta = clock.getDelta()
     if (modelReady) mixer.update(delta);
 
-
-
     if (currently_selected_exhibit) {
         // Rotate the exibit
         const rotation_amount = Math.PI * 2 * delta / 20;
@@ -527,9 +519,7 @@ function animate() {
 
     render();
     requestAnimationFrame(animate);
-
     controls.update();
-
 }
 
 function render() {
