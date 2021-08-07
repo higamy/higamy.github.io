@@ -89,7 +89,38 @@ body{
     }
   }
 
+.left-rotating{
+    animation: left_icon_keys var(--switch-project-transition-time) 1;
+}
 
+@keyframes left_icon_keys {
+    0% {
+        transform: unset;
+    }
+    50%{
+        transform: translateX(-29px) translateY(6px) rotateZ(45deg);
+        background-color: rgba(0, 0, 0, 0);
+    }
+    100% {
+        transform: unset;
+    }
+}
+
+.right-rotating{
+    animation: right_icon_keys var(--switch-project-transition-time) 1;
+}
+@keyframes right_icon_keys {
+    0% {
+        transform: unset;
+    }
+    50%{
+        transform: translateX(30px) translateY(-6px) rotateZ(45deg);
+        background-color: rgba(0, 0, 0, 0);
+    }
+    100% {
+        transform: unset;
+    }
+}
 
 
 .btn:hover{
@@ -101,6 +132,8 @@ body{
     height: 60px;
     border-radius: 50%;
     text-align: center;
+    float: left;
+    margin: 5px;
 }
 
 #viewProjectButton{

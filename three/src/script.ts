@@ -368,7 +368,7 @@ function add_project_models() {
                         console.log(index, projectName, tech)
                         let logo_mesh: THREE.Mesh = <THREE.Mesh>logos[tech].clone();
 
-                        logo_mesh.position.set(node.position.x + LogoOffsets[ProjectTechnologies[projectName].length][index], node.position.y + 1, node.position.z);
+                        logo_mesh.position.set(node.position.x + LogoOffsets[ProjectTechnologies[projectName].length][index], node.position.y + 1, node.position.z + LogoOffsets[ProjectTechnologies[projectName].length][index]);
                         logo_mesh.scale.set(LOGO_START_SCALE, LOGO_START_SCALE, LOGO_START_SCALE);
 
                         scene.add(logo_mesh);
@@ -417,6 +417,17 @@ function switchProject(value_change: number = 1) {
     currently_selected_exhibit_number = currently_selected_exhibit_number + value_change;
     currently_selected_exhibit_number = mod(currently_selected_exhibit_number, exhibits.length);
     exhibits[currently_selected_exhibit_number].select();
+
+
+    previousProject.classList.remove('right-rotating');
+    void previousProject.offsetWidth; // Bit of a hack that adds a tiny delay between changing classes so that the animation fires
+    previousProject.classList.add('right-rotating');
+
+    nextProject.classList.remove('left-rotating');
+    void previousProject.offsetWidth; // Bit of a hack that adds a tiny delay between changing classes so that the animation fires
+    nextProject.classList.add('left-rotating');
+
+
 
     projectDescriptionContainer.classList.remove('fading');
     void projectDescriptionContainer.offsetWidth; // Bit of a hack that adds a tiny delay between changing classes so that the animation fires
