@@ -317,6 +317,18 @@ function add_project_models() {
         (gltf) => {
             scene.add(gltf.scene);
 
+            mixer = new THREE.AnimationMixer(gltf.scene);
+
+            console.log(gltf.animations)
+            let anim: THREE.AnimationClip;
+            for (anim of gltf.animations) {
+                const animationAction = mixer.clipAction(anim);
+                animationAction.play();
+            }
+
+            modelReady = true;
+
+
             gltf.scene.traverse(function (node) {
 
                 if ((<THREE.Mesh>node).isMesh) {
@@ -334,7 +346,6 @@ function add_project_models() {
                     const projectName = getProjectName(node.parent.name);
                     cameraPositions[projectName] = camPos;
                 }
-
                 else if (node.name.includes('Container')) {
                     console.log(node.name);
                     (<THREE.Mesh>node).material = new THREE.MeshPhongMaterial({
@@ -525,7 +536,7 @@ function animate() {
         // Rotate the exibit
         const rotation_amount = Math.PI * 2 * delta / 20;
         selected_exhibit_rotation = selected_exhibit_rotation + rotation_amount;
-        currently_selected_exhibit.container.rotateY(rotation_amount);
+        //currently_selected_exhibit.container.rotateY(rotation_amount);
 
         // Rotate the tech logos
         for (let logo of currently_selected_exhibit.logos) {
