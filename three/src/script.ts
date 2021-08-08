@@ -54,8 +54,8 @@ controls.maxDistance = 10;
 controls.rotateSpeed = 0.4;
 //controls.minAzimuthAngle = -Math.PI / 2;
 //controls.maxAzimuthAngle = Math.PI / 2;
-controls.minPolarAngle = Math.PI / 4;
-controls.maxPolarAngle = 3 * Math.PI / 4;
+controls.minPolarAngle = 0.25 * Math.PI;
+controls.maxPolarAngle = 0.5 * Math.PI;
 
 /*
 controls.mouseButtons = {
