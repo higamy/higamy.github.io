@@ -54,8 +54,8 @@ controls.maxDistance = 10;
 controls.rotateSpeed = 0.4;
 //controls.minAzimuthAngle = -Math.PI / 2;
 //controls.maxAzimuthAngle = Math.PI / 2;
-controls.minPolarAngle = 0.25 * Math.PI;
-controls.maxPolarAngle = 0.5 * Math.PI;
+controls.minPolarAngle = 0.25 * Math.PI; // How high can the camera go
+controls.maxPolarAngle = 0.55 * Math.PI; // How low can the camera go
 
 /*
 controls.mouseButtons = {
