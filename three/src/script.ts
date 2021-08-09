@@ -310,12 +310,15 @@ function getProjectName(inputName: string) {
 }
 
 // Add the tech stack
-let all_logos: TechLogo[] = []
+let all_logos: TechLogo[] = [];
+let head: THREE.Bone;
 
 function add_project_models() {
     new GLTFLoader().load('https://higamy.github.io/models/scene.glb',
         (gltf) => {
             scene.add(gltf.scene);
+
+
 
             mixer = new THREE.AnimationMixer(gltf.scene);
 
@@ -323,7 +326,7 @@ function add_project_models() {
             let anim: THREE.AnimationClip;
             for (anim of gltf.animations) {
                 const animationAction = mixer.clipAction(anim);
-                animationAction.play();
+                //animationAction.play();
             }
 
             modelReady = true;
@@ -331,8 +334,14 @@ function add_project_models() {
 
             gltf.scene.traverse(function (node) {
 
+                if (node.type == 'Bone') {
+                    console.log(node.name)
+                    if (node.name == 'head') head = <THREE.Bone>node
+                }
+
                 if ((<THREE.Mesh>node).isMesh) {
                     node.frustumCulled = false;
+                    //console.log(node.name)
                 }
 
                 if (node.name == 'Ground') {
@@ -400,6 +409,8 @@ function add_project_models() {
             });
 
             exhibits[currently_selected_exhibit_number].select();
+
+
         })
 }
 
@@ -545,10 +556,52 @@ function animate() {
             logo.mesh.rotateZ(delta * logo.z_rotation_speed);
         }
     }
+    movePikachusHead(delta);
 
     render();
     requestAnimationFrame(animate);
     controls.update();
+}
+
+function randBetween(min, max) {
+    // Returns a random number between max and min
+    return Math.random() * (max - min) + min;
+}
+
+const range_of_times_between_head_movement = [5, 8];
+const range_of_speed_of_moving_head = [1000, 2000];
+let cur_max_time_between_head_movement: number;
+let time_between_head_movement: number;
+updateTimeToNextHeadMovement();
+
+const rot_limits: object = {
+    x: [-40, 10],
+    y: [-15, 15],
+    z: [-20, 20]
+}
+
+function updateTimeToNextHeadMovement() {
+    time_between_head_movement = 0;
+    cur_max_time_between_head_movement = randBetween(range_of_times_between_head_movement[0], range_of_times_between_head_movement[1])
+}
+
+
+function movePikachusHead(delta: number) {
+    time_between_head_movement += delta;
+
+    if (time_between_head_movement > cur_max_time_between_head_movement) {
+        console.log('chanign pos')
+        updateTimeToNextHeadMovement();
+
+        new TWEEN.Tween(head.rotation)
+            .to({
+                x: THREE.MathUtils.degToRad(randBetween(rot_limits['x'][0], rot_limits['x'][1])),
+                y: THREE.MathUtils.degToRad(randBetween(rot_limits['y'][0], rot_limits['y'][1])),
+                z: THREE.MathUtils.degToRad(randBetween(rot_limits['z'][0], rot_limits['z'][1])),
+            }, randBetween(range_of_speed_of_moving_head[0], range_of_speed_of_moving_head[1]))
+            .start()
+    }
+
 }
 
 function render() {
