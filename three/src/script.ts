@@ -326,7 +326,7 @@ function add_project_models() {
             let anim: THREE.AnimationClip;
             for (anim of gltf.animations) {
                 const animationAction = mixer.clipAction(anim);
-                //animationAction.play();
+                animationAction.play();
             }
 
             modelReady = true;
