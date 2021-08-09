@@ -312,6 +312,8 @@ function getProjectName(inputName: string) {
 // Add the tech stack
 let all_logos: TechLogo[] = [];
 let head: THREE.Bone;
+let anim: THREE.AnimationClip;
+let track: THREE.KeyframeTrack;
 
 function add_project_models() {
     new GLTFLoader().load('https://higamy.github.io/models/scene.glb',
@@ -323,8 +325,20 @@ function add_project_models() {
             mixer = new THREE.AnimationMixer(gltf.scene);
 
             console.log(gltf.animations)
-            let anim: THREE.AnimationClip;
+
             for (anim of gltf.animations) {
+                if (anim.name == 'Idle') {
+                    for (track of anim.tracks) {
+                        if ((track.name.includes('head') || track.name.includes('spine')) && (track.name.includes('quaternion'))) {
+                            const index = anim.tracks.indexOf(track);
+                            if (index > -1) {
+                                anim.tracks.splice(index, 1);
+                            }
+                        }
+                    }
+                }
+                console.log(anim)
+
                 const animationAction = mixer.clipAction(anim);
                 animationAction.play();
             }
@@ -344,8 +358,8 @@ function add_project_models() {
                     //console.log(node.name)
                 }
 
-                if (node.name == 'Ground') {
-                    node.receiveShadow = true;
+                if (node.name.includes('Ground')) {
+                    //node.receiveShadow = true;
                 }
 
                 if (node.name.includes('Camera')) {
