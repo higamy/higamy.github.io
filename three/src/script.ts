@@ -589,8 +589,8 @@ let time_between_head_movement: number;
 updateTimeToNextHeadMovement();
 
 const rot_limits: object = {
-    x: [-40, 10],
-    y: [-15, 15],
+    x: [-20, 10],
+    y: [-10, 10],
     z: [-20, 20]
 }
 
@@ -613,6 +613,7 @@ function movePikachusHead(delta: number) {
                 y: THREE.MathUtils.degToRad(randBetween(rot_limits['y'][0], rot_limits['y'][1])),
                 z: THREE.MathUtils.degToRad(randBetween(rot_limits['z'][0], rot_limits['z'][1])),
             }, randBetween(range_of_speed_of_moving_head[0], range_of_speed_of_moving_head[1]))
+            .easing(TWEEN.Easing.Quadratic.InOut)
             .start()
     }
 
