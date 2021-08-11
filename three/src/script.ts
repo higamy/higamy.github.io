@@ -332,7 +332,7 @@ function add_project_models() {
                         if ((track.name.includes('head') || track.name.includes('spine')) && (track.name.includes('quaternion'))) {
                             const index = anim.tracks.indexOf(track);
                             if (index > -1) {
-                                anim.tracks.splice(index, 1);
+                                //anim.tracks.splice(index, 1);
                             }
                         }
                     }
