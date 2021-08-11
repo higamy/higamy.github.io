@@ -570,7 +570,7 @@ function animate() {
             logo.mesh.rotateZ(delta * logo.z_rotation_speed);
         }
     }
-    movePikachusHead(delta);
+    //movePikachusHead(delta);
 
     render();
     requestAnimationFrame(animate);
