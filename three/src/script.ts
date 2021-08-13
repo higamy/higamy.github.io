@@ -57,6 +57,10 @@ controls.rotateSpeed = 0.4;
 controls.minPolarAngle = 0.25 * Math.PI; // How high can the camera go
 controls.maxPolarAngle = 0.55 * Math.PI; // How low can the camera go
 
+// Initialise a position where the user can't see the models
+camera.position.set(0, 50, 0);
+controls.target.set(10, 100, 10);
+
 /*
 controls.mouseButtons = {
     LEFT: THREE.MOUSE.PAN,
@@ -78,6 +82,24 @@ const viewProjectButton: HTMLElement = document.getElementById('viewProjectButto
 const techDetailsContainer: HTMLElement = document.getElementById('techDetailsContainer');
 const techTitle: HTMLElement = document.getElementById('techTitle');
 const techDescription: HTMLElement = document.getElementById('techDescription');
+
+const startButton: HTMLElement = document.getElementById('startButton');
+
+startButton.addEventListener('click', () => {
+    if (modelReady) {
+        startButton.classList.add('hidden');
+        previousProject.classList.remove('fadedOut');
+        nextProject.classList.remove('fadedOut');
+        exhibits[currently_selected_exhibit_number].select();
+        //projectDescriptionContainer.classList.add('fading');
+        //projectDescriptionContainer.classList.remove('hidden');
+        //switchProject(1);
+    }
+    else {
+        // TODO: Animation to show not ready!
+    }
+
+})
 
 
 const ProjectDescriptions = {
@@ -103,6 +125,7 @@ const ProjectTechnologiesFull = {
         'Unity': 'This was the GameEngine used, coded in C#.\nReinforcement learning was conducted using Unity ML Agents.'
     }
 }
+
 
 let ProjectTechnologies = {}
 for (let tech of Object.keys(ProjectTechnologiesFull)) {
@@ -203,8 +226,7 @@ class Exhibit {
         this.startPosition = camera.position.clone();
 
         let endPosition = cameraPositions[this.name];
-        console.log(cameraPositions);
-        console.log(this.name);
+
         new TWEEN.Tween(camera.position)
             .to({ x: endPosition.x, y: endPosition.y, z: endPosition.z }, zoom_in_out_time)
             .easing(easing_method)
@@ -212,7 +234,7 @@ class Exhibit {
             .onComplete(() => {
                 currently_selected_exhibit = this;
                 selected_exhibit_rotation = 0;
-            });;
+            });
 
 
         // Tween
@@ -228,11 +250,12 @@ class Exhibit {
             projectNameTitle.innerHTML = this.name;
             const projDescriptionText = this.name in ProjectDescriptions ? ProjectDescriptions[this.name] : 'Cannot find project description.';
             projectDescription.innerHTML = projDescriptionText;
+            projectDescriptionContainer.classList.remove('hidden');
         }.bind(this);
         setTimeout(setDescriptionText, zoom_in_out_time / 2);
 
         viewProjectButton.onclick = () => { window.open(ProjectURLS[this.name]) };
-        projectDescriptionContainer.classList.remove('hidden');
+
 
         for (let logo of this.logos) {
             logo.select();
@@ -242,7 +265,7 @@ class Exhibit {
     deselect() {
         this.deactivate();
 
-        projectDescriptionContainer.classList.add('hidden');
+        //projectDescriptionContainer.classList.add('hidden');
         new TWEEN.Tween(this.container.quaternion)
             .to(this.startRotation, zoom_in_out_time)
             .easing(easing_method)
@@ -315,16 +338,31 @@ let head: THREE.Bone;
 let anim: THREE.AnimationClip;
 let track: THREE.KeyframeTrack;
 
-function add_project_models() {
-    new GLTFLoader().load('https://higamy.github.io/models/scene.glb',
+
+const manager = new THREE.LoadingManager();
+manager.onStart = function (url, itemsLoaded, itemsTotal) {
+    console.log('Started loading file: ' + url + '.\nLoaded ' + itemsLoaded + ' of ' + itemsTotal + ' files.');
+};
+
+manager.onLoad = function () {
+    console.log('Loading complete!');
+};
+
+
+manager.onProgress = function (url, itemsLoaded, itemsTotal) {
+    console.log('Loading file: ' + url + '.\nLoaded ' + itemsLoaded + ' of ' + itemsTotal + ' files.');
+};
+
+manager.onError = function (url) {
+    console.log('There was an error loading ' + url);
+};
+
+function add_project_models(url_to_load: string) {
+    new GLTFLoader(manager).load(url_to_load,
         (gltf) => {
             scene.add(gltf.scene);
 
-
-
             mixer = new THREE.AnimationMixer(gltf.scene);
-
-            console.log(gltf.animations)
 
             for (anim of gltf.animations) {
                 if (anim.name == 'Idle') {
@@ -337,25 +375,19 @@ function add_project_models() {
                         }
                     }
                 }
-                console.log(anim)
 
                 const animationAction = mixer.clipAction(anim);
                 animationAction.play();
             }
 
-            modelReady = true;
-
-
             gltf.scene.traverse(function (node) {
 
                 if (node.type == 'Bone') {
-                    console.log(node.name)
                     if (node.name == 'head') head = <THREE.Bone>node
                 }
 
                 if ((<THREE.Mesh>node).isMesh) {
                     node.frustumCulled = false;
-                    //console.log(node.name)
                 }
 
                 if (node.name.includes('Ground')) {
@@ -370,7 +402,7 @@ function add_project_models() {
                     cameraPositions[projectName] = camPos;
                 }
                 else if (node.name.includes('Container')) {
-                    console.log(node.name);
+
                     (<THREE.Mesh>node).material = new THREE.MeshPhongMaterial({
                         opacity: 0,
                         transparent: true,
@@ -399,7 +431,6 @@ function add_project_models() {
                     let logos_this_project: TechLogo[] = []
 
                     for (let [index, tech] of ProjectTechnologies[projectName].entries()) {
-                        console.log(index, projectName, tech)
                         let logo_mesh: THREE.Mesh = <THREE.Mesh>logos[tech].clone();
 
                         logo_mesh.position.set(node.position.x + LogoOffsets[ProjectTechnologies[projectName].length][index], node.position.y + 1, node.position.z + LogoOffsets[ProjectTechnologies[projectName].length][index]);
@@ -415,6 +446,9 @@ function add_project_models() {
                     }
                     exhibit.set_logos(logos_this_project);
 
+                    modelReady = true;
+                    startButton.innerHTML = 'Start';
+
                 }
                 else {
                     node.castShadow = true;
@@ -422,8 +456,11 @@ function add_project_models() {
 
             });
 
-            exhibits[currently_selected_exhibit_number].select();
-
+            //exhibits[currently_selected_exhibit_number].select();
+        },
+        function (xhr) {
+            console.log(xhr)
+            //console.log((xhr.loaded / xhr.total * 100) + '% loaded');
 
         })
 }
@@ -439,7 +476,12 @@ function add_logos() {
                     logos[node.name] = <THREE.Mesh>node;
                 }
             })
-            add_project_models();
+            add_project_models('https://higamy.github.io/models/scene.glb');
+            /*for (let tech of Object.keys(ProjectTechnologiesFull)) {
+                let url = 'https://higamy.github.io/models/' + tech + '.glb';
+                add_project_models(url);
+            }
+            */
         })
 }
 add_logos();
@@ -455,15 +497,13 @@ function switchProject(value_change: number = 1) {
     exhibits[currently_selected_exhibit_number].select();
 
 
-    previousProject.classList.remove('right-rotating');
-    void previousProject.offsetWidth; // Bit of a hack that adds a tiny delay between changing classes so that the animation fires
-    previousProject.classList.add('right-rotating');
+    //previousProject.classList.remove('right-rotating');
+    //void previousProject.offsetWidth; // Bit of a hack that adds a tiny delay between changing classes so that the animation fires
+    //previousProject.classList.add('right-rotating');
 
-    nextProject.classList.remove('left-rotating');
-    void previousProject.offsetWidth; // Bit of a hack that adds a tiny delay between changing classes so that the animation fires
-    nextProject.classList.add('left-rotating');
-
-
+    //nextProject.classList.remove('left-rotating');
+    //void previousProject.offsetWidth; // Bit of a hack that adds a tiny delay between changing classes so that the animation fires
+    //nextProject.classList.add('left-rotating');
 
     projectDescriptionContainer.classList.remove('fading');
     void projectDescriptionContainer.offsetWidth; // Bit of a hack that adds a tiny delay between changing classes so that the animation fires
@@ -604,7 +644,6 @@ function movePikachusHead(delta: number) {
     time_between_head_movement += delta;
 
     if (time_between_head_movement > cur_max_time_between_head_movement) {
-        console.log('chanign pos')
         updateTimeToNextHeadMovement();
 
         new TWEEN.Tween(head.rotation)
