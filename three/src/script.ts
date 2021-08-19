@@ -1,5 +1,5 @@
 // npm install @types/node --save-dev
-// npm i --save-dev @types/three
+// npm install @types/three --save-dev
 // tsc three/src/script.ts -w
 // npx webpack --config ./three/src/webpack.config.js
 
