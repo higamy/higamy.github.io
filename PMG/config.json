@@ -1,12 +1,17 @@
 {
-    "Name": "House",
-    "Children": [
+    "Models": [
         {
-            "Name": "Body"
-        },
-        {
-            "Name": "Roof",
-            "Number": 1
+            "Name": "House",
+            "Children": [
+                {
+                    "Name": "Body",
+                    "Quantity": 1
+                },
+                {
+                    "Name": "Roof",
+                    "Quantity": 1
+                }
+            ]
         }
     ]
 }
