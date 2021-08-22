@@ -7,34 +7,32 @@
                     "Name": "Body",
                     "Quantity": 1,
                     "Optional": false,
-                    "Properties": [
-                        {
-                            "Scale.X": [
-                                1,
-                                5
-                            ],
-                            "Scale.Y": [
-                                1,
-                                5
-                            ],
-                            "Scale.Z": [
-                                1,
-                                5
-                            ],
-                            "Rotation.X": [
-                                0,
-                                360
-                            ],
-                            "Rotation.Y": [
-                                0,
-                                360
-                            ],
-                            "Rotation.Z": [
-                                0,
-                                360
-                            ]
-                        }
-                    ]
+                    "Properties": {
+                        "Scale.X": [
+                            1,
+                            5
+                        ],
+                        "Scale.Y": [
+                            1,
+                            5
+                        ],
+                        "Scale.Z": [
+                            1,
+                            5
+                        ],
+                        "Rotation.X": [
+                            0,
+                            360
+                        ],
+                        "Rotation.Y": [
+                            0,
+                            360
+                        ],
+                        "Rotation.Z": [
+                            0,
+                            360
+                        ]
+                    }
                 },
                 {
                     "Name": "Roof",
