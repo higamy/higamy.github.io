@@ -9,7 +9,14 @@
                 },
                 {
                     "Name": "Roof",
-                    "Quantity": 1
+                    "Quantity": 1,
+                    "Children": [
+                        {
+                            "Name": "Window",
+                            "Quantity": 1,
+                            "Optional": true
+                        }
+                    ]
                 }
             ]
         }
