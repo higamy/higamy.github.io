@@ -8,7 +8,7 @@
                     "Target": "Roof",
                     "Type": "Offset",
                     "Axis": "Y",
-                    "Max": true
+                    "Direction": "max"
                 }
             ],
             "Children": [
