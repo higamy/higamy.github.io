@@ -2,6 +2,15 @@
     "Models": [
         {
             "Name": "House",
+            "Constraints": [
+                {
+                    "Source": "Body",
+                    "Target": "Roof",
+                    "Type": "Offset",
+                    "Axis": "Y",
+                    "Max": true
+                }
+            ],
             "Children": [
                 {
                     "Name": "Body",
