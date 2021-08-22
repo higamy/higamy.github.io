@@ -5,11 +5,13 @@
             "Children": [
                 {
                     "Name": "Body",
-                    "Quantity": 1
+                    "Quantity": 1,
+                    "Optional": false
                 },
                 {
                     "Name": "Roof",
                     "Quantity": 1,
+                    "Optional": false,
                     "Children": [
                         {
                             "Name": "Window",
