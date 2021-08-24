@@ -9,6 +9,20 @@
                     "Type": "Offset",
                     "Axis": "Y",
                     "Direction": "max"
+                },
+                {
+                    "Source": "Body",
+                    "Target": "Light",
+                    "Type": "Offset",
+                    "Axis": "X",
+                    "Direction": "max"
+                },
+                {
+                    "Source": "Body",
+                    "Target": "Light",
+                    "Type": "Offset",
+                    "Axis": "Z",
+                    "Direction": "max"
                 }
             ],
             "Children": [
@@ -54,6 +68,11 @@
                             "Optional": true
                         }
                     ]
+                },
+                {
+                    "Name": "Light",
+                    "Quantity": 1,
+                    "Optional": true
                 }
             ]
         }
