@@ -4,21 +4,21 @@
             "Name": "House",
             "Constraints": [
                 {
-                    "Source": "Body",
+                    "Source": "ExtraFloor",
                     "Target": "Roof",
                     "Type": "Offset",
                     "Axis": "Y",
                     "Direction": "max"
                 },
                 {
-                    "Source": "Body",
+                    "Source": "GroundFloor",
                     "Target": "Light",
                     "Type": "Offset",
                     "Axis": "X",
                     "Direction": "max"
                 },
                 {
-                    "Source": "Body",
+                    "Source": "GroundFloor",
                     "Target": "Light",
                     "Type": "Offset",
                     "Axis": "Z",
@@ -27,9 +27,40 @@
             ],
             "Children": [
                 {
-                    "Name": "Body",
+                    "Name": "GroundFloor",
                     "Quantity": 1,
                     "Optional": false,
+                    "Properties": {
+                        "Scale.X": [
+                            1,
+                            5
+                        ],
+                        "Scale.Y": [
+                            1,
+                            5
+                        ],
+                        "Scale.Z": [
+                            1,
+                            5
+                        ],
+                        "Rotation.X": [
+                            0,
+                            360
+                        ],
+                        "Rotation.Y": [
+                            0,
+                            360
+                        ],
+                        "Rotation.Z": [
+                            0,
+                            360
+                        ]
+                    }
+                },
+                {
+                    "Name": "ExtraFloor",
+                    "Quantity": 1,
+                    "Optional": true,
                     "Properties": {
                         "Scale.X": [
                             1,
