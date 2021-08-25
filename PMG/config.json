@@ -12,6 +12,13 @@
                 },
                 {
                     "Source": "GroundFloor",
+                    "Target": "ExtraFloor",
+                    "Type": "Offset",
+                    "Axis": "Y",
+                    "Direction": "max"
+                },
+                {
+                    "Source": "GroundFloor",
                     "Target": "Light",
                     "Type": "Offset",
                     "Axis": "X",
