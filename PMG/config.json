@@ -102,14 +102,19 @@
                             ]
                         },
                         "Repeat": {
-                            "Range": [
+                            "Quantity": [
                                 0,
                                 5
                             ],
-                            "Vector": [
+                            "Direction": [
                                 0,
                                 1,
                                 0
+                            ],
+                            "Scale Factor": [
+                                0.9,
+                                1,
+                                0.9
                             ]
                         }
                     }
