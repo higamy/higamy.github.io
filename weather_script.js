@@ -1,72 +1,73 @@
+let x = [43934, 52503, 57177, 69658, 97031, 119931, 137133, 154175];
+
+
 Highcharts.chart('container', {
 
-    chart: {
-        type: 'boxplot'
-    },
-
     title: {
-        text: 'Highcharts Box Plot Example'
+        text: 'Solar Employment Growth by Sector, 2010-2016'
     },
 
-    legend: {
-        enabled: false
-    },
-
-    xAxis: {
-        categories: ['1', '2', '3', '4', '5'],
-        title: {
-            text: 'Experiment No.'
-        }
+    subtitle: {
+        text: 'Source: thesolarfoundation.com'
     },
 
     yAxis: {
         title: {
-            text: 'Observations'
-        },
-        plotLines: [{
-            value: 932,
-            color: 'red',
-            width: 1,
+            text: 'Number of Employees'
+        }
+    },
+
+    xAxis: {
+        accessibility: {
+            rangeDescription: 'Range: 2010 to 2017'
+        }
+    },
+
+    legend: {
+        layout: 'vertical',
+        align: 'right',
+        verticalAlign: 'middle'
+    },
+
+    plotOptions: {
+        series: {
             label: {
-                text: 'Theoretical mean: 932',
-                align: 'center',
-                style: {
-                    color: 'gray'
-                }
-            }
-        }]
+                connectorAllowed: false
+            },
+            pointStart: 2010
+        }
     },
 
     series: [{
-        name: 'Observations',
-        data: [
-            [760, 801, 848, 895, 965],
-            [733, 853, 939, 980, 1080],
-            [714, 762, 817, 870, 918],
-            [724, 802, 806, 871, 950],
-            [834, 836, 864, 882, 910]
-        ],
-        tooltip: {
-            headerFormat: '<em>Experiment No {point.key}</em><br/>'
-        }
+        name: 'Installation',
+        data: x
     }, {
-        name: 'Outliers',
-        color: Highcharts.getOptions().colors[0],
-        type: 'scatter',
-        data: [ // x, y positions where 0 is the first category
-            [0, 644],
-            [4, 718],
-            [4, 951],
-            [4, 969]
-        ],
-        marker: {
-            fillColor: 'white',
-            lineWidth: 1,
-            lineColor: Highcharts.getOptions().colors[0]
-        },
-        tooltip: {
-            pointFormat: 'Observation: {point.y}'
-        }
-    }]
+        name: 'Manufacturing',
+        data: [24916, 24064, 29742, 29851, 32490, 30282, 38121, 40434]
+    }, {
+        name: 'Sales & Distribution',
+        data: [11744, 17722, 16005, 19771, 20185, 24377, 32147, 39387]
+    }, {
+        name: 'Project Development',
+        data: [null, null, 7988, 12169, 15112, 22452, 34400, 34227]
+    }, {
+        name: 'Other',
+        data: [12908, 5948, 8105, 11248, 8989, 11816, 18274, 18111]
+    }],
+
+    responsive: {
+        rules: [{
+            condition: {
+                maxWidth: 500
+            },
+            chartOptions: {
+                legend: {
+                    layout: 'horizontal',
+                    align: 'center',
+                    verticalAlign: 'bottom'
+                }
+            }
+        }]
+    }
 
 });
