@@ -17,10 +17,24 @@ input[type=range], form{
     margin: 0px 10px;
 }
 
+form, #wispContainer{
+    border: 1px solid gray;
+    padding: 5px;
+    max-width: 300px;
+    margin: 5px 10px;
+    border-radius: 5px;
+}
+
+.title{
+    display: block;
+    color: gray;
+    margin: 2px 0px 5px 0px;
+}
+
 .inputContainer{
     vertical-align: middle;
     height: 30px;
-    display: flex;
+    display: flexbox;
 }
 
 .wispContainer{
