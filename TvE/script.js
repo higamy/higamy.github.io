@@ -43,52 +43,90 @@ gold_wisps = [
     }
 ]
 
-gold_mines = [
+gold_mine_config = [
     {
         'Name': 'Mine 3',
         'Count': 0,
         'Lumber': 1024,
-        'GoldGain': 32
+        'GoldGain': 32,
+        'Duration': 8 * 60
     },
     {
         'Name': 'Mine 4',
-        'Count': 2000000,
+        'Count': Infinity,
         'Lumber': 4096,
-        'GoldGain': 128
+        'GoldGain': 128,
+        'Duration': 8 * 60
     }
 ]
 
+class GoldMine {
+    Duration;
+    GoldRate;
+    constructor(goldRate, duration) {
+        this.GoldRate = goldRate;
+        this.Duration = duration;
+    }
+}
+
 let allLinkInputs = [];
+
 
 class LinkedInput {
     InputObject;
     InputRange;
+    CurrentValue;
 
     constructor(inputObj) {
+        const container = document.createElement('div');
+
+        const curVal = document.createElement('span');
+
         let inputRange = document.createElement('input');
-        inputRange.setAttribute("max", "10");
+        inputRange.setAttribute("max", "20");
         inputRange.setAttribute("min", "0");
         inputRange.setAttribute("value", inputObj["Count"].toString());
         inputRange.setAttribute("type", "range");
-        controlsContainer.appendChild(inputRange);
 
+        const label = document.createElement('label');
+        label.innerHTML = inputObj["Name"];
+
+        container.appendChild(label);
+        container.appendChild(inputRange);
+        container.appendChild(curVal);
+        container.classList.add("inputContainer");
+
+
+        wispContainer.appendChild(container);
 
 
         allLinkInputs.push(this);
 
+        // Assign properties
+        this.CurrentValue = curVal;
         this.InputObject = inputObj;
         this.InputRange = inputRange;
 
+        this.UpdateLabelValue();
+
         inputRange.addEventListener("input", () => {
+
+            this.UpdateLabelValue()
             updateAllInputs();
             calculateData();
         })
+    }
+
+    UpdateLabelValue() {
+        this.CurrentValue.innerHTML = this.InputRange.value;
     }
 
     SetValueFromRange() {
         this.InputObject['Count'] = this.InputRange.value;
     }
 }
+
+
 
 function updateAllInputs() {
     for (let linkedInput of allLinkInputs) {
@@ -97,6 +135,9 @@ function updateAllInputs() {
 }
 
 let controlsContainer = document.getElementById('controlsContainer');
+let wispContainer = document.getElementById('wispContainer');
+
+
 // Set up the sliders
 for (let wisp of gold_wisps) {
     new LinkedInput(wisp)
@@ -194,15 +235,7 @@ let options = {
 
 let chart = Highcharts.chart('imageContainer', options)
 
-// Set the height to be full screen
-var body = document.body,
-    html = document.documentElement;
 
-let height = Math.max(body.scrollHeight, body.offsetHeight,
-    html.clientHeight, html.scrollHeight, html.offsetHeight);
-height = height - controlsContainer.scrollHeight;
-
-chart.setSize(null, height)
 
 let x_series;
 
@@ -213,8 +246,8 @@ function zip(arrays) {
 }
 
 function calculateData() {
+    let allGoldMines = [];
     targetGold = 999999
-    goldGain = 512
     LumberGain = 0
 
     gold = 0
@@ -228,6 +261,11 @@ function calculateData() {
     goldTarget = 999999
 
     labels = []
+
+    // Extract the multiplier
+    const multiplier = parseInt(document.querySelector('input[type="radio"]:checked').value);
+
+    let goldGainPassive = 512 * multiplier;
 
     while (gold < goldTarget) {
 
@@ -249,19 +287,37 @@ function calculateData() {
                 // Perform calculations
                 gold = gold - wisp['Gold']
                 wisp['Count'] = wisp['Count'] - 1
-                LumberGain = LumberGain + wisp['LumberGain']
+                LumberGain = LumberGain + wisp['LumberGain'] * multiplier
             }
 
         }
 
 
-        for (let mine of gold_mines) {
-            if ((mine['Count'] > 0) & (Lumber > mine['Lumber'])) {
+        for (let mine_config of gold_mine_config) {
+            if ((mine_config['Count'] > 0) & (Lumber > mine_config['Lumber'])) {
+                let goldMine = new GoldMine(mine_config['GoldGain'], mine_config['Duration']);
+                allGoldMines.push(goldMine);
+
                 // Perform calculations
-                Lumber = Lumber - mine['Lumber']
-                mine['Count'] = mine['Count'] - 1
-                goldGain = goldGain + mine['GoldGain']
+                Lumber = Lumber - mine_config['Lumber']
+                mine_config['Count'] = mine_config['Count'] - 1
+                //goldGain = goldGain + mine_config['GoldGain']
             }
+        }
+
+        let goldGain = goldGainPassive
+
+        for (let mine of allGoldMines) {
+            goldGain = goldGain + mine.GoldRate * multiplier;
+            mine.Duration = mine.Duration - 1 * multiplier;
+
+            // Expire mines when run out of time
+            if (mine.Duration < 0) {
+                allGoldMines = allGoldMines.filter(function (item) {
+                    return item !== mine
+                })
+            }
+
         }
 
 
@@ -299,7 +355,7 @@ function calculateData() {
             data: zip([timeVals, lumberVals])
         }]
         , title: {
-            text: `Time to Wisp 9: ${Math.round(10 * time / 60) / 10} minutes`
+            text: `Time to Wisp 8: ${Math.round(10 * time / 60) / 10} minutes`
         },
         annotations: [{
             draggable: '',
@@ -320,6 +376,30 @@ function calculateData() {
 updateAllInputs();
 calculateData();
 
+const allRadios = document.querySelectorAll("input[type='radio'")
+for (let radioInput of allRadios) {
+    radioInput.addEventListener('change', () => {
+        updateAllInputs();
+        calculateData();
+    })
+}
+
+setChartSize = function () {
+
+    let height = Math.max(body.scrollHeight, body.offsetHeight,
+        html.clientHeight, html.scrollHeight, html.offsetHeight);
+    height = height - controlsContainer.scrollHeight;
+    height = Math.min(height, 800); // Cap the size
+
+    chart.setSize(null, height)
+}
+window.onresize = setChartSize;
+
+
+// Set the height to be full screen
+var body = document.body,
+    html = document.documentElement;
+setChartSize();
 
 //print(f"Time to reach {goldTarget} gold: {round(timeVals[-1],1)}")
 
