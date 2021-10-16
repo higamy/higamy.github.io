@@ -13,7 +13,7 @@ main, body {
 input[type=range], form{
     flex-grow: 1;
     max-width: 300px;
-    min-width: 200px; 
+    min-width: 100px; 
     margin: 0px 10px;
 }
 
@@ -34,7 +34,7 @@ form, #wispContainer{
 .inputContainer{
     vertical-align: middle;
     height: 30px;
-    display: flexbox;
+    display: flex;
 }
 
 .wispContainer{
