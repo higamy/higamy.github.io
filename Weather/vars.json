@@ -840,5 +840,8 @@
         0.042
     ],
     "n_observations": 1716766,
-    "n_stations": 19
+    "n_stations": 19,
+    "start_date": "June 2021",
+    "end_date": "June 2021",
+    "n_months": 7
 }

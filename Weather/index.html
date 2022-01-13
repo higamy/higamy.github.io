@@ -13,7 +13,6 @@
     <script src="https://code.highcharts.com/modules/accessibility.js"></script>
     <script src="https://code.highcharts.com/maps/modules/map.js"></script>
     <script src="https://code.highcharts.com/mapdata/custom/british-isles.js"></script>
-    <script src="https://code.highcharts.com/mapdata/custom/europe.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.3.6/proj4.js"></script>
     <!-- Include axios library as an easier way to get make API requests -->
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
@@ -25,20 +24,27 @@
     <main>
         <h1>Weather Forecast Accuracy</h1>
 
+        <div id="introductionText">
+            In this study var_n_stations weather stations were analysed over the period of var_n_months betwee
+            var_start_date and var_end_date.
+        </div>
+
+        <figure class="highcharts-figure narrow">
+            <div id="stations_map"></div>
+            <p class="highcharts-description">
+                Locations of the weather stations used in this analysis.
+            </p>
+        </figure>
+
         <figure class="highcharts-figure">
-            <div id="container"></div>
+            <div id="temperature_accuracy"></div>
             <p class="highcharts-description">
                 Accuracy of the weather forecast relative to the forecast period away.
                 Add histogram above and to the side?
             </p>
         </figure>
 
-        <figure class="highcharts-figure">
-            <div id="container2"></div>
-            <p class="highcharts-description">
-                Locations of the weather stations used in this analysis.
-            </p>
-        </figure>
+
     </main>
 
 

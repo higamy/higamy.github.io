@@ -35,3 +35,7 @@
 .highcharts-data-table tr:hover {
     background: #f1f7ff;
 }
+
+.narrow{
+    max-width: 400px;
+}
