@@ -17,7 +17,7 @@ axios.get(`${githubLocation}/vars.json`)
 
 axios.get(`${githubLocation}/stations.json`)
     .then(data => {
-        stations = data.data.stations.slice(0, 4);;
+        stations = data.data.stations;
         console.log(stations)
         populateStationsPlot();
     })
@@ -95,14 +95,10 @@ function populateTemperatureErrorPlot() {
 function populateStationsPlot() {
     Highcharts.mapChart('container2', {
         chart: {
-            map: 'custom/british-isles'
+            map: 'custom/europe'
         },
         title: {
-            text: 'European Train Stations Near Airports'
-        },
-        subtitle: {
-            text: 'Source: <a href="https://github.com/trainline-eu/stations">' +
-                'github.com/trainline-eu/stations</a>'
+            text: 'Weather Station Locations'
         },
         mapNavigation: {
             enabled: true
