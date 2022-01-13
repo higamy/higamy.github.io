@@ -1,6 +1,8 @@
 let min_temp_error, avg_temp_error, max_temp_error
+let stations
+let githubLocation = 'https://higamy.github.io/Weather'
 
-axios.get('https://higamy.github.io/Weather/vars.json')
+axios.get(`${githubLocation}/vars.json`)
     .then(data => {
         data = data.data
 
@@ -12,6 +14,14 @@ axios.get('https://higamy.github.io/Weather/vars.json')
 
         console.log(data)
     })
+
+axios.get(`${githubLocation}/stations.json`)
+    .then(data => {
+        stations = data.data.stations.slice(0, 4);;
+        console.log(stations)
+        populateStationsPlot();
+    })
+
 
 
 let forecast_days_before = [4.917, 4.875, 4.833, 4.792, 4.75, 4.708, 4.667, 4.625, 4.583, 4.542, 4.5, 4.458, 4.417, 4.375, 4.333, 4.292, 4.25, 4.208, 4.167, 4.125, 4.083, 4.042, 4.0, 3.958, 3.917, 3.875, 3.833, 3.792, 3.75, 3.708, 3.667, 3.625, 3.583, 3.542, 3.5, 3.458, 3.417, 3.375, 3.333, 3.292, 3.25, 3.208, 3.167, 3.125, 3.083, 3.042, 3.0, 2.958, 2.917, 2.875, 2.833, 2.792, 2.75, 2.708, 2.667, 2.625, 2.583, 2.542, 2.5, 2.458, 2.417, 2.375, 2.333, 2.292, 2.25, 2.208, 2.167, 2.125, 2.083, 2.042, 2.0, 1.958, 1.917, 1.875, 1.833, 1.792, 1.75, 1.708, 1.667, 1.625, 1.583, 1.542, 1.5, 1.458, 1.417, 1.375, 1.333, 1.292, 1.25, 1.208, 1.167, 1.125, 1.083, 1.042, 1.0, 0.958, 0.917, 0.875, 0.833, 0.792, 0.75, 0.708, 0.667, 0.625, 0.583, 0.542, 0.5, 0.458, 0.417, 0.375, 0.333, 0.292, 0.25, 0.208, 0.167, 0.125, 0.083, 0.042]
@@ -82,8 +92,7 @@ function populateTemperatureErrorPlot() {
     });
 }
 
-
-Highcharts.getJSON('https://cdn.jsdelivr.net/gh/highcharts/highcharts@1e9e659c2d60fbe27ef0b41e2f93112dd68fb7a3/samples/data/european-train-stations-near-airports.json', function (data) {
+function populateStationsPlot() {
     Highcharts.mapChart('container2', {
         chart: {
             map: 'custom/british-isles'
@@ -162,7 +171,7 @@ Highcharts.getJSON('https://cdn.jsdelivr.net/gh/highcharts/highcharts@1e9e659c2d
             enableMouseTracking: true,
             colorKey: 'clusterPointsAmount',
             name: 'Cities',
-            data: data
+            data: stations
         }]
     });
-});
+}
