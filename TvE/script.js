@@ -43,7 +43,7 @@ gold_wisps = [
     }
 ]
 
-gold_mine_config = [
+gold_mines = [
     {
         'Name': 'Mine 1',
         'Count': 0,
@@ -53,49 +53,49 @@ gold_mine_config = [
     },
     {
         'Name': 'Mine 2',
-        'Count': 14,
+        'Count': 15,
         'Lumber': 64,
         'GoldGain': 8,
         'Duration': 8 * 60
     },
     {
         'Name': 'Mine 3',
-        'Count': Infinity,
+        'Count': 30,
         'Lumber': 1024,
         'GoldGain': 32,
         'Duration': 8 * 60
     },
     {
         'Name': 'Mine 4',
-        'Count': Infinity,
+        'Count': 30,
         'Lumber': 4096,
         'GoldGain': 128,
         'Duration': 8 * 60
     },
     {
         'Name': 'Mine 5',
-        'Count': Infinity,
+        'Count': 30,
         'Lumber': 16384,
         'GoldGain': 512,
         'Duration': 8 * 60
     },
     {
         'Name': 'Mine 6',
-        'Count': Infinity,
+        'Count': 0,
         'Lumber': 65356,
         'GoldGain': 2048,
         'Duration': 16 * 60
     },
     {
         'Name': 'Mine 7',
-        'Count': Infinity,
+        'Count': 0,
         'Lumber': 262144,
         'GoldGain': 8192,
         'Duration': 4 * 60
     },
     {
         'Name': 'Mine 8',
-        'Count': Infinity,
+        'Count': 0,
         'Lumber': 99999,
         'GoldGain': 32768,
         'Duration': 2 * 60
@@ -119,13 +119,13 @@ class LinkedInput {
     InputRange;
     CurrentValue;
 
-    constructor(inputObj) {
+    constructor(inputObj, mainContainer) {
         const container = document.createElement('div');
 
         const curVal = document.createElement('span');
 
         let inputRange = document.createElement('input');
-        inputRange.setAttribute("max", "20");
+        inputRange.setAttribute("max", "30");
         inputRange.setAttribute("min", "0");
         inputRange.setAttribute("value", inputObj["Count"].toString());
         inputRange.setAttribute("type", "range");
@@ -139,7 +139,7 @@ class LinkedInput {
         container.classList.add("inputContainer");
 
 
-        wispContainer.appendChild(container);
+        mainContainer.appendChild(container);
 
 
         allLinkInputs.push(this);
@@ -178,13 +178,16 @@ function updateAllInputs() {
 
 let controlsContainer = document.getElementById('controlsContainer');
 let wispContainer = document.getElementById('wispContainer');
-
+let mineContainer = document.getElementById('mineContainer');
 
 // Set up the sliders
 for (let wisp of gold_wisps) {
-    new LinkedInput(wisp)
+    new LinkedInput(wisp, wispContainer)
 }
 
+for (let mine of gold_mines) {
+    new LinkedInput(mine, mineContainer)
+}
 
 
 
@@ -335,7 +338,7 @@ function calculateData() {
         }
 
 
-        for (let mine_config of gold_mine_config) {
+        for (let mine_config of gold_mines) {
             if ((mine_config['Count'] > 0) & (Lumber > mine_config['Lumber'])) {
                 let goldMine = new GoldMine(mine_config['GoldGain'], mine_config['Duration']);
                 allGoldMines.push(goldMine);

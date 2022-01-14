@@ -17,7 +17,7 @@ input[type=range], form{
     margin: 0px 10px;
 }
 
-form, #wispContainer{
+form, #wispContainer, #mineContainer{
     border: 1px solid gray;
     padding: 5px;
     max-width: 300px;
@@ -45,6 +45,16 @@ form, #wispContainer{
     display: flex;
     flex-wrap:wrap;
     flex-direction: column;
+}
+
+span.title{
+    width: 400px;
+}
+
+#subContainer{
+    display: flex;
+    flex-wrap:wrap;
+    flex-direction: row;
 }
 
 .highcharts-figure, .highcharts-data-table table {
