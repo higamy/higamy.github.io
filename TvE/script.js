@@ -96,7 +96,7 @@ gold_mines = [
     {
         'Name': 'Mine 8',
         'Count': 0,
-        'Lumber': 99999,
+        'Lumber': 999999,
         'GoldGain': 32768,
         'Duration': 2 * 60
     }
