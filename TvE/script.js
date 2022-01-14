@@ -45,8 +45,22 @@ gold_wisps = [
 
 gold_mine_config = [
     {
-        'Name': 'Mine 3',
+        'Name': 'Mine 1',
         'Count': 0,
+        'Lumber': 6,
+        'GoldGain': 1,
+        'Duration': 8 * 60
+    },
+    {
+        'Name': 'Mine 2',
+        'Count': 14,
+        'Lumber': 64,
+        'GoldGain': 8,
+        'Duration': 8 * 60
+    },
+    {
+        'Name': 'Mine 3',
+        'Count': Infinity,
         'Lumber': 1024,
         'GoldGain': 32,
         'Duration': 8 * 60
@@ -57,6 +71,34 @@ gold_mine_config = [
         'Lumber': 4096,
         'GoldGain': 128,
         'Duration': 8 * 60
+    },
+    {
+        'Name': 'Mine 5',
+        'Count': Infinity,
+        'Lumber': 16384,
+        'GoldGain': 512,
+        'Duration': 8 * 60
+    },
+    {
+        'Name': 'Mine 6',
+        'Count': Infinity,
+        'Lumber': 65356,
+        'GoldGain': 2048,
+        'Duration': 16 * 60
+    },
+    {
+        'Name': 'Mine 7',
+        'Count': Infinity,
+        'Lumber': 262144,
+        'GoldGain': 8192,
+        'Duration': 4 * 60
+    },
+    {
+        'Name': 'Mine 8',
+        'Count': Infinity,
+        'Lumber': 99999,
+        'GoldGain': 32768,
+        'Duration': 2 * 60
     }
 ]
 
