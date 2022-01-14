@@ -1,4 +1,4 @@
-let min_temp_error, avg_temp_error, max_temp_error, forecast_days_before, start_date, end_date, n_months
+let min_temp_error, avg_temp_error, max_temp_error, forecast_days_before, start_date, end_date, n_months, n_stations
 let stations
 let githubLocation = 'https://higamy.github.io/Weather'
 
@@ -13,6 +13,7 @@ axios.get(`${githubLocation}/vars.json`)
         start_date = data.start_date;
         end_date = data.end_date;
         n_months = data.n_months;
+        n_stations = data.n_stations;
 
         populateTemperatureErrorPlot();
 
@@ -21,7 +22,7 @@ axios.get(`${githubLocation}/vars.json`)
 
 axios.get(`${githubLocation}/stations.json`)
     .then(data => {
-        stations = data.data.stations;
+        stations = data.data.used_stations;
         console.log(stations)
         setNumStations();
         populateStationsPlot();
@@ -34,11 +35,14 @@ function setNumStations() {
     console.log(introductionText)
 
     let textData = introductionText.innerHTML;
-    textData = textData.replace('var_n_stations', stations.length)
+    textData = textData.replace('var_n_stations', n_stations)
     textData = textData.replace('var_n_months', n_months)
     textData = textData.replace('var_start_date', start_date)
     textData = textData.replace('var_end_date', end_date)
     introductionText.innerHTML = textData
+
+    // Show the text now that it is updated.
+    introductionText.classList.remove('hidden');
 }
 
 
