@@ -1,5 +1,5 @@
 let min_temp_error, avg_temp_error, max_temp_error, forecast_days_before, start_date, end_date, n_months, n_stations
-let stations
+let used_stations, other_stations
 let githubLocation = 'https://higamy.github.io/Weather'
 
 axios.get(`${githubLocation}/vars.json`)
@@ -22,8 +22,9 @@ axios.get(`${githubLocation}/vars.json`)
 
 axios.get(`${githubLocation}/stations.json`)
     .then(data => {
-        stations = data.data.used_stations;
-        console.log(stations)
+        used_stations = data.data.used_stations;
+        other_stations = data.data.other_stations;
+        console.log(data.data)
         setNumStations();
         populateStationsPlot();
     })
@@ -132,8 +133,16 @@ function populateStationsPlot() {
         }, {
             type: 'mappoint',
             enableMouseTracking: true,
-            name: 'Weather Stations',
-            data: stations
+            name: 'Used Stations',
+            data: used_stations,
+            color: 'rgb(0,0,255)'
+        },
+        {
+            type: 'mappoint',
+            enableMouseTracking: true,
+            name: 'Other Stations',
+            data: other_stations,
+            color: 'rgb(100,100,100)'
         }]
     });
 }
