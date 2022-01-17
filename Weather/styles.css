@@ -43,3 +43,8 @@
 .hidden{
     display: none;
 }
+.idea{
+    font-weight: bolder;
+    color: red;
+    display: block;
+}

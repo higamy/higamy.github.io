@@ -10,6 +10,7 @@
     <script src="https://code.highcharts.com/highcharts-more.js"></script>
     <script src="https://code.highcharts.com/modules/exporting.js"></script>
     <script src="https://code.highcharts.com/modules/export-data.js"></script>
+    <script src="https://code.highcharts.com/modules/histogram-bellcurve.js"></script>
     <script src="https://code.highcharts.com/modules/accessibility.js"></script>
     <script src="https://code.highcharts.com/maps/modules/map.js"></script>
     <script src="https://code.highcharts.com/mapdata/custom/british-isles.js"></script>
@@ -25,11 +26,13 @@
         <h1>Weather Forecast Accuracy</h1>
 
         <div id="introductionText" class="hidden">
-            In this study var_n_stations weather stations were analysed over a
-            period of var_n_months months between
-            var_start_date and var_end_date.
+            <p>In this study var_n_stations weather stations were analysed over a
+                period of var_n_months months between
+                var_start_date and var_end_date. </p>
+            <p>The forecast was gathered every hour, along with the current weather conditions. </p>
+            <span class="idea">Accuracy vs temperature</span>
+            <span class="idea">Precipitation probability</span>
 
-            Update to not show all 147 stations but only the 19 analysed ones.
         </div>
 
         <figure class="highcharts-figure narrow">

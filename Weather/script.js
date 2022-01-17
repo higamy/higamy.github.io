@@ -71,17 +71,17 @@ function populateTemperatureErrorPlot() {
             text: 'Temperature variation by day'
         },
 
-        xAxis: {
+        xAxis: [{
             title: {
                 text: 'Forecast Days Ahead'
             }
-        },
+        }],
 
-        yAxis: {
+        yAxis: [{
             title: {
                 text: "Error °C"
             }
-        },
+        }],
 
         tooltip: {
             crosshairs: true,
@@ -105,7 +105,9 @@ function populateTemperatureErrorPlot() {
             data: average_data,
             type: "spline",
             color: 'rgb(0,0,255)',
-        }]
+            id: 's1'
+        }
+        ]
 
     });
 }
@@ -133,16 +135,17 @@ function populateStationsPlot() {
         }, {
             type: 'mappoint',
             enableMouseTracking: true,
-            name: 'Used Stations',
+            name: 'Analysed Stations',
             data: used_stations,
             color: 'rgb(0,0,255)'
         },
         {
             type: 'mappoint',
-            enableMouseTracking: true,
+            enableMouseTracking: false,
             name: 'Other Stations',
             data: other_stations,
-            color: 'rgb(100,100,100)'
-        }]
+            color: 'rgba(100,100,100,0.5)'
+        }
+        ]
     });
 }
