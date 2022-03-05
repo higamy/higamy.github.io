@@ -1,13 +1,25 @@
 // http://www.twstats.co.uk/uk60/index.php?page=tribe&mode=members&id=2
+/*Ideas
 
+Upload all tribes plots to a site daily.
+Browser feature
+Not just points trend but other stats
+*/
+
+
+// Variable declaration
 let data_all = [];
 let players_all = [];
-
 let all_promises = [];
+
+if ($('#members').length == 0) {
+    alert("This script must be run on the members page on twstats!");
+    throw 'Members table not found';
+}
 
 let tribe_name = $($('h3').find('a')).text();
 
-let x;
+
 $('#members').find('tr.r1, tr.r2').find('td:nth-of-type(2)').find('a').each((i, el) => {
     let player_name = $(el).text().trim();
     let player_id = $(el).attr('href').split('&id=')[1];
@@ -17,22 +29,21 @@ $('#members').find('tr.r1, tr.r2').find('td:nth-of-type(2)').find('a').each((i, 
 
         let data_single = [];
 
-
-        var jqxhr = $.get(`${window.location.pathname}?page=player&id=${player_id}&tab=history`, function (data) {
-            //console.log(data)
+        $.get(`${window.location.pathname}?page=player&id=${player_id}&tab=history`, function (data) {
 
             $(data).find('tr.r1, tr.r2').each((j, el2) => {
                 let date = $(el2).find('td:nth-of-type(1)').text()
-                //let point = $($($(el2).find('td:nth-of-type(5)').children()[0]).children()[1]).text()
 
+
+                // Depending on if it is the first ever record, there is a + sign before the points
+                // The below handles both cases
                 let point = $(el2).find('td:nth-of-type(5)')
                 if (point.children().length == 0) {
-                    point = point.text()
+                    point = point.text() // No plus sign
                 }
                 else {
-                    point = $($(point.children()[0]).children()[1]).text()
+                    point = $($(point.children()[0]).children()[1]).text() // Plus sign
                 }
-
 
                 // Convert points to numeric values
                 point = parseInt(point.replace(",", ""));
@@ -41,28 +52,18 @@ $('#members').find('tr.r1, tr.r2').find('td:nth-of-type(2)').find('a').each((i, 
                 let date_split = date.split('-');
                 date = Date.UTC(date_split[0], date_split[1] - 1, date_split[2]);
 
-
+                // Insert at the end so that the array is ascending
                 data_single.unshift([date, point]);
-
-
             })
             resolve({
                 name: player_name,
-                data: data_single//.slice(0, 3)
+                data: data_single
             });
         })
-
-        // Ensure date ascending
-
-        //console.log(data_single)
-        //data_single.reverse();
-        //console.log(data_single)
 
     });
 
     all_promises.push(myPromise);
-
-
 }
 )
 
@@ -125,10 +126,9 @@ figure{
 `;
 document.head.appendChild(style);
 
-//console.log(all_promises)
+
 
 // Add Highcharts scripts
-
 let scriptPromises = [];
 
 script_list = ["https://code.highcharts.com/highcharts.js",
@@ -151,39 +151,10 @@ for (let script of script_list) {
     scriptPromises.push(scriptPromise);
 }
 
-let values_final;
-values2 = [{
-    name: "higamy",
-    data: [
-        [Date.UTC(2022, 1, 1), 885],
-        [Date.UTC(2022, 1, 2), 1014],
-        [Date.UTC(2022, 1, 3), 1278]
-    ]
-},
-{
-    name: "Jimbob",
-    data: [
-        [Date.UTC(2022, 2, 1), 8885],
-        [Date.UTC(2022, 2, 2), 3014],
-        [Date.UTC(2022, 2, 3), 7278]
-    ]
-}]
-
 let mainChart;
 
 Promise.all(scriptPromises).then((vals) => {
     Promise.all(all_promises).then((values) => {
-        console.log("All promises resolved.")
-        //console.log(values);
-
-
-
-        values_final = values;
-
-        //console.log(values_final);
-        //console.log(values2);
-        console.log(JSON.parse(JSON.stringify(values_final)));
-
         let fig = document.createElement('figure');
         fig.classList.add("highcharts-figure");
 
@@ -236,8 +207,7 @@ Promise.all(scriptPromises).then((vals) => {
                     }
                 }
             },
-            //series: values,
-            series: values_final,
+            series: values,
             responsive: {
                 rules: [{
                     condition: {
