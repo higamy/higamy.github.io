@@ -72,6 +72,7 @@ function populateTemperatureErrorPlot() {
         },
 
         xAxis: [{
+            type: 'datetime',
             title: {
                 text: 'Forecast Days Ahead'
             }
