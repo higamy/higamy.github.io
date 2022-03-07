@@ -1,17 +1,21 @@
-[
-    {
-        "server": "uk",
-        "world": 60,
-        "domain": "co.uk"
-    },
-    {
-        "server": "uk",
-        "world": 61,
-        "domain": "co.uk"
-    },
-    {
-        "server": "en",
-        "world": 126,
-        "domain": "net"
-    }
-]
+{
+    "config": [
+        {
+            "server": "uk",
+            "domain": "co.uk",
+            "worlds": [
+                60,
+                61
+            ]
+        },
+        {
+            "server": "en",
+            "domain": "net",
+            "worlds": [
+                124,
+                126
+            ]
+        }
+    ],
+    "Last Updated": "2022-03-07 09:16:38"
+}
