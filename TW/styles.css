@@ -1,0 +1,28 @@
+/*********** Type selectors ************/
+
+main{
+    padding: 10px;
+}
+
+/*********** Class selectors ************/
+
+.even-spacing{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+}
+
+.hidden{
+    display: none;
+}
+
+/*********** ID selectors ************/
+
+#serverContainer > button{  
+    width: 200px;
+}
+
+#worldContainer{
+    margin: 10px 0px;
+}
+
