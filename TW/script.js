@@ -21,8 +21,10 @@ class ServerContainer {
     worldSelectorContainer
     serverButton
     server
+    worldButtons
 
     constructor(serverConfig) {
+        this.worldButtons = []
         this.server = serverConfig['server']
 
         const serverButton = document.createElement('button');
@@ -34,8 +36,9 @@ class ServerContainer {
         this.worldSelectorContainer = worldSelectorContainer;
         worldSelectorContainer.classList.add("even-spacing");
         for (let world of serverConfig.worlds) {
-            new WorldButton(this, world);
+            this.worldButtons.push(new WorldButton(this, world));
         }
+        this.worldButtons[0].activate();
 
         serverButton.addEventListener('click', () => {
             for (let serverSelector of serverSelectors) serverSelector.deactivate();
@@ -61,18 +64,32 @@ class ServerContainer {
         this.serverButton.classList.remove('btn-primary');
         this.worldSelectorContainer.classList.add('hidden');
     }
+
+    deactiveAllButtons() {
+        for (let button of this.worldButtons) {
+            button.deactivate();
+        }
+    }
 }
+
+let dataGlobal
 
 class WorldButton {
     world
     server
     button
+    serverContainer
+    data
+
+    // **************** Save ref to data if already loaded
 
 
     constructor(ServerContainer, world) {
+        this.serverContainer = ServerContainer;
+
         const worldButton = document.createElement('button');
-        this.button = button
-        worldButton.classList.add('btn', 'btn-info');
+        this.button = worldButton
+        worldButton.classList.add('btn', 'btn-secondary');
         worldButton.innerHTML = world;
 
         ServerContainer.worldSelectorContainer.appendChild(worldButton);
@@ -84,16 +101,37 @@ class WorldButton {
     }
 
     activate() {
+        this.serverContainer.deactiveAllButtons();
+
         // Update styles
         this.button.classList.add('btn-info');
         this.button.classList.remove('btn-secondary');
 
-        // Get the data
-        axios.get(`${githubLocation}/${this.server}/${this.world}/tribes.json`)
-            .then(data => {
-                data = data.data
-                console.log(data)
-            })
+        // Get the data - if not retrieved already
+        new Promise((resolve, reject) => {
+
+            if (this.data) {
+                resolve('Data loaded from previous save.');
+            }
+            else {
+                axios.get(`${githubLocation}/${this.server}/${this.world}/tribes.json`)
+                    .then(data => {
+                        data = data.data;
+                        console.log(data);
+                        this.data = data;
+                        dataGlobal = data;
+                        resolve('Data retrieved via XHR.');
+                    })
+            }
+        }).then((message) => {
+            console.log(message);
+            let tribeList = this.data.tribes.map(function (value) {
+                return value.tribe;
+            });
+            console.log(tribeList);
+        })
+
+
     }
 
     deactivate() {

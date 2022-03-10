@@ -1,6 +1,6 @@
 /*********** Type selectors ************/
 
-main{
+header{
     padding: 10px;
 }
 
@@ -23,6 +23,31 @@ main{
 }
 
 #worldContainer{
-    margin: 10px 0px;
+    margin-top: 10px;
 }
 
+#mainContainer{
+    height: 600px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+}
+
+#plotSelector{
+    max-width: 400px;
+    flex-grow: 0.5;
+    background-color: rgb(210, 210, 247);
+    text-align:center
+}
+
+#plotContainer{
+    min-width: 300px;
+    flex-grow: 1;
+    background-color: rgb(250, 184, 184);
+}
+
+#graphAdder{
+    --margin-width: 10px;
+    width: calc(100% - 2*var(--margin-width));
+    margin: 10px var(--margin-width);
+}
