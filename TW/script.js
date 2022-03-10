@@ -1,6 +1,17 @@
+/*
+IDEAS
+
+Python script needs to get all pages, not just page 1 (most recent data)
+
+*/
+
+
 const githubLocation = 'https://higamy.github.io/TW/Data'
 const serverContainerEl = document.getElementById("serverContainer");
 const worldContainerEl = document.getElementById("worldContainer");
+const graphAdder = document.getElementById("graphAdder");
+const tribePopupContainer = document.getElementById("tribePopupContainer");
+
 
 let serverSelectors = []
 
@@ -72,16 +83,12 @@ class ServerContainer {
     }
 }
 
-let dataGlobal
-
 class WorldButton {
     world
     server
     button
     serverContainer
     data
-
-    // **************** Save ref to data if already loaded
 
 
     constructor(ServerContainer, world) {
@@ -119,16 +126,34 @@ class WorldButton {
                         data = data.data;
                         console.log(data);
                         this.data = data;
-                        dataGlobal = data;
                         resolve('Data retrieved via XHR.');
                     })
             }
         }).then((message) => {
-            console.log(message);
+            //console.log(message);
             let tribeList = this.data.tribes.map(function (value) {
                 return value.tribe;
             });
-            console.log(tribeList);
+            //console.log(tribeList);
+
+            graphAdder.oninput = () => {
+
+                let matchingTribes = tribeList.filter((x) => {
+                    return x.toLowerCase().startsWith(graphAdder.value.toLowerCase());
+                })
+
+                // Remove the previous tribe elements
+                tribePopupContainer.innerHTML = "";
+
+
+                matchingTribes.forEach((tribe, i) => {
+                    // Find the matching tribe in all the data
+                    let matchingTribeData = this.data.tribes.filter((x) => {
+                        return x.tribe == tribe;
+                    })
+                    new TribeSelector(tribe, matchingTribeData[0]);
+                });
+            }
         })
 
 
@@ -139,4 +164,27 @@ class WorldButton {
         this.button.classList.remove('btn-info');
         this.button.classList.add('btn-secondary');
     }
+}
+
+
+class TribeSelector {
+    tribeName
+    tribeData
+
+    constructor(tribeName, tribeData) {
+        this.tribeName = tribeName;
+        this.tribeData = tribeData
+
+        const tribePopup = document.createElement("div");
+        tribePopup.innerHTML = tribeName;
+        tribePopup.classList.add("tribe-popup");
+        tribePopupContainer.appendChild(tribePopup);
+
+        tribePopup.addEventListener("click", () => { this.selectTribe() })
+    }
+
+    selectTribe() {
+        console.log(this.tribeData)
+    }
+
 }

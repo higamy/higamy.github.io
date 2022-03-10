@@ -1,3 +1,11 @@
+/*********** Variables ************/
+
+:root{
+    --plot-selector-margin: 10px;
+    --popup-colour-standard: rgba(161, 161, 141, 0.918);
+    --popup-colour-hover: rgba(136, 136, 87, 0.918);
+}
+
 /*********** Type selectors ************/
 
 header{
@@ -14,6 +22,10 @@ header{
 
 .hidden{
     display: none;
+}
+
+.tribe-popup:hover{
+    background-color: var(--popup-colour-hover);
 }
 
 /*********** ID selectors ************/
@@ -47,7 +59,19 @@ header{
 }
 
 #graphAdder{
-    --margin-width: 10px;
-    width: calc(100% - 2*var(--margin-width));
-    margin: 10px var(--margin-width);
+    margin-top: var(--plot-selector-margin);
+}
+
+#graphAdder, #tribePopupContainer{
+    width: calc(100% - 2*var(--plot-selector-margin));
+    margin-left: var(--plot-selector-margin);
+    margin-right: var(--plot-selector-margin);
+}
+
+#tribePopupContainer, .tribe-popup:last-child{
+    border-radius: 0px 0px 10px 10px;
+}
+
+#tribePopupContainer{
+    background-color: var(--popup-colour-standard);
 }
