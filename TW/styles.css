@@ -28,6 +28,10 @@ header{
     background-color: var(--popup-colour-hover);
 }
 
+.dropdown{
+    margin: 10px 00px;
+}
+
 /*********** ID selectors ************/
 
 #serverContainer > button{  
@@ -43,6 +47,12 @@ header{
     display: flex;
     flex-direction: row;
     justify-content: space-evenly;
+}
+
+@media (max-width: 850px) { 
+    #mainContainer {
+            flex-direction: column
+    }
 }
 
 #plotSelector{
