@@ -48,14 +48,12 @@ header{
 #plotSelector{
     max-width: 400px;
     flex-grow: 0.5;
-    background-color: rgb(210, 210, 247);
     text-align:center
 }
 
 #plotContainer{
     min-width: 300px;
     flex-grow: 1;
-    background-color: rgb(250, 184, 184);
 }
 
 #graphAdder{

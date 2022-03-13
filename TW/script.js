@@ -2,6 +2,8 @@
 IDEAS
 
 Python script needs to get all pages, not just page 1 (most recent data)
+Search works with tribe tag (as well as name)
+Add tribe tag
 
 */
 
@@ -11,6 +13,7 @@ const serverContainerEl = document.getElementById("serverContainer");
 const worldContainerEl = document.getElementById("worldContainer");
 const graphAdder = document.getElementById("graphAdder");
 const tribePopupContainer = document.getElementById("tribePopupContainer");
+const plotContainer = document.getElementById("plotContainer");
 
 
 let serverSelectors = []
@@ -23,8 +26,8 @@ axios.get(`${githubLocation}/Config/tribes.json`)
             const serverContainer = new ServerContainer(serverConfig);
             serverSelectors.push(serverContainer);
         }
-
         serverSelectors[0].activate();
+        serverSelectors[0].worldButtons[0].activate()
     })
 
 
@@ -49,7 +52,6 @@ class ServerContainer {
         for (let world of serverConfig.worlds) {
             this.worldButtons.push(new WorldButton(this, world));
         }
-        this.worldButtons[0].activate();
 
         serverButton.addEventListener('click', () => {
             for (let serverSelector of serverSelectors) serverSelector.deactivate();
@@ -68,6 +70,8 @@ class ServerContainer {
         this.serverButton.classList.remove('btn-secondary');
         this.serverButton.classList.add('btn-primary');
         this.worldSelectorContainer.classList.remove('hidden');
+        this.worldButtons[0].activate();
+        resetGraphAdder();
     }
 
     deactivate() {
@@ -90,8 +94,8 @@ class WorldButton {
     serverContainer
     data
 
-
     constructor(ServerContainer, world) {
+
         this.serverContainer = ServerContainer;
 
         const worldButton = document.createElement('button');
@@ -108,6 +112,9 @@ class WorldButton {
     }
 
     activate() {
+        clearChart();
+        resetGraphAdder();
+
         this.serverContainer.deactiveAllButtons();
 
         // Update styles
@@ -137,13 +144,16 @@ class WorldButton {
             //console.log(tribeList);
 
             graphAdder.oninput = () => {
+                // Remove the previous tribe elements
+                tribePopupContainer.innerHTML = "";
+
+                if (graphAdder.value == "") return;
 
                 let matchingTribes = tribeList.filter((x) => {
                     return x.toLowerCase().startsWith(graphAdder.value.toLowerCase());
                 })
 
-                // Remove the previous tribe elements
-                tribePopupContainer.innerHTML = "";
+
 
 
                 matchingTribes.forEach((tribe, i) => {
@@ -166,6 +176,19 @@ class WorldButton {
     }
 }
 
+function resetGraphAdder() {
+    graphAdder.value = "";
+    var event = new Event('input', {
+        bubbles: true,
+        cancelable: true,
+    });
+
+    graphAdder.dispatchEvent(event);
+}
+
+function clearChart() {
+    plotContainer.innerHTML = "";
+}
 
 class TribeSelector {
     tribeName
@@ -185,14 +208,12 @@ class TribeSelector {
 
     selectTribe() {
         console.log(this.tribeData)
-        mainChart.setTitle({ text: this.tribeData.tribe })
+        //mainChart.setTitle({ text: this.tribeData.tribe })
 
         // Format the data as needed
 
         let all_data = []
         for (let player of this.tribeData.players) {
-            console.log(`Adding player`)
-            console.log(player)
             let player_data = []
             for (let i = 0; i < player.dates.length; i++) {
                 player_data.push([player.dates[i], player.points[i]])
@@ -211,77 +232,77 @@ class TribeSelector {
              color: "#00FF00"
          }]*/
 
-        mainChart.update({ series: all_data });
+        //mainChart.update({ series: all_data });
+        clearChart();
+        Highcharts.chart('plotContainer', {
+            chart: {
+                type: 'line',
+                zoomType: 'xy'
+            },
 
+            subtitle: {
+                text: 'Created by higamy'
+            },
+
+            yAxis: {
+                title: {
+                    text: 'Points'
+                }
+            },
+            title: {
+                text: this.tribeData.tribe
+            },
+
+            xAxis: {
+                type: 'datetime',
+                dateTimeLabelFormats: { // don't display the dummy year
+                    month: '%e. %b',
+                    year: '%b'
+                },
+                title: {
+                    text: 'Date'
+                }
+            },
+
+            legend: {
+                layout: 'vertical',
+                align: 'right',
+                verticalAlign: 'middle'
+            },
+
+            plotOptions: {
+                series: {
+                    marker: {
+                        enabled: true
+                    }
+                }
+            },
+
+            series: all_data,
+
+
+            responsive: {
+                rules: [{
+                    condition: {
+                        //  maxWidth: 500
+                    },
+                    chartOptions: {
+                        plotOptions: {
+                            series: {
+                                marker: {
+                                    radius: 2.5
+                                }
+                            }
+                        }
+                    }
+                }]
+            }
+
+        });
 
         //mainChart.series[0].setData(all_data);
-        mainChart.redraw()
-
-
-
+        //mainChart.redraw()
     }
 
 }
 
-let mainChart = Highcharts.chart('plotContainer', {
-    chart: {
-        type: 'line',
-        zoomType: 'xy'
-    },
-
-    subtitle: {
-        text: 'Created by higamy'
-    },
-
-    yAxis: {
-        title: {
-            text: 'Points'
-        }
-    },
-
-    xAxis: {
-        type: 'datetime',
-        dateTimeLabelFormats: { // don't display the dummy year
-            month: '%e. %b',
-            year: '%b'
-        },
-        title: {
-            text: 'Date'
-        }
-    },
-
-    legend: {
-        layout: 'vertical',
-        align: 'right',
-        verticalAlign: 'middle'
-    },
-
-    plotOptions: {
-        series: {
-            marker: {
-                enabled: true
-            }
-        }
-    },
-
-    series: [[0, 0]],
-
-
-    responsive: {
-        rules: [{
-            condition: {
-                //  maxWidth: 500
-            },
-            chartOptions: {
-                plotOptions: {
-                    series: {
-                        marker: {
-                            radius: 2.5
-                        }
-                    }
-                }
-            }
-        }]
-    }
-
-});
