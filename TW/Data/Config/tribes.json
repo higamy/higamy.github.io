@@ -4,7 +4,10 @@
             "server": "uk",
             "domain_game": "co.uk",
             "domain_stats": "co.uk",
-            "worlds": []
+            "worlds": [
+                60,
+                61
+            ]
         },
         {
             "server": "en",
@@ -17,5 +20,5 @@
             ]
         }
     ],
-    "Last Updated": "2022-03-13 14:13:16"
+    "Last Updated": "2022-03-13 17:40:13"
 }
