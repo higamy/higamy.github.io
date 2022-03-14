@@ -10,7 +10,7 @@ Add tribe tag
 
 // Constants
 const githubLocation = 'https://higamy.github.io/TW/Data';
-const availableStatistics = ['points', 'ranks', 'villages', 'OD', 'ODA', 'ODD'];
+const availableStatistics = ['Points', 'Rank', 'villages', 'OD', 'ODA', 'ODD'];
 
 // DOM Elements
 const statisticSelector = document.getElementById("statisticSelector");
@@ -26,11 +26,11 @@ const graphAdder = document.getElementById("graphAdder");
 const tribePopupContainer = document.getElementById("tribePopupContainer");
 const plotContainer = document.getElementById("plotContainer");
 
+
 let serverSelectors = [];
 let activeTribeSelector;
 let selectedMetric = availableStatistics[0];
-
-
+let saved_data = {};
 
 axios.get(`${githubLocation}/Config/tribes.json`)
     .then(data => {
@@ -39,6 +39,7 @@ axios.get(`${githubLocation}/Config/tribes.json`)
 
         for (let serverConfig of data.config) {
             serverSelectors.push(new ServerSelector(serverConfig));
+            saved_data[serverConfig['server']] = {}
         }
         serverSelectors[0].activate();
 
@@ -63,6 +64,7 @@ class ServerSelector {
         worldSelectorDropdownOptions.innerHTML = ""; // Clear previous options
         this.worldDropDowns = []
         for (let world of this.serverConfig.worlds) {
+
             const dropDownOption = new DropDownOption(worldSelector, worldSelectorDropdownOptions, world);
             this.worldDropDowns.push(dropDownOption);
 
@@ -73,24 +75,23 @@ class ServerSelector {
                 // Get the data - if not retrieved already
                 new Promise((resolve, reject) => {
 
-                    if (this.data) {
-                        resolve('Data loaded from previous save.');
+                    if (saved_data[this.server][world]) {
+                        resolve(saved_data[this.server][world]);
                     }
                     else {
                         axios.get(`${githubLocation}/${this.server}/${world}/tribes.json`)
                             .then(data => {
                                 data = data.data;
                                 console.log(data);
-                                this.data = data;
-                                resolve('Data retrieved via XHR.');
+                                saved_data[this.server][world] = data;
+                                resolve(data);
                             })
                     }
-                }).then((message) => {
-                    //console.log(message);
-                    let tribeList = this.data.tribes.map(function (value) {
+                }).then((data) => {
+
+                    let tribeList = data.tribes.map(function (value) {
                         return value.tribe;
                     });
-                    //console.log(tribeList);
 
                     graphAdder.oninput = () => {
                         // Remove the previous tribe elements
@@ -105,7 +106,7 @@ class ServerSelector {
 
                         matchingTribes.forEach((tribe, i) => {
                             // Find the matching tribe in all the data
-                            let matchingTribeData = this.data.tribes.filter((x) => {
+                            let matchingTribeData = data.tribes.filter((x) => {
                                 return x.tribe == tribe;
                             })
                             new TribeSelector(tribe, matchingTribeData[0]);

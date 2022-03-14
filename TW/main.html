@@ -31,27 +31,31 @@
     <main>
         <div id="mainContainer">
             <div id="plotSelector">
-                <div class="dropdown">
-                    <button class="btn btn-secondary dropdown-toggle" type="button" id="serverSelector"
-                        data-bs-toggle="dropdown" aria-expanded="false">
-                        Select server
-                    </button>
-                    <ul class="dropdown-menu" aria-labelledby="serverSelector" id="serverSelectorDropdownOptions"></ul>
+                <div id="dropdownHolder">
+                    <div class="dropdown">
+                        <button class="btn btn-secondary dropdown-toggle" type="button" id="serverSelector"
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="serverSelector" id="serverSelectorDropdownOptions">
+                        </ul>
+                    </div>
+                    <div class="dropdown">
+                        <button class="btn btn-secondary dropdown-toggle" type="button" id="worldSelector"
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="worldSelector" id="worldSelectorDropdownOptions">
+                        </ul>
+                    </div>
+                    <div class="dropdown">
+                        <button class="btn btn-secondary dropdown-toggle" type="button" id="statisticSelector"
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                            Points
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="statisticSelector" id="statisticsDropdownOptions">
+                        </ul>
+                    </div>
                 </div>
-                <div class="dropdown">
-                    <button class="btn btn-secondary dropdown-toggle" type="button" id="worldSelector"
-                        data-bs-toggle="dropdown" aria-expanded="false">
-                        Select world
-                    </button>
-                    <ul class="dropdown-menu" aria-labelledby="worldSelector" id="worldSelectorDropdownOptions"></ul>
-                </div>
-                <div class="dropdown">
-                    <button class="btn btn-secondary dropdown-toggle" type="button" id="statisticSelector"
-                        data-bs-toggle="dropdown" aria-expanded="false">
-                        Points
-                    </button>
-                    <ul class="dropdown-menu" aria-labelledby="statisticSelector" id="statisticsDropdownOptions"></ul>
-                </div>
+
                 <input type="text" id="graphAdder" placeholder="Start typing a tribe name">
                 <div id="tribePopupContainer">
 

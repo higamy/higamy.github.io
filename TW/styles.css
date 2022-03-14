@@ -30,6 +30,11 @@ header{
 
 .dropdown{
     margin: 10px 00px;
+    display: flex;
+}
+
+.dropdown-toggle{
+    width: 100px;
 }
 
 /*********** ID selectors ************/
@@ -82,4 +87,10 @@ header{
 
 #tribePopupContainer{
     background-color: var(--popup-colour-standard);
+}
+
+#dropdownHolder{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
 }
