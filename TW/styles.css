@@ -12,6 +12,16 @@ header{
     padding: 10px;
 }
 
+body{
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url(https://twstats.co.uk/img/bg-tile.jpg);
+    font-size: 9pt;
+    font-family: Verdana, Arial;
+    background-color: #d2c09e;
+}
+
 /*********** Class selectors ************/
 
 .even-spacing{
@@ -31,10 +41,21 @@ header{
 .dropdown{
     margin: 10px 00px;
     display: flex;
+    flex-direction: column;
 }
 
 .dropdown-toggle{
     width: 100px;
+    color: #804000;
+    background: #f8edce !important;
+}
+
+.dropdown-toggle:hover, .dropdown-toggle:focus{
+    color: #582d01;
+}
+
+.buttonLabel{
+    font-size: 80%;
 }
 
 /*********** ID selectors ************/
@@ -69,10 +90,13 @@ header{
 #plotContainer{
     min-width: 300px;
     flex-grow: 1;
+    border-radius: 10px;
+    margin-top: 10px;
 }
 
 #graphAdder{
-    margin-top: var(--plot-selector-margin);
+    height: 35px;
+    border-radius: 0.25rem;
 }
 
 #graphAdder, #tribePopupContainer{
@@ -92,5 +116,6 @@ header{
 #dropdownHolder{
     display: flex;
     flex-direction: row;
-    justify-content: space-evenly;
+    justify-content: space-between;
+    padding: 0px 10px;
 }

@@ -4,6 +4,7 @@ IDEAS
 Python script needs to get all pages, not just page 1 (most recent data)
 Search works with tribe tag (as well as name)
 Add tribe tag
+Add flag of the server
 
 */
 
