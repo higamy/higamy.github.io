@@ -100,9 +100,12 @@ body{
 
 #plotContainer{
     min-width: 300px;
-    flex-grow: 1;
-    border-radius: 10px;
+    flex-grow: 1;   
     margin-top: 10px;
+}
+
+#plotContainer>div{
+    border-radius: 10px;
 }
 
 #graphAdder{
