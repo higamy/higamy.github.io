@@ -276,8 +276,6 @@ class WorldButton {
                 })
 
 
-
-
                 matchingTribes.forEach((tribe, i) => {
                     // Find the matching tribe in all the data
                     let matchingTribeData = this.data.tribes.filter((x) => {
@@ -330,6 +328,7 @@ class TribeSelector {
     }
 
     selectTribe() {
+        resetGraphAdder();
         activeTribeSelector = this;
         this.calculateData();
         redrawChart();
@@ -353,6 +352,10 @@ class TribeSelector {
 
 }
 
+let layoutVal;
+let alignVal;
+let verticalAlign;
+
 function redrawChart() {
     if (!activeTribeSelector) {
         return;
@@ -361,10 +364,24 @@ function redrawChart() {
     activeTribeSelector.calculateData();
     clearChart();
 
+
+    const windowWidth = window.innerWidth;
+    if (windowWidth > 850) {
+        layoutVal = 'vertical';
+        alignVal = 'right';
+        verticalVal = 'middle';
+    }
+    else {
+        layoutVal = 'horizontal';
+        alignVal = 'center';
+        verticalVal = 'bottom';
+    }
+
     Highcharts.chart('plotContainer', {
         chart: {
             type: 'line',
-            zoomType: 'xy'
+            zoomType: 'xy',
+            height: 600
         },
 
         subtitle: {
@@ -392,9 +409,10 @@ function redrawChart() {
         },
 
         legend: {
-            layout: 'vertical',
-            align: 'right',
-            verticalAlign: 'middle'
+            layout: layoutVal,
+            align: alignVal,
+            verticalAlign: verticalVal,
+            floating: false
         },
 
         plotOptions: {
@@ -411,7 +429,7 @@ function redrawChart() {
         responsive: {
             rules: [{
                 condition: {
-                    //  maxWidth: 500
+
                 },
                 chartOptions: {
                     plotOptions: {

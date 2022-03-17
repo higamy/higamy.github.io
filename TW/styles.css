@@ -76,7 +76,7 @@ body{
 }
 
 #mainContainer{
-    height: 600px;
+    /*height: 600px;*/
     display: flex;
     flex-direction: row;
     justify-content: space-evenly;
