@@ -1,21 +1,22 @@
 {
     "config": [
         {
+            "server": "en",
+            "domain_game": "net",
+            "domain_stats": "com",
+            "worlds": [
+                126,
+                127
+            ]
+        },
+        {
             "server": "uk",
             "domain_game": "co.uk",
             "domain_stats": "co.uk",
             "worlds": [
                 60
             ]
-        },
-        {
-            "server": "en",
-            "domain_game": "net",
-            "domain_stats": "com",
-            "worlds": [
-                126
-            ]
         }
     ],
-    "Last Updated": "2022-05-18 20:00:21"
+    "Last Updated": "2022-05-18 20:01:15"
 }
