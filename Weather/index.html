@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://code.highcharts.com/highcharts-more.js"></script>
+    <script src="https://code.highcharts.com/modules/exporting.js"></script>
+    <script src="https://code.highcharts.com/modules/export-data.js"></script>
+    <script src="https://code.highcharts.com/modules/histogram-bellcurve.js"></script>
+    <script src="https://code.highcharts.com/modules/accessibility.js"></script>
+    <script src="https://code.highcharts.com/maps/modules/map.js"></script>
+    <script src="https://code.highcharts.com/mapdata/custom/british-isles.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.3.6/proj4.js"></script>
+    <!-- Include axios library as an easier way to get make API requests -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <title>Forecast Accuracy</title>
+</head>
+
+<body>
+
+    <main>
+        <h1>Weather Forecast Accuracy</h1>
+
+        <div id="introductionText" class="hidden">
+            <p>In this study var_n_stations weather stations were analysed over a
+                period of var_n_months months between
+                var_start_date and var_end_date. </p>
+            <p>The forecast was gathered every hour, along with the current weather conditions. </p>
+            <span class="idea">Accuracy vs temperature</span>
+            <span class="idea">Precipitation probability</span>
+
+        </div>
+
+        <figure class="highcharts-figure narrow">
+            <div id="stations_map"></div>
+            <p class="highcharts-description">
+                Locations of the weather stations used in this analysis.
+            </p>
+        </figure>
+
+        <figure class="highcharts-figure">
+            <div id="temperature_accuracy"></div>
+            <p class="highcharts-description">
+                Accuracy of the weather forecast relative to the forecast period away.
+                Add histogram above and to the side?
+            </p>
+        </figure>
+
+
+    </main>
+
+
+    <script src="script.js"></script>
+</body>
+
+</html>

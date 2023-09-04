@@ -1,0 +1,114 @@
+{
+    "Models": [
+        {
+            "Name": "House",
+            "Constraints": [
+                {
+                    "Source": "ExtraFloor",
+                    "Target": "Roof",
+                    "Type": "Offset",
+                    "Axis": "y",
+                    "Direction": "max"
+                },
+                {
+                    "Source": "GroundFloor",
+                    "Target": "ExtraFloor",
+                    "Type": "Offset",
+                    "Axis": "y",
+                    "Direction": "max"
+                },
+                {
+                    "Source": "GroundFloor",
+                    "Target": "Light",
+                    "Type": "Offset",
+                    "Axis": "x",
+                    "Direction": "max"
+                },
+                {
+                    "Source": "GroundFloor",
+                    "Target": "Light",
+                    "Type": "Offset",
+                    "Axis": "z",
+                    "Direction": "max"
+                }
+            ],
+            "Children": [
+                {
+                    "Name": "GroundFloor",
+                    "Quantity": 1,
+                    "Optional": false,
+                    "Modifiers": {
+                        "Scale": {
+                            "x": [
+                                1,
+                                5
+                            ],
+                            "y": [
+                                1,
+                                5
+                            ],
+                            "z": [
+                                1,
+                                5
+                            ]
+                        },
+                        "Rotation": {
+                            "x": [
+                                0,
+                                360
+                            ],
+                            "y": [
+                                0,
+                                360
+                            ],
+                            "z": [
+                                0,
+                                360
+                            ]
+                        }
+                    }
+                },
+                {
+                    "Name": "ExtraFloor",
+                    "Quantity": 1,
+                    "Optional": true,
+                    "Modifiers": {
+                        "Repeat": {
+                            "Quantity": [
+                                0,
+                                5
+                            ],
+                            "Direction": {
+                                "x": 0,
+                                "y": 1,
+                                "z": 0
+                            },
+                            "Scale Factor": {
+                                "x": 0.9,
+                                "y": 1,
+                                "z": 0.9
+                            }
+                        }
+                    }
+                },
+                {
+                    "Name": "Roof",
+                    "Quantity": 1,
+                    "Optional": false,
+                    "Children": [
+                        {
+                            "Name": "Window",
+                            "Quantity": 1,
+                            "Optional": true
+                        }
+                    ]
+                },
+                {
+                    "Name": "Light",
+                    "Quantity": 1,
+                    "Optional": true
+                }
+            ]
+        }
+    ]
+}

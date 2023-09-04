@@ -1,0 +1,1030 @@
+{
+    "used_stations": [
+        {
+            "elevation": 11.0,
+            "name": "Aultbea",
+            "unitaryAuthArea": "Highland",
+            "lat": "57.859",
+            "lon": "-5.636"
+        },
+        {
+            "elevation": 117.0,
+            "name": "Langdon Bay",
+            "unitaryAuthArea": "Kent",
+            "lat": "51.133",
+            "lon": "1.348"
+        },
+        {
+            "elevation": 31.0,
+            "name": "Scilly St Marys",
+            "unitaryAuthArea": "Isles of Scilly",
+            "lat": "49.913",
+            "lon": "-6.301"
+        },
+        {
+            "elevation": 84.0,
+            "name": "Jersey",
+            "unitaryAuthArea": "Jersey",
+            "lat": "49.2079",
+            "lon": "-2.1955"
+        },
+        {
+            "elevation": 85.0,
+            "name": "Bedford",
+            "unitaryAuthArea": "Bedford",
+            "lat": "52.225",
+            "lon": "-0.464"
+        },
+        {
+            "elevation": 9.0,
+            "name": "Belmullet",
+            "lat": "54.233",
+            "lon": "-10.001"
+        },
+        {
+            "elevation": 262.0,
+            "name": "Fylingdales",
+            "unitaryAuthArea": "North Yorkshire",
+            "lat": "54.362",
+            "lon": "-0.673"
+        },
+        {
+            "elevation": 10.0,
+            "name": "Valley",
+            "unitaryAuthArea": "Isle of Anglesey",
+            "lat": "53.252",
+            "lon": "-4.537"
+        },
+        {
+            "elevation": 65.0,
+            "name": "Aberdeen Airport",
+            "unitaryAuthArea": "Aberdeen",
+            "lat": "57.206",
+            "lon": "-2.202"
+        },
+        {
+            "elevation": 81.0,
+            "name": "Keswick",
+            "unitaryAuthArea": "Cumbria",
+            "lat": "54.614",
+            "lon": "-3.157"
+        },
+        {
+            "elevation": 21.0,
+            "name": "Weybourne",
+            "unitaryAuthArea": "Norfolk",
+            "lat": "52.949",
+            "lon": "1.127"
+        },
+        {
+            "elevation": 35.0,
+            "name": "Rostherne No 2",
+            "unitaryAuthArea": "Cheshire East",
+            "lat": "53.3598",
+            "lon": "-2.3805"
+        },
+        {
+            "elevation": 40.0,
+            "name": "Roches Point",
+            "lat": "51.799",
+            "lon": "-8.25"
+        },
+        {
+            "elevation": 307.0,
+            "name": "Sennybridge",
+            "unitaryAuthArea": "Powys",
+            "lat": "52.063",
+            "lon": "-3.614"
+        },
+        {
+            "elevation": 81.0,
+            "name": "Brize Norton",
+            "unitaryAuthArea": "Oxfordshire",
+            "lat": "51.758",
+            "lon": "-1.576"
+        },
+        {
+            "elevation": 63.0,
+            "name": "Belfast International Airport",
+            "unitaryAuthArea": "County Antrim",
+            "lat": "54.664",
+            "lon": "-6.224"
+        },
+        {
+            "elevation": 564.0,
+            "name": "Glen Ogle",
+            "unitaryAuthArea": "Stirling",
+            "lat": "56.423",
+            "lon": "-4.32"
+        },
+        {
+            "elevation": 117.0,
+            "name": "Watnall",
+            "unitaryAuthArea": "Nottinghamshire",
+            "lat": "53.005",
+            "lon": "-1.25"
+        },
+        {
+            "elevation": 27.0,
+            "name": "Exeter Airport",
+            "unitaryAuthArea": "Devon",
+            "lat": "50.7366",
+            "lon": "-3.40458"
+        }
+    ],
+    "other_stations": [
+        {
+            "elevation": 7.0,
+            "name": "Kinloss",
+            "unitaryAuthArea": "Moray",
+            "lat": "57.6494",
+            "lon": "-3.5606"
+        },
+        {
+            "elevation": 6.0,
+            "name": "Lossiemouth",
+            "unitaryAuthArea": "Moray",
+            "lat": "57.712",
+            "lon": "-3.322"
+        },
+        {
+            "elevation": 36.0,
+            "name": "Wick John O Groats Airport",
+            "unitaryAuthArea": "Highland",
+            "lat": "58.454",
+            "lon": "-3.089"
+        },
+        {
+            "elevation": 15.0,
+            "name": "Baltasound",
+            "unitaryAuthArea": "Shetland Islands",
+            "lat": "60.749",
+            "lon": "-0.854"
+        },
+        {
+            "elevation": 82.0,
+            "name": "Lerwick (S. Screen)",
+            "unitaryAuthArea": "Shetland Islands",
+            "lat": "60.139",
+            "lon": "-1.183"
+        },
+        {
+            "elevation": 57.0,
+            "name": "Fair Isle",
+            "unitaryAuthArea": "Shetland Islands",
+            "lat": "59.527",
+            "lon": "-1.628"
+        },
+        {
+            "elevation": 22.0,
+            "name": "Foula",
+            "unitaryAuthArea": "Shetland Islands",
+            "lat": "60.111",
+            "lon": "-2.063"
+        },
+        {
+            "elevation": 18.0,
+            "name": "Skye/Lusa",
+            "unitaryAuthArea": "Highland",
+            "lat": "57.257",
+            "lon": "-5.809"
+        },
+        {
+            "elevation": 81.0,
+            "name": "Altnaharra Saws",
+            "unitaryAuthArea": "Highland",
+            "lat": "58.288",
+            "lon": "-4.442"
+        },
+        {
+            "elevation": 237.0,
+            "name": "Tulloch Bridge",
+            "unitaryAuthArea": "Highland",
+            "lat": "56.867",
+            "lon": "-4.708"
+        },
+        {
+            "elevation": 200.0,
+            "name": "Cardinham",
+            "unitaryAuthArea": "Cornwall",
+            "lat": "50.502",
+            "lon": "-4.667"
+        },
+        {
+            "elevation": 52.0,
+            "name": "Isle Of Portland",
+            "unitaryAuthArea": "Dorset",
+            "lat": "50.522",
+            "lon": "-2.454"
+        },
+        {
+            "elevation": 13.0,
+            "name": "Shoreham",
+            "unitaryAuthArea": "West Sussex",
+            "lat": "50.836",
+            "lon": "-0.292"
+        },
+        {
+            "elevation": 225.0,
+            "name": "Lough Fea",
+            "unitaryAuthArea": "County Londonderry",
+            "lat": "54.721",
+            "lon": "-6.814"
+        },
+        {
+            "elevation": 156.0,
+            "name": "Ballypatrick Forest",
+            "unitaryAuthArea": "County Antrim",
+            "lat": "55.181",
+            "lon": "-6.153"
+        },
+        {
+            "elevation": 25.0,
+            "name": "Valentia Observatory",
+            "lat": "51.933",
+            "lon": "-10.25"
+        },
+        {
+            "elevation": 177.0,
+            "name": "North Wyke",
+            "unitaryAuthArea": "Devon",
+            "lat": "50.767",
+            "lon": "-3.9"
+        },
+        {
+            "elevation": 99.0,
+            "name": "Shobdon Saws",
+            "unitaryAuthArea": "Herefordshire",
+            "lat": "52.242",
+            "lon": "-2.885"
+        },
+        {
+            "elevation": 75.0,
+            "name": "Credenhill",
+            "unitaryAuthArea": "Herefordshire",
+            "lat": "52.083",
+            "lon": "-2.8"
+        },
+        {
+            "elevation": 96.0,
+            "name": "Coleshill",
+            "unitaryAuthArea": "Warwickshire",
+            "lat": "52.48",
+            "lon": "-1.689"
+        },
+        {
+            "elevation": 3.0,
+            "name": "Pembrey Sands",
+            "unitaryAuthArea": "Carmarthenshire",
+            "lat": "51.713",
+            "lon": "-4.368"
+        },
+        {
+            "elevation": 210.0,
+            "name": "Little Rissington (Esaws)",
+            "unitaryAuthArea": "Gloucestershire",
+            "lat": "51.86",
+            "lon": "-1.692"
+        },
+        {
+            "elevation": 204.0,
+            "name": "Raf High Wycombe",
+            "unitaryAuthArea": "Buckinghamshire",
+            "lat": "51.68",
+            "lon": "-0.802"
+        },
+        {
+            "elevation": 87.0,
+            "name": "Andrewsfield",
+            "unitaryAuthArea": "Essex",
+            "lat": "51.896",
+            "lon": "0.453"
+        },
+        {
+            "elevation": 49.0,
+            "name": "St-Athan",
+            "unitaryAuthArea": "Vale of Glamorgan",
+            "lat": "51.405",
+            "lon": "-3.44"
+        },
+        {
+            "elevation": 145.0,
+            "name": "Lyneham",
+            "unitaryAuthArea": "Wiltshire",
+            "lat": "51.5031",
+            "lon": "-1.9924"
+        },
+        {
+            "elevation": 72.0,
+            "name": "Farnborough",
+            "unitaryAuthArea": "Hampshire",
+            "lat": "51.279",
+            "lon": "-0.772"
+        },
+        {
+            "elevation": 113.0,
+            "name": "Dundrennan",
+            "unitaryAuthArea": "Dumfries and Galloway",
+            "lat": "54.803",
+            "lon": "-4.008"
+        },
+        {
+            "elevation": 245.0,
+            "name": "Drumalbin",
+            "unitaryAuthArea": "South Lanarkshire",
+            "lat": "55.627",
+            "lon": "-3.735"
+        },
+        {
+            "elevation": 242.0,
+            "name": "Eskdalemuir",
+            "unitaryAuthArea": "Dumfries and Galloway",
+            "lat": "55.311",
+            "lon": "-3.206"
+        },
+        {
+            "elevation": 57.0,
+            "name": "Edinburgh/Gogarbank",
+            "unitaryAuthArea": "Edinburgh",
+            "lat": "55.928",
+            "lon": "-3.343"
+        },
+        {
+            "elevation": 227.0,
+            "name": "Warcop",
+            "unitaryAuthArea": "Cumbria",
+            "lat": "54.572",
+            "lon": "-2.413"
+        },
+        {
+            "elevation": 211.0,
+            "name": "Redesdale Camp",
+            "unitaryAuthArea": "Northumberland",
+            "lat": "55.285",
+            "lon": "-2.279"
+        },
+        {
+            "elevation": 146.0,
+            "name": "Albemarle",
+            "unitaryAuthArea": "Northumberland",
+            "lat": "55.02",
+            "lon": "-1.88"
+        },
+        {
+            "elevation": 32.0,
+            "name": "Leeming",
+            "unitaryAuthArea": "North Yorkshire",
+            "lat": "54.296",
+            "lon": "-1.53"
+        },
+        {
+            "elevation": 33.0,
+            "name": "Dishforth Airfield",
+            "unitaryAuthArea": "North Yorkshire",
+            "lat": "54.134",
+            "lon": "-1.414"
+        },
+        {
+            "elevation": 14.0,
+            "name": "Linton On Ouse",
+            "unitaryAuthArea": "North Yorkshire",
+            "lat": "54.045",
+            "lon": "-1.25"
+        },
+        {
+            "elevation": 73.0,
+            "name": "Wittering",
+            "unitaryAuthArea": "Peterborough",
+            "lat": "52.6111",
+            "lon": "-0.459"
+        },
+        {
+            "elevation": 21.0,
+            "name": "Marham",
+            "unitaryAuthArea": "Norfolk",
+            "lat": "52.651",
+            "lon": "0.569"
+        },
+        {
+            "elevation": 6.0,
+            "name": "Magilligan",
+            "unitaryAuthArea": "County Londonderry",
+            "lat": "55.1604",
+            "lon": "-6.9492"
+        },
+        {
+            "elevation": 228.0,
+            "name": "Aviemore",
+            "unitaryAuthArea": "Highland",
+            "lat": "57.206",
+            "lon": "-3.827"
+        },
+        {
+            "elevation": 9.0,
+            "name": "Tiree",
+            "unitaryAuthArea": "Argyll and Bute",
+            "lat": "56.497",
+            "lon": "-6.887"
+        },
+        {
+            "elevation": 78.0,
+            "name": "Culdrose",
+            "unitaryAuthArea": "Cornwall",
+            "lat": "50.085",
+            "lon": "-5.257"
+        },
+        {
+            "elevation": 252.0,
+            "name": "Dunkeswell Aerodrome",
+            "unitaryAuthArea": "Devon",
+            "lat": "50.86",
+            "lon": "-3.239"
+        },
+        {
+            "elevation": 10.0,
+            "name": "Bournemouth Airport",
+            "unitaryAuthArea": "Bournemouth Christchurch and Poole",
+            "lat": "50.779",
+            "lon": "-1.835"
+        },
+        {
+            "elevation": 348.0,
+            "name": "Liscombe",
+            "unitaryAuthArea": "Somerset",
+            "lat": "51.087",
+            "lon": "-3.608"
+        },
+        {
+            "elevation": 132.0,
+            "name": "Larkhill",
+            "unitaryAuthArea": "Wiltshire",
+            "lat": "51.201",
+            "lon": "-1.805"
+        },
+        {
+            "elevation": 126.0,
+            "name": "Boscombe Down",
+            "unitaryAuthArea": "Wiltshire",
+            "lat": "51.161",
+            "lon": "-1.754"
+        },
+        {
+            "elevation": 67.0,
+            "name": "Charlwood",
+            "unitaryAuthArea": "Surrey",
+            "lat": "51.15",
+            "lon": "-0.2333"
+        },
+        {
+            "elevation": 10.0,
+            "name": "Leuchars",
+            "unitaryAuthArea": "Fife",
+            "lat": "56.377",
+            "lon": "-2.862"
+        },
+        {
+            "elevation": 262.0,
+            "name": "Bingley Samos",
+            "unitaryAuthArea": "West Yorkshire",
+            "lat": "53.811",
+            "lon": "-1.865"
+        },
+        {
+            "elevation": 62.0,
+            "name": "Cranwell",
+            "unitaryAuthArea": "Lincolnshire",
+            "lat": "53.031",
+            "lon": "-0.502"
+        },
+        {
+            "elevation": 3.0,
+            "name": "Wainfleet",
+            "unitaryAuthArea": "Lincolnshire",
+            "lat": "53.088",
+            "lon": "0.274"
+        },
+        {
+            "elevation": 72.0,
+            "name": "Shawbury",
+            "unitaryAuthArea": "Shropshire",
+            "lat": "52.794",
+            "lon": "-2.663"
+        },
+        {
+            "elevation": 1245.0,
+            "name": "Cairn Gorm Summit",
+            "unitaryAuthArea": "Moray",
+            "lat": "57.116",
+            "lon": "-3.642"
+        },
+        {
+            "elevation": 933.0,
+            "name": "Cairnwell",
+            "unitaryAuthArea": "Perth and Kinross",
+            "lat": "56.879",
+            "lon": "-3.42"
+        },
+        {
+            "elevation": 17.0,
+            "name": "Islay Airport",
+            "unitaryAuthArea": "Argyll and Bute",
+            "lat": "55.681",
+            "lon": "-6.256"
+        },
+        {
+            "elevation": 20.0,
+            "name": "Yeovilton",
+            "unitaryAuthArea": "Somerset",
+            "lat": "51.006",
+            "lon": "-2.64"
+        },
+        {
+            "elevation": 20.0,
+            "name": "Malin Head",
+            "lat": "55.366",
+            "lon": "-7.333"
+        },
+        {
+            "elevation": 89.0,
+            "name": "Woburn",
+            "unitaryAuthArea": "Central Bedfordshire",
+            "lat": "52.017",
+            "lon": "-0.6"
+        },
+        {
+            "elevation": 35.0,
+            "name": "Throckmorton",
+            "unitaryAuthArea": "Worcestershire",
+            "lat": "52.148",
+            "lon": "-2.04"
+        },
+        {
+            "elevation": 44.0,
+            "name": "Milford Haven C.B.",
+            "unitaryAuthArea": "Pembrokeshire",
+            "lat": "51.708",
+            "lon": "-5.055"
+        },
+        {
+            "elevation": 2.0,
+            "name": "Shoeburyness",
+            "unitaryAuthArea": "Essex",
+            "lat": "51.554",
+            "lon": "0.83"
+        },
+        {
+            "elevation": 91.0,
+            "name": "Middle Wallop",
+            "unitaryAuthArea": "Hampshire",
+            "lat": "51.149",
+            "lon": "-1.57"
+        },
+        {
+            "elevation": 118.0,
+            "name": "Odiham",
+            "unitaryAuthArea": "Hampshire",
+            "lat": "51.238",
+            "lon": "-0.944"
+        },
+        {
+            "elevation": 11.0,
+            "name": "West Freugh",
+            "unitaryAuthArea": "Dumfries and Galloway",
+            "lat": "54.859",
+            "lon": "-4.936"
+        },
+        {
+            "elevation": 27.0,
+            "name": "Prestwick Rnas",
+            "unitaryAuthArea": "South Ayrshire",
+            "lat": "55.515",
+            "lon": "-4.585"
+        },
+        {
+            "elevation": 112.0,
+            "name": "Charterhall",
+            "unitaryAuthArea": "Scottish Borders",
+            "lat": "55.709",
+            "lon": "-2.383"
+        },
+        {
+            "elevation": 124.0,
+            "name": "St. Bees Head",
+            "unitaryAuthArea": "Cumbria",
+            "lat": "54.5181",
+            "lon": "-3.615"
+        },
+        {
+            "elevation": 28.0,
+            "name": "Carlisle",
+            "unitaryAuthArea": "Cumbria",
+            "lat": "54.933",
+            "lon": "-2.963"
+        },
+        {
+            "elevation": 285.0,
+            "name": "Spadeadam",
+            "unitaryAuthArea": "Cumbria",
+            "lat": "55.05",
+            "lon": "-2.553"
+        },
+        {
+            "elevation": 9.0,
+            "name": "Crosby",
+            "unitaryAuthArea": "Merseyside",
+            "lat": "53.497",
+            "lon": "-3.056"
+        },
+        {
+            "elevation": 57.0,
+            "name": "Scampton",
+            "unitaryAuthArea": "Lincolnshire",
+            "lat": "53.307",
+            "lon": "-0.546"
+        },
+        {
+            "elevation": 68.0,
+            "name": "Waddington",
+            "unitaryAuthArea": "Lincolnshire",
+            "lat": "53.175",
+            "lon": "-0.521"
+        },
+        {
+            "elevation": 360.0,
+            "name": "Lake Vyrnwy Saws",
+            "unitaryAuthArea": "Powys",
+            "lat": "52.757",
+            "lon": "-3.464"
+        },
+        {
+            "elevation": 128.0,
+            "name": "Rothamsted",
+            "unitaryAuthArea": "Hertfordshire",
+            "lat": "51.8067",
+            "lon": "-0.3602"
+        },
+        {
+            "elevation": 140.0,
+            "name": "Aboyne",
+            "unitaryAuthArea": "Aberdeenshire",
+            "lat": "57.077",
+            "lon": "-2.836"
+        },
+        {
+            "elevation": 134.0,
+            "name": "Inverbervie",
+            "unitaryAuthArea": "Aberdeenshire",
+            "lat": "56.852",
+            "lon": "-2.264"
+        },
+        {
+            "elevation": 10.0,
+            "name": "Campbeltown Airport",
+            "unitaryAuthArea": "Argyll and Bute",
+            "lat": "55.441",
+            "lon": "-5.699"
+        },
+        {
+            "elevation": 15.0,
+            "name": "Stornoway Airport",
+            "unitaryAuthArea": "Na h-Eileanan Siar",
+            "lat": "58.214",
+            "lon": "-6.325"
+        },
+        {
+            "elevation": 265.0,
+            "name": "Loch Glascarnoch",
+            "unitaryAuthArea": "Highland",
+            "lat": "57.725",
+            "lon": "-4.896"
+        },
+        {
+            "elevation": 773.0,
+            "name": "Bealach Na Ba",
+            "unitaryAuthArea": "Highland",
+            "lat": "57.4175",
+            "lon": "-5.689"
+        },
+        {
+            "elevation": 87.0,
+            "name": "Camborne",
+            "unitaryAuthArea": "Cornwall",
+            "lat": "50.218",
+            "lon": "-5.33"
+        },
+        {
+            "elevation": 16.0,
+            "name": "St Catherines Pt.",
+            "unitaryAuthArea": "Isle of Wight",
+            "lat": "50.577",
+            "lon": "-1.297"
+        },
+        {
+            "elevation": 4.0,
+            "name": "Thorney Island",
+            "unitaryAuthArea": "West Sussex",
+            "lat": "50.815",
+            "lon": "-0.923"
+        },
+        {
+            "elevation": 52.0,
+            "name": "Herstmonceux West End",
+            "unitaryAuthArea": "East Sussex",
+            "lat": "50.89",
+            "lon": "0.319"
+        },
+        {
+            "elevation": 49.0,
+            "name": "Castlederg",
+            "unitaryAuthArea": "County Tyrone",
+            "lat": "54.707",
+            "lon": "-7.577"
+        },
+        {
+            "elevation": 115.0,
+            "name": "Stonyhurst",
+            "unitaryAuthArea": "Lancashire",
+            "lat": "53.85",
+            "lon": "-2.467"
+        },
+        {
+            "elevation": 63.0,
+            "name": "Trawsgoed",
+            "unitaryAuthArea": "Ceredigion",
+            "lat": "52.344",
+            "lon": "-3.947"
+        },
+        {
+            "elevation": 40.0,
+            "name": "Northolt",
+            "unitaryAuthArea": "Greater London",
+            "lat": "51.548",
+            "lon": "-0.415"
+        },
+        {
+            "elevation": 6.0,
+            "name": "Chivenor",
+            "unitaryAuthArea": "Devon",
+            "lat": "51.089",
+            "lon": "-4.149"
+        },
+        {
+            "elevation": 25.0,
+            "name": "Heathrow",
+            "unitaryAuthArea": "Greater London",
+            "lat": "51.479",
+            "lon": "-0.449"
+        },
+        {
+            "elevation": 59.0,
+            "name": "Glasgow/Bishopton",
+            "unitaryAuthArea": "Renfrewshire",
+            "lat": "55.907",
+            "lon": "-4.533"
+        },
+        {
+            "elevation": 15.0,
+            "name": "Walney Island",
+            "unitaryAuthArea": "Cumbria",
+            "lat": "54.125",
+            "lon": "-3.257"
+        },
+        {
+            "elevation": 255.0,
+            "name": "Shap",
+            "unitaryAuthArea": "Cumbria",
+            "lat": "54.501",
+            "lon": "-2.684"
+        },
+        {
+            "elevation": 847.0,
+            "name": "Great Dun Fell 2",
+            "unitaryAuthArea": "Cumbria",
+            "lat": "54.684",
+            "lon": "-2.45"
+        },
+        {
+            "elevation": 298.0,
+            "name": "Thornecliffe Leek",
+            "unitaryAuthArea": "Staffordshire",
+            "lat": "53.12755",
+            "lon": "-1.97993"
+        },
+        {
+            "elevation": 95.0,
+            "name": "Aberdaron",
+            "unitaryAuthArea": "Gwynedd",
+            "lat": "52.789",
+            "lon": "-4.742"
+        },
+        {
+            "elevation": 27.0,
+            "name": "Exeter Airport",
+            "unitaryAuthArea": "Devon",
+            "lat": "50.737",
+            "lon": "-3.405"
+        },
+        {
+            "elevation": 4.0,
+            "name": "South Uist Range",
+            "unitaryAuthArea": "Na h-Eileanan Siar",
+            "lat": "57.358",
+            "lon": "-7.397"
+        },
+        {
+            "elevation": 1130.0,
+            "name": "Aonach Mor Summit",
+            "unitaryAuthArea": "Highland",
+            "lat": "56.822",
+            "lon": "-4.97"
+        },
+        {
+            "elevation": 3.0,
+            "name": "Gravesend-Broadness",
+            "unitaryAuthArea": "Kent",
+            "lat": "51.464",
+            "lon": "0.314"
+        },
+        {
+            "elevation": 54.0,
+            "name": "Manston",
+            "unitaryAuthArea": "Kent",
+            "lat": "51.3422",
+            "lon": "1.3461"
+        },
+        {
+            "elevation": 50.0,
+            "name": "Mount Batten",
+            "unitaryAuthArea": "Plymouth",
+            "lat": "50.354",
+            "lon": "-4.121"
+        },
+        {
+            "elevation": 161.0,
+            "name": "Glenanne",
+            "unitaryAuthArea": "County Armagh",
+            "lat": "54.237",
+            "lon": "-6.502"
+        },
+        {
+            "elevation": 133.0,
+            "name": "Aberporth",
+            "unitaryAuthArea": "Ceredigion",
+            "lat": "52.139",
+            "lon": "-4.571"
+        },
+        {
+            "elevation": 107.0,
+            "name": "Church Lawford",
+            "unitaryAuthArea": "Warwickshire",
+            "lat": "52.358",
+            "lon": "-1.33"
+        },
+        {
+            "elevation": 158.0,
+            "name": "Loftus (Samos)",
+            "unitaryAuthArea": "Redcar and Cleveland",
+            "lat": "54.563",
+            "lon": "-0.863"
+        },
+        {
+            "elevation": 216.0,
+            "name": "Capel Curig",
+            "unitaryAuthArea": "Conwy",
+            "lat": "53.093",
+            "lon": "-3.941"
+        },
+        {
+            "elevation": 3.0,
+            "name": "Holbeach",
+            "unitaryAuthArea": "Lincolnshire",
+            "lat": "52.873",
+            "lon": "0.141"
+        },
+        {
+            "elevation": 26.0,
+            "name": "Kirkwall Airport",
+            "unitaryAuthArea": "Orkney Islands",
+            "lat": "58.954",
+            "lon": "-2.9"
+        },
+        {
+            "elevation": 170.0,
+            "name": "Kenley",
+            "unitaryAuthArea": "Surrey",
+            "lat": "51.303",
+            "lon": "-0.09"
+        },
+        {
+            "elevation": 101.0,
+            "name": "Guernsey",
+            "unitaryAuthArea": "Guernsey",
+            "lat": "49.44",
+            "lon": "-2.6"
+        },
+        {
+            "elevation": 89.0,
+            "name": "Wattisham",
+            "unitaryAuthArea": "Suffolk",
+            "lat": "52.123",
+            "lon": "0.961"
+        },
+        {
+            "elevation": 32.0,
+            "name": "Mumbles Head",
+            "unitaryAuthArea": "Swansea",
+            "lat": "51.565",
+            "lon": "-3.981"
+        },
+        {
+            "elevation": 57.0,
+            "name": "Benson",
+            "unitaryAuthArea": "Oxfordshire",
+            "lat": "51.62",
+            "lon": "-1.097"
+        },
+        {
+            "elevation": 35.0,
+            "name": "Strathallan",
+            "unitaryAuthArea": "Perth and Kinross",
+            "lat": "56.326",
+            "lon": "-3.729"
+        },
+        {
+            "elevation": 16.0,
+            "name": "Ronaldsway",
+            "lat": "54.0849",
+            "lon": "-4.6321"
+        },
+        {
+            "elevation": 23.0,
+            "name": "Boulmer",
+            "unitaryAuthArea": "Northumberland",
+            "lat": "55.421",
+            "lon": "-1.6"
+        },
+        {
+            "elevation": 25.0,
+            "name": "Topcliffe",
+            "unitaryAuthArea": "North Yorkshire",
+            "lat": "54.204",
+            "lon": "-1.39"
+        },
+        {
+            "elevation": 15.0,
+            "name": "Bridlington Mrsc",
+            "unitaryAuthArea": "East Riding of Yorkshire",
+            "lat": "54.094",
+            "lon": "-0.174"
+        },
+        {
+            "elevation": 77.0,
+            "name": "Rhyl",
+            "unitaryAuthArea": "Denbighshire",
+            "lat": "53.259",
+            "lon": "-3.509"
+        },
+        {
+            "elevation": 10.0,
+            "name": "Hawarden",
+            "unitaryAuthArea": "Flintshire",
+            "lat": "53.174",
+            "lon": "-2.986"
+        },
+        {
+            "elevation": 7.0,
+            "name": "Leconfield Sar",
+            "unitaryAuthArea": "East Riding of Yorkshire",
+            "lat": "53.867",
+            "lon": "-0.433"
+        },
+        {
+            "elevation": 8.0,
+            "name": "Donna Nook",
+            "unitaryAuthArea": "Lincolnshire",
+            "lat": "53.473",
+            "lon": "0.154"
+        },
+        {
+            "elevation": 6.0,
+            "name": "Coningsby",
+            "unitaryAuthArea": "Lincolnshire",
+            "lat": "53.094",
+            "lon": "-0.171"
+        },
+        {
+            "elevation": 110.0,
+            "name": "Scarborough",
+            "unitaryAuthArea": "North Yorkshire",
+            "lat": "54.273",
+            "lon": "-0.421"
+        },
+        {
+            "elevation": 206.0,
+            "name": "Loch Rannoch",
+            "unitaryAuthArea": "Perth and Kinross",
+            "lat": "56.69936",
+            "lon": "-4.19345"
+        }
+    ]
+}

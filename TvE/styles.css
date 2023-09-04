@@ -1,0 +1,86 @@
+
+body{
+    background: linear-gradient(45deg, rgb(255, 255, 255) 0%, rgb(200, 238, 255) 100%);
+    font-family: "sohne-var","Helvetica Neue","Arial","sans-serif"
+}
+
+main, body {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+input[type=range], form{
+    flex-grow: 1;
+    max-width: 300px;
+    min-width: 100px; 
+    margin: 0px 10px;
+}
+
+form, #wispContainer, #mineContainer{
+    border: 1px solid gray;
+    padding: 5px;
+    max-width: 300px;
+    margin: 5px 10px;
+    border-radius: 5px;
+}
+
+.title{
+    display: block;
+    color: gray;
+    margin: 2px 0px 5px 0px;
+}
+
+.inputContainer{
+    vertical-align: middle;
+    height: 30px;
+    display: flex;
+}
+
+.wispContainer{
+    align-items:center;
+}
+
+#controlsContainer{
+    display: flex;
+    flex-wrap:wrap;
+    flex-direction: column;
+}
+
+span.title{
+    width: 400px;
+}
+
+#subContainer{
+    display: flex;
+    flex-wrap:wrap;
+    flex-direction: row;
+}
+
+.highcharts-figure, .highcharts-data-table table {
+    width: 100%; 
+    height: 100%;
+    flex-grow: 1;
+    /*max-width: 700px; */
+
+    margin: 0em auto;
+}
+
+.highcharts-data-table caption {
+    padding: 1em 0;
+    font-size: 1.2em;
+    color: #555;
+}
+.highcharts-data-table th {
+	font-weight: 600;
+    padding: 0.5em;
+}
+.highcharts-data-table td, .highcharts-data-table th, .highcharts-data-table caption {
+    padding: 0.5em;
+}
+.highcharts-data-table thead tr, .highcharts-data-table tr:nth-child(even) {
+    background: #f8f8f8;
+}
+.highcharts-data-table tr:hover {
+    background: #f1f7ff;
+}

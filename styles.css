@@ -1,0 +1,183 @@
+
+:root {
+    --switch-project-transition-time: 1000ms;
+}
+
+html{
+    background: #11e8bb; /* Old browsers */
+    background: -moz-linear-gradient(top,  #91ecf8 0%, #2eb8ee 100%); /* FF3.6-15 */
+    background: -webkit-linear-gradient(top,  #91ecf8 0%, #2eb8ee  100%); /* Chrome10-25,Safari5.1-6 */
+    background: linear-gradient(to bottom,  #91ecf8 0%, #2eb8ee  100%); 
+}
+
+body{
+    margin: 0;
+    overflow: hidden;
+    font-family: "Sharp Sans", sans-serif;
+}
+
+#controlsDiv{
+    margin: auto 0px ;
+}
+
+.hidden{
+    display: none !important;
+}
+
+.fadedOut{
+    opacity: 0 !important;
+    transition: 1s;
+}
+
+#controlsContainerOuter{
+    margin: auto;
+    position: absolute;
+    left: 50%;
+    bottom: 50px;
+}
+
+#controlsContainerInner{
+    position: relative;
+    left: -50%;
+}
+
+#projectDescriptionContainer{
+    margin: auto;
+    position: absolute;
+    top: 0; left: 0; bottom: 0; right: 0;
+    border-radius: 10px;
+    /*background: #dac7c780;*/
+    padding: 20px;
+    display: flex;
+}
+
+#projectNameTitle{
+    font-size: 3rem;
+    margin: 0px 0px 20px 0px;
+}
+
+#projectDescription{
+    margin-left: 20px;
+    font-size: 1.5rem;
+}
+
+#detailsContainer{
+    max-width: 450px;
+    margin: auto 20px;
+}
+
+.btn{
+    background-color: rgba(255,255,255,0.4);
+    border: none;
+    opacity: 1;
+    transition: opacity 1s;
+}
+
+.fading {
+    animation: fade_out_in var(--switch-project-transition-time) 1;
+}
+
+@keyframes fade_out_in {
+    0% {
+        opacity: 1;
+        transform: translateX(0px);
+    }
+    30% {
+        opacity: 0;
+        transform: translateX(-40px);
+    }
+    70% {
+        opacity: 0;
+        transform: translateX(-40px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateX(0px);
+    }
+  }
+
+.left-rotating{
+    animation: left_icon_keys var(--switch-project-transition-time) 1;
+}
+
+@keyframes left_icon_keys {
+    0% {
+        transform: unset;
+    }
+    50%{
+        transform: translateX(-29px) translateY(6px) rotateZ(45deg);
+        background-color: rgba(0, 0, 0, 0);
+    }
+    100% {
+        transform: unset;
+    }
+}
+
+.right-rotating{
+    animation: right_icon_keys var(--switch-project-transition-time) 1;
+}
+@keyframes right_icon_keys {
+    0% {
+        transform: unset;
+    }
+    50%{
+        transform: translateX(30px) translateY(-6px) rotateZ(45deg);
+        background-color: rgba(0, 0, 0, 0);
+    }
+    100% {
+        transform: unset;
+    }
+}
+
+
+.btn:hover{
+    background-color: lightgray;
+}
+
+.btn-control{
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    text-align: center;
+    float: left;
+    margin: 5px;
+}
+
+#viewProjectButton{
+    margin: 20px auto;
+    display: block;
+    border-radius: 10px;
+    font-size: 2rem;
+    padding: 10px 20px;
+}
+
+/* Technology details section */
+#techDetailsContainer{
+    margin: auto;
+    position: absolute;
+    top: 20%;
+    left: 50%;
+}
+
+#techTitle, #techDescription{
+    position: relative;
+    left: -50%;
+}
+
+#techDescription{
+    white-space: pre-line;
+}
+
+
+#startButton {
+  margin: auto;
+  position: absolute;
+  top: 0; left: 0; bottom: 0; right: 0;
+  width: 300px;
+  text-align: center;
+  font-size: xx-large;
+  height: 100px;
+  line-height: 100px;
+  background-color: white;
+  border-radius: 10px;
+}

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Troll vs Elves</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="shortcut icon" type="image/x-icon" href="favicon.jfif">
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://code.highcharts.com/highcharts-more.js"></script>
+    <script src="https://code.highcharts.com/modules/exporting.js"></script>
+    <script src="https://code.highcharts.com/modules/export-data.js"></script>
+    <script src="https://code.highcharts.com/modules/accessibility.js"></script>
+    <script src="https://code.highcharts.com/modules/annotations.js"></script>
+</head>
+
+<body>
+    <main>
+        <div id="controlsContainer">
+            <form>
+                <span class="title">Game Speed</span>
+                <input type="radio" name="choice" value="1" id="1x" checked>
+                <label for="1x">1x</label>
+                <input type="radio" name="choice" value="2" id="2x">
+                <label for="2x">2x</label>
+                <input type="radio" name="choice" value="4" id="4x">
+                <label for="4x">4x</label>
+            </form>
+
+            <div id="subContainer">
+                <div id="wispContainer">
+                    <span class="title">Wisp Purchases</span>
+                </div>
+
+                <div id="mineContainer">
+                    <span class="title">Gold Mine Purchases</span>
+                </div>
+            </div>
+
+        </div>
+
+        <figure class="highcharts-figure">
+            <div id="imageContainer"></div>
+        </figure>
+
+    </main>
+    <script src="script.js"></script>
+</body>
+
+</html>

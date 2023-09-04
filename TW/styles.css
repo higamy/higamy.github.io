@@ -1,0 +1,230 @@
+/*********** Variables ************/
+
+:root {
+    --plot-selector-margin: 10px;
+    --popup-colour-standard: rgba(161, 161, 141, 0.918);
+    --popup-colour-hover: rgba(136, 136, 87, 0.918);
+    --popup-colour-player: rgb(185, 218, 246);
+}
+
+/*********** Type selectors ************/
+
+header {
+    padding: 10px;
+}
+
+body {
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url(https://twstats.co.uk/img/bg-tile.jpg);
+    font-size: 9pt;
+    font-family: Verdana, Arial;
+    background-color: #d2c09e;
+}
+
+input[type="checkbox"] {
+    margin-left: 10px;
+}
+
+/*********** Class selectors ************/
+
+.even-spacing {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+}
+
+.hidden {
+    display: none !important;
+}
+
+.tribe-popup:hover {
+    background-color: var(--popup-colour-hover);
+}
+
+.tribe-popup {
+    cursor: pointer;
+    height: 20px;
+}
+
+.group-popup-player {
+    background-color: var(--popup-colour-player);
+}
+
+.tribe-popup-selected {
+    background-color: green;
+    font-weight: bold;
+}
+
+.typeIcon {
+    display: block;
+    float: left;
+    clear: left;
+    width: 20px;
+    height: 20px;
+}
+
+.playerIcon {
+    background: url(https://dsen.innogamescdn.com/asset/c1748d3c/graphic/bbcodes/bbcodes.png) no-repeat -80px 0px;
+}
+
+.tribeIcon {
+    background: url(https://dsen.innogamescdn.com/asset/c1748d3c/graphic/bbcodes/bbcodes.png) no-repeat -100px 0px;
+}
+
+.dropdown {
+    margin: 10px 00px;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Add padding to the middle drop down */
+.dropdown:nth-of-type(2) {
+    margin: 10px;
+}
+
+.dropdown-toggle {
+    width: 100px;
+    color: #804000;
+    background: #f8edce !important;
+}
+
+.dropdown-toggle:hover,
+.dropdown-toggle:focus {
+    color: #582d01;
+}
+
+.buttonLabel {
+    font-size: 80%;
+}
+
+.groupContainer {
+    background-color: lightgray;
+    margin: 2px 10px;
+    padding: 5px;
+    border-radius: 0.25rem;
+    display: flex;
+    border: solid black 2px;
+    font-size: 1rem;
+}
+
+.groupContainer:first-of-type {
+    margin-top: 10px;
+}
+
+.playerContainer {
+    background-color: var(--popup-colour-player);
+}
+
+.removeGroupButton {
+    margin-right: 10px;
+    cursor: pointer;
+    height: 30px;
+    width: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: 0.25s ease;
+}
+
+.removeGroupButton:hover {
+    border: solid red 3px;
+    border-radius: 50%;
+    box-sizing: border-box;
+}
+
+.groupText {
+    flex: 1;
+    text-align: left;
+    padding-left: 10px;
+    display: flex;
+    align-items: center;
+}
+
+.groupingDiv {
+    display: flex;
+}
+
+.groupingText {
+    width: 100px;
+}
+
+
+/*********** ID selectors ************/
+
+#serverContainer>button {
+    width: 200px;
+}
+
+#worldContainer {
+    margin-top: 10px;
+}
+
+#mainContainer {
+    /*height: 600px;*/
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+}
+
+@media (max-width: 850px) {
+    #mainContainer {
+        flex-direction: column
+    }
+
+    #plotSelector {
+        align-self: center;
+    }
+}
+
+#plotSelector {
+    max-width: 400px;
+    flex-grow: 0.5;
+    text-align: center;
+}
+
+#plotContainer {
+    min-width: 300px;
+    flex-grow: 1;
+    margin-top: 10px;
+}
+
+#plotContainer>div {
+    border-radius: 10px;
+}
+
+#groupTribeDiv {
+    margin-bottom: 5px;
+    padding-left: 10px;
+    text-align: left;
+    font-weight: bold;
+}
+
+#graphAdder {
+    height: 35px;
+    border-radius: 0.25rem;
+}
+
+#graphAdder,
+#tribePopupContainer {
+    width: calc(100% - 2*var(--plot-selector-margin));
+    margin-left: var(--plot-selector-margin);
+    margin-right: var(--plot-selector-margin);
+}
+
+#tribePopupContainer,
+.tribe-popup:last-child {
+    border-radius: 0px 0px 10px 10px;
+}
+
+#tribePopupContainer {
+    background-color: var(--popup-colour-standard);
+}
+
+#dropdownHolder {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 0px 10px;
+}
