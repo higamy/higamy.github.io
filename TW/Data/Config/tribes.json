@@ -8,34 +8,10 @@
             "worlds": [
                 131,
                 132,
-                133,
                 134,
                 135
             ],
             "date_format": "%d.%m.%Y"
-        },
-        {
-            "server": "uk",
-            "domain_game": "co.uk",
-            "start_url_stats": "www",
-            "domain_stats": "co.uk",
-            "worlds": [
-                66,
-                67
-            ],
-            "date_format": "%d.%m.%Y"
-        },
-        {
-            "server": "us",
-            "domain_game": "us",
-            "start_url_stats": "us",
-            "domain_stats": "com",
-            "worlds": [
-                62,
-                63,
-                64
-            ],
-            "date_format": "%m.%d.%Y"
         }
     ],
     "settings": {
