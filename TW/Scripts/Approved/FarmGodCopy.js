@@ -353,9 +353,10 @@ window.FarmGod.Main = (function (Library, Translation) {
       UI.ErrorMessage(t.missingFeatures);
     }
 
-    if (game_data.market != 'nl') {
-      $.post('https://swtools.be/ScriptStats/insert.php', { script: 'FarmGod', market: game_data.market, world: game_data.world, player: game_data.player.id });
-    }
+    /*
+        if (game_data.market != 'nl') {
+          $.post('https://swtools.be/ScriptStats/insert.php', { script: 'FarmGod', market: game_data.market, world: game_data.world, player: game_data.player.id });
+        }*/
   };
 
   const bindEventHandlers = function () {
