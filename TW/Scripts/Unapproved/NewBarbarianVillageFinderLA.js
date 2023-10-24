@@ -36,7 +36,7 @@ const LOCAL_STORAGE_NAME = "LABarbFinderConfig";
 // Globals
 let villages = [];
 let barbarians = [];
-let canSend = false;
+let canSend = true;
 let alreadyFoundCoords = [];
 let topRow;
 let minDistanceBox;
@@ -45,7 +45,7 @@ let minPointsBox;
 let maxPointsBox;
 
 let config = JSON.parse(localStorage.getItem(LOCAL_STORAGE_NAME));
-let numPages = $(window.top.$('#plunder_list_nav tr:first td:last')).find('strong.paged-nav-item').last().html().replace(/\D+/g, '');
+let numPages = $(window.top.$('#plunder_list_nav tr:first td:last')).find('.paged-nav-item').last().html().replace(/\D+/g, '');
 
 // If no config found then get default
 if (config == null) {
@@ -64,7 +64,7 @@ const TIME_INTERVAL = 60 * 60 * 1000; // fetch data every hour
 
 // Get the current village ID
 let currentURL = window.location.search;
-let thisVillageID = currentURL.match(/village=(\d+)/)[1];
+let thisVillageID = currentURL.match(/village=[a-zA-Z]?(\d+)/)[1];
 let thisVillageData;
 
 // Check are on the correct page
@@ -198,7 +198,7 @@ function fetchVillagesData() {
     $.get('map/village.txt', function (data) {
         villages = CSVToArray(data);
         localStorage.setItem(VILLAGE_TIME, Date.parse(new Date()));
-        localStorage.setItem(VILLAGES_LIST, data);
+        //localStorage.setItem(VILLAGES_LIST, data);
     })
         .done(function () {
             init();
@@ -217,6 +217,8 @@ function getPage(i, pages) {
     window.top.UI.SuccessMessage(`Collecting village list from page ${i} out of ${numPages}`, 1000);
     if (i < pages) {
         var url = getLootAssistantUrl(i);
+
+        console.log(`getting page ${i}`)
 
         window.top.$.ajax({
             type: 'GET', url: url, dataType: "html", error: function (xhr, statusText, error) {
@@ -264,6 +266,7 @@ function removeNewBarbs() {
 }
 
 let newRow;
+
 
 if (mobile) {
     let tableBody = $('#plunder_list').children()[0];
@@ -317,6 +320,7 @@ function addNewBarbs() {
         const bButtonTemplate = getTemplateIDFromUrl(bButtonURL);
 
         aButton.onclick = (el) => {
+            console.log('sending farm')
             el.preventDefault(); // Stop scrolling to the top
             Accountmanager.farm.sendUnits(this, barbarians[idx][0], aButtonTemplate);
             aButton.parentElement.parentElement.remove();
@@ -423,8 +427,9 @@ window.onkeydown = function (e) {
 
 function tryClick(button) {
 
-
-    if (canSend) {
+    console.log('blah')
+    let n = Timing.getElapsedTimeSinceLoad();
+    if (canSend && !(Accountmanager.farm.last_click && n - Accountmanager.farm.last_click < 200)) {
 
         if (button.classList.contains("farm_icon_disabled")) {
 
@@ -433,16 +438,17 @@ function tryClick(button) {
         else {
             button.click();
             window.top.UI.SuccessMessage('Troops sent.')
-            doTime(200);
+            doTime(200, button);
         }
 
-        button.parentElement.parentElement.remove();
     }
 }
-function doTime(millsec) {
+
+function doTime(millsec, button) {
     canSend = false;
     setTimeout(function () {
         canSend = true;
+        button.parentElement.parentElement.remove()
     }, millsec);
 }
 function getCurrentVillageFromUrl(urlIn) {

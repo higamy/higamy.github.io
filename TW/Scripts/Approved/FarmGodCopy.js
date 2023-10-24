@@ -1,12 +1,12 @@
 ScriptAPI.register('FarmGod', true, 'Warre', 'nl.tribalwars@coma.innogames.de');
 
 window.FarmGod = {};
-window.FarmGod.Library = (function() {
+window.FarmGod.Library = (function () {
   /**** TribalWarsLibrary.js ****/
   if (typeof window.twLib === 'undefined') {
     window.twLib = {
       queues: null,
-      init: function() {
+      init: function () {
         if (this.queues === null) {
           this.queues = this.queueLib.createQueues(5);
         }
@@ -19,7 +19,7 @@ window.FarmGod.Library = (function() {
           this.promise = promise;
           this.attempts = 0;
         },
-        Queue: function() {
+        Queue: function () {
           this.list = [];
           this.working = false;
           this.length = 0;
@@ -29,7 +29,7 @@ window.FarmGod.Library = (function() {
             let self = this;
 
             if (item.action == 'openWindow') {
-              window.open(...item.arguments).addEventListener('DOMContentLoaded', function() {
+              window.open(...item.arguments).addEventListener('DOMContentLoaded', function () {
                 self.start();
               });
             } else {
@@ -72,7 +72,7 @@ window.FarmGod.Library = (function() {
             }
           };
         },
-        createQueues: function(amount) {
+        createQueues: function (amount) {
           let arr = [];
 
           for (let i = 0; i < amount; i++) {
@@ -81,11 +81,11 @@ window.FarmGod.Library = (function() {
 
           return arr;
         },
-        addItem: function(item) {
+        addItem: function (item) {
           let leastBusyQueue = twLib.queues.map(q => q.length).reduce((next, curr) => (curr < next) ? curr : next, 0);
           twLib.queues[leastBusyQueue].enqueue(item);
         },
-        orchestrator: function(type, arg) {
+        orchestrator: function (type, arg) {
           let promise = $.Deferred();
           let item = new twLib.queueLib.Item(type, arg, promise);
 
@@ -94,16 +94,16 @@ window.FarmGod.Library = (function() {
           return promise;
         }
       },
-      ajax: function() {
+      ajax: function () {
         return twLib.queueLib.orchestrator('ajax', arguments);
       },
-      get: function() {
+      get: function () {
         return twLib.queueLib.orchestrator('get', arguments);
       },
-      post: function() {
+      post: function () {
         return twLib.queueLib.orchestrator('post', arguments);
       },
-      openWindow: function() {
+      openWindow: function () {
         let item = new twLib.queueLib.Item('openWindow', arguments);
 
         twLib.queueLib.addItem(item);
@@ -114,7 +114,7 @@ window.FarmGod.Library = (function() {
   }
 
   /**** Script Library ****/
-  const setUnitSpeeds = function() {
+  const setUnitSpeeds = function () {
     let unitSpeeds = {};
 
     $.when($.get('/interface.php?func=get_unit_info')).then((xml) => {
@@ -126,13 +126,13 @@ window.FarmGod.Library = (function() {
     });
   };
 
-  const getUnitSpeeds = function() {
+  const getUnitSpeeds = function () {
     return JSON.parse(localStorage.getItem('FarmGod_unitSpeeds')) || false;
   };
 
   if (!getUnitSpeeds()) setUnitSpeeds();
 
-  const determineNextPage = function(page, $html) {
+  const determineNextPage = function (page, $html) {
     let villageLength = ($html.find('#scavenge_mass_screen').length > 0) ? $html.find('tr[id*="scavenge_village"]').length : $html.find('tr.row_a, tr.row_ax, tr.row_b, tr.row_bx').length;
     let navSelect = $html.find('.paged-nav-item').first().closest('td').find('select').first();
     let navLength = ($html.find('#am_widget_Farm').length > 0) ? $html.find('#plunder_list_nav').first().find('a.paged-nav-item').length : ((navSelect.length > 0) ? navSelect.find('option').length - 1 : $html.find('.paged-nav-item').not('[href*="page=-1"]').length);
@@ -147,7 +147,7 @@ window.FarmGod.Library = (function() {
     return false;
   };
 
-  const processPage = function(url, page, wrapFn) {
+  const processPage = function (url, page, wrapFn) {
     let pageText = (url.match('am_farm')) ? `&Farm_page=${page}` : `&page=${page}`;
 
     return twLib.ajax({
@@ -157,9 +157,9 @@ window.FarmGod.Library = (function() {
     });
   };
 
-  const processAllPages = function(url, processorFn) {
+  const processAllPages = function (url, processorFn) {
     let page = (url.match('am_farm') || url.match('scavenge_mass')) ? 0 : -1;
-    let wrapFn = function(page, $html) {
+    let wrapFn = function (page, $html) {
       let dnp = determineNextPage(page, $html);
 
       if (dnp) {
@@ -173,14 +173,14 @@ window.FarmGod.Library = (function() {
     return processPage(url, page, wrapFn);
   };
 
-  const getDistance = function(origin, target) {
+  const getDistance = function (origin, target) {
     let a = origin.toCoord(true).x - target.toCoord(true).x;
     let b = origin.toCoord(true).y - target.toCoord(true).y;
 
     return Math.hypot(a, b);
   };
 
-  const subtractArrays = function(array1, array2) {
+  const subtractArrays = function (array1, array2) {
     let result = array1.map((val, i) => {
       return val - array2[i];
     });
@@ -188,12 +188,12 @@ window.FarmGod.Library = (function() {
     return (result.some(v => v < 0)) ? false : result;
   };
 
-  const getCurrentServerTime = function() {
+  const getCurrentServerTime = function () {
     let [hour, min, sec, day, month, year] = $('#serverTime').closest('p').text().match(/\d+/g);
     return new Date(year, (month - 1), day, hour, min, sec).getTime();
   };
 
-  const timestampFromString = function(timestr) {
+  const timestampFromString = function (timestr) {
     let d = $('#serverDate').text().split('/').map(x => +x);
     let todayPattern = new RegExp(window.lang['aea2b0aa9ae1534226518faaefffdaad'].replace('%s', '([\\d+|:]+)')).exec(timestr);
     let tomorrowPattern = new RegExp(window.lang['57d28d1b211fddbb7a499ead5bf23079'].replace('%s', '([\\d+|:]+)')).exec(timestr);
@@ -215,16 +215,16 @@ window.FarmGod.Library = (function() {
     return date.getTime();
   };
 
-  String.prototype.toCoord = function(objectified) {
+  String.prototype.toCoord = function (objectified) {
     let c = (this.match(/\d{1,3}\|\d{1,3}/g) || [false]).pop();
-    return (c && objectified) ? {x: c.split('|')[0], y: c.split('|')[1]} : c
+    return (c && objectified) ? { x: c.split('|')[0], y: c.split('|')[1] } : c
   };
 
-  String.prototype.toNumber = function() {
+  String.prototype.toNumber = function () {
     return parseFloat(this);
   };
 
-  Number.prototype.toNumber = function() {
+  Number.prototype.toNumber = function () {
     return parseFloat(this);
   };
 
@@ -239,67 +239,67 @@ window.FarmGod.Library = (function() {
   };
 })();
 
-window.FarmGod.Translation = (function() {
+window.FarmGod.Translation = (function () {
   const msg = {
-    nl_NL : {
-      missingFeatures : 'Script vereist een premium account en farm assistent!',
-      options : {
-        title : 'FarmGod Opties',
-        warning : '<b>Waarschuwingen:</b><br>- Zorg dat A is ingesteld als je standaard microfarm en B als een grotere microfarm<br>- Zorg dat de farm filters correct zijn ingesteld voor je het script gebruikt',
-        filterImage : 'https://swtools.be/FarmGod/images/filterImage_nl.png',
-        group : 'Uit welke groep moet er gefarmd worden:',
-        distance : 'Maximaal aantal velden dat farms mogen lopen:',
-        time : 'Hoe veel tijd in minuten moet er tussen farms zitten:',
-        losses : 'Verstuur farm naar dorpen met gedeeltelijke verliezen:',
-        maxloot : 'Verstuur een B farm als de buit vorige keer vol was:',
-        newbarbs : 'Voeg nieuwe barbarendorpen toe om te farmen:',
-        button : 'Plan farms',
+    nl_NL: {
+      missingFeatures: 'Script vereist een premium account en farm assistent!',
+      options: {
+        title: 'FarmGod Opties',
+        warning: '<b>Waarschuwingen:</b><br>- Zorg dat A is ingesteld als je standaard microfarm en B als een grotere microfarm<br>- Zorg dat de farm filters correct zijn ingesteld voor je het script gebruikt',
+        filterImage: 'https://higamy.github.io/TW/Scripts/Assets/farmGodFilters.png',
+        group: 'Uit welke groep moet er gefarmd worden:',
+        distance: 'Maximaal aantal velden dat farms mogen lopen:',
+        time: 'Hoe veel tijd in minuten moet er tussen farms zitten:',
+        losses: 'Verstuur farm naar dorpen met gedeeltelijke verliezen:',
+        maxloot: 'Verstuur een B farm als de buit vorige keer vol was:',
+        newbarbs: 'Voeg nieuwe barbarendorpen toe om te farmen:',
+        button: 'Plan farms',
       },
-      table : {
-        noFarmsPlanned : 'Er kunnen met de opgegeven instellingen geen farms verstuurd worden.',
-        origin : 'Oorsprong',
-        target : 'Doel',
-        fields : 'Velden',
-        farm : 'Farm',
-        goTo : 'Ga naar'
+      table: {
+        noFarmsPlanned: 'Er kunnen met de opgegeven instellingen geen farms verstuurd worden.',
+        origin: 'Oorsprong',
+        target: 'Doel',
+        fields: 'Velden',
+        farm: 'Farm',
+        goTo: 'Ga naar'
       },
-      messages : {
-        villageChanged : 'Succesvol van dorp veranderd!',
-        villageError : 'Alle farms voor het huidige dorp zijn reeds verstuurd!',
-        sendError : 'Error: farm niet verstuurd!'
+      messages: {
+        villageChanged: 'Succesvol van dorp veranderd!',
+        villageError: 'Alle farms voor het huidige dorp zijn reeds verstuurd!',
+        sendError: 'Error: farm niet verstuurd!'
       }
     },
-    int : {
-      missingFeatures : 'Script requires a premium account and loot assistent!',
-      options : {
-        title : 'FarmGod Options',
-        warning : '<b>Warning:</b><br>- Make sure A is set as your default microfarm and B as a larger microfarm<br>- Make sure the farm filters are set correctly before using the script',
-        filterImage : 'https://swtools.be/FarmGod/images/filterImage_int.png',
-        group : 'Send farms from group:',
-        distance : 'Maximum fields for farms:',
-        time : 'How much time in minutes should there be between farms:',
-        losses : 'Send farm to villages with partial losses:',
-        maxloot : 'Send a B farm if the last loot was full:',
-        newbarbs : 'Add new barbs te farm:',
-        button : 'Plan farms',
+    int: {
+      missingFeatures: 'Script requires a premium account and loot assistent!',
+      options: {
+        title: 'FarmGod Options',
+        warning: '<b>Warning:</b><br>- Make sure A is set as your default microfarm and B as a larger microfarm<br>- Make sure the farm filters are set correctly before using the script',
+        filterImage: 'https://higamy.github.io/TW/Scripts/Assets/farmGodFilters.png',
+        group: 'Send farms from group:',
+        distance: 'Maximum fields for farms:',
+        time: 'How much time in minutes should there be between farms:',
+        losses: 'Send farm to villages with partial losses:',
+        maxloot: 'Send a B farm if the last loot was full:',
+        newbarbs: 'Add new barbs te farm:',
+        button: 'Plan farms',
       },
-      table : {
-        noFarmsPlanned : 'No farms can be sent with the specified settings.',
-        origin : 'Origin',
-        target : 'Target',
-        fields : 'fields',
-        farm : 'Farm',
-        goTo : 'Go to'
+      table: {
+        noFarmsPlanned: 'No farms can be sent with the specified settings.',
+        origin: 'Origin',
+        target: 'Target',
+        fields: 'fields',
+        farm: 'Farm',
+        goTo: 'Go to'
       },
-      messages : {
-        villageChanged : 'Successfully changed village!',
-        villageError : 'All farms for the current village have been sent!',
-        sendError : 'Error: farm not send!'
+      messages: {
+        villageChanged: 'Successfully changed village!',
+        villageError: 'All farms for the current village have been sent!',
+        sendError: 'Error: farm not send!'
       }
     }
   };
 
-  const get = function() {
+  const get = function () {
     let lang = (msg.hasOwnProperty(game_data.locale)) ? game_data.locale : 'int';
     return msg[lang];
   };
@@ -309,13 +309,13 @@ window.FarmGod.Translation = (function() {
   };
 })();
 
-window.FarmGod.Main = (function(Library, Translation) {
+window.FarmGod.Main = (function (Library, Translation) {
   const lib = Library;
   const t = Translation.get();
   let curVillage = null;
   let farmBusy = false;
 
-  const init = function() {
+  const init = function () {
     if (game_data.features.Premium.active && game_data.features.FarmAssistent.active) {
       if (game_data.screen == 'am_farm') {
         $.when(buildOptions()).then((html) => {
@@ -329,7 +329,7 @@ window.FarmGod.Main = (function(Library, Translation) {
             let optionMaxloot = $('.optionMaxloot').prop('checked');
             let optionNewbarbs = $('.optionNewbarbs').prop('checked') || false;
 
-            localStorage.setItem('farmGod_options', JSON.stringify({optionGroup: optionGroup, optionDistance: optionDistance, optionTime: optionTime, optionLosses: optionLosses, optionMaxloot: optionMaxloot, optionNewbarbs : optionNewbarbs}));
+            localStorage.setItem('farmGod_options', JSON.stringify({ optionGroup: optionGroup, optionDistance: optionDistance, optionTime: optionTime, optionLosses: optionLosses, optionMaxloot: optionMaxloot, optionNewbarbs: optionNewbarbs }));
 
             $('.optionsContent').html(UI.Throbber[0].outerHTML + '<br><br>');
             getData(optionGroup, optionNewbarbs, optionLosses).then((data) => {
@@ -354,12 +354,12 @@ window.FarmGod.Main = (function(Library, Translation) {
     }
 
     if (game_data.market != 'nl') {
-      $.post('https://swtools.be/ScriptStats/insert.php', {script: 'FarmGod', market: game_data.market, world: game_data.world, player: game_data.player.id});
+      $.post('https://swtools.be/ScriptStats/insert.php', { script: 'FarmGod', market: game_data.market, world: game_data.world, player: game_data.player.id });
     }
   };
 
-  const bindEventHandlers = function() {
-    $('.farmGod_icon').off('click').on('click', function() {
+  const bindEventHandlers = function () {
+    $('.farmGod_icon').off('click').on('click', function () {
       if (game_data.market != 'nl' || $(this).data('origin') == curVillage) {
         sendFarm($(this));
       } else {
@@ -373,15 +373,15 @@ window.FarmGod.Main = (function(Library, Translation) {
       }
     });
 
-    $('.switchVillage').off('click').on('click', function() {
+    $('.switchVillage').off('click').on('click', function () {
       curVillage = $(this).data('id');
       UI.SuccessMessage(t.messages.villageChanged);
       $(this).closest('tr').remove();
     });
   };
 
-  const buildOptions = function() {
-    let options = JSON.parse(localStorage.getItem('farmGod_options')) || {optionGroup: 0, optionDistance: 25, optionTime: 10, optionLosses: false, optionMaxloot: true, optionNewbarbs: true};
+  const buildOptions = function () {
+    let options = JSON.parse(localStorage.getItem('farmGod_options')) || { optionGroup: 0, optionDistance: 25, optionTime: 10, optionLosses: false, optionMaxloot: true, optionNewbarbs: true };
     let checkboxSettings = [false, true, true, true, false];
     let checkboxError = $('#plunder_list_filters').find('input[type="checkbox"]').map((i, el) => {
       return ($(el).prop('checked') != checkboxSettings[i]);
@@ -404,8 +404,8 @@ window.FarmGod.Main = (function(Library, Translation) {
     });
   };
 
-  const buildGroupSelect = function(id) {
-    return $.get(TribalWars.buildURL('GET', 'groups', {'ajax': 'load_group_menu'})).then((groups) => {
+  const buildGroupSelect = function (id) {
+    return $.get(TribalWars.buildURL('GET', 'groups', { 'ajax': 'load_group_menu' })).then((groups) => {
       let html = `<select class="optionGroup">`;
 
       groups.result.forEach((val) => {
@@ -422,7 +422,7 @@ window.FarmGod.Main = (function(Library, Translation) {
     });
   };
 
-  const buildTable = function(plan) {
+  const buildTable = function (plan) {
     let html = `<div class="vis farmGodContent"><h4>FarmGod</h4><table class="vis" width="100%">
                 <tr><div id="FarmGodProgessbar" class="progress-bar live-progress-bar progress-bar-alive" style="width:98%;margin:5px auto;"><div style="background: rgb(146, 194, 0);"></div><span class="label" style="margin-top:0px;"></span></div></tr>
                 <tr><th style="text-align:center;">${t.table.origin}</th><th style="text-align:center;">${t.table.target}</th><th style="text-align:center;">${t.table.fields}</th><th style="text-align:center;">${t.table.farm}</th></tr>`;
@@ -434,7 +434,7 @@ window.FarmGod.Main = (function(Library, Translation) {
         }
 
         plan[prop].forEach((val, i) => {
-          html += `<tr class="farmRow row_${(i%2 == 0) ? 'a' : 'b'}">
+          html += `<tr class="farmRow row_${(i % 2 == 0) ? 'a' : 'b'}">
                     <td style="text-align:center;"><a href="${game_data.link_base_pure}info_village&id=${val.origin.id}">${val.origin.name} (${val.origin.coord})</a></td>
                     <td style="text-align:center;"><a href="${game_data.link_base_pure}info_village&id=${val.target.id}">${val.target.coord}</a></td>
                     <td style="text-align:center;">${val.fields.toFixed(2)}</td>
@@ -451,8 +451,8 @@ window.FarmGod.Main = (function(Library, Translation) {
     return html;
   };
 
-  const getData = function(group, newbarbs, losses) {
-    let data = {villages : {}, commands : {}, farms : {templates : {}, farms : {}}};
+  const getData = function (group, newbarbs, losses) {
+    let data = { villages: {}, commands: {}, farms: { templates: {}, farms: {} } };
 
     let villagesProcessor = ($html) => {
       let skipUnits = ['ram', 'catapult', 'snob', 'militia'];
@@ -480,9 +480,9 @@ window.FarmGod.Main = (function(Library, Translation) {
         }
 
         return data.villages[$qel.text().toCoord()] = {
-          'name' : $qel.data('text'),
-          'id' : parseInt($el.find('.quickedit-vn').first().data('id')),
-          'units' : units
+          'name': $qel.data('text'),
+          'id': parseInt($el.find('.quickedit-vn').first().data('id')),
+          'units': units
         }
       });
 
@@ -515,7 +515,7 @@ window.FarmGod.Main = (function(Library, Translation) {
             'units': $el.find('input[type="text"], input[type="number"]').map((index, element) => {
               return $(element).val().toNumber();
             }).get(),
-            'speed' : Math.max(...$el.find('input[type="text"], input[type="number"]').map((index, element) => {
+            'speed': Math.max(...$el.find('input[type="text"], input[type="number"]').map((index, element) => {
               return ($(element).val().toNumber() > 0) ? unitSpeeds[$(element).attr('name').trim().split('[')[0]] : 0;
             }).get())
           };
@@ -526,9 +526,9 @@ window.FarmGod.Main = (function(Library, Translation) {
         let $el = $(el);
 
         return data.farms.farms[$el.find('a[href*="screen=report&mode=all&view="]').first().text().toCoord()] = {
-          'id' : $el.attr('id').split('_')[1].toNumber(),
-          'color' : $el.find('img[src*="graphic/dots/"]').attr('src').match(/dots\/(green|yellow|red|blue|red_blue)/)[1],
-          'max_loot' : $el.find('img[src*="max_loot/1"]').length > 0
+          'id': $el.attr('id').split('_')[1].toNumber(),
+          'color': $el.find('img[src*="graphic/dots/"]').attr('src').match(/dots\/(green|yellow|red|blue|red_blue)/)[1],
+          'max_loot': $el.find('img[src*="max_loot/1"]').length > 0
         }
       });
 
@@ -544,7 +544,7 @@ window.FarmGod.Main = (function(Library, Translation) {
 
             if (player_id == 0 && !data.farms.farms.hasOwnProperty(coord)) {
               data.farms.farms[coord] = {
-                'id' : id.toNumber()
+                'id': id.toNumber()
               }
             }
           });
@@ -565,8 +565,8 @@ window.FarmGod.Main = (function(Library, Translation) {
     };
 
     return Promise.all([
-      lib.processAllPages(TribalWars.buildURL('GET', 'overview_villages', {'mode': 'combined', 'group': group}), villagesProcessor),
-      lib.processAllPages(TribalWars.buildURL('GET', 'overview_villages', {'mode': 'commands', 'type': 'attack'}), commandsProcessor),
+      lib.processAllPages(TribalWars.buildURL('GET', 'overview_villages', { 'mode': 'combined', 'group': group }), villagesProcessor),
+      lib.processAllPages(TribalWars.buildURL('GET', 'overview_villages', { 'mode': 'commands', 'type': 'attack' }), commandsProcessor),
       lib.processAllPages(TribalWars.buildURL('GET', 'am_farm'), farmProcessor),
       findNewbarbs()
     ]).then(filterFarms).then(() => {
@@ -574,13 +574,13 @@ window.FarmGod.Main = (function(Library, Translation) {
     });
   };
 
-  const createPlanning = function(optionDistance, optionTime, optionMaxloot, data) {
-    let plan = {counter : 0, farms : {}};
+  const createPlanning = function (optionDistance, optionTime, optionMaxloot, data) {
+    let plan = { counter: 0, farms: {} };
     let serverTime = Math.round(lib.getCurrentServerTime() / 1000);
 
     for (let prop in data.villages) {
       let orderedFarms = Object.keys(data.farms.farms).map((key) => {
-        return {'coord': key, 'dis': lib.getDistance(prop, key)};
+        return { 'coord': key, 'dis': lib.getDistance(prop, key) };
       }).sort((a, b) => (a.dis > b.dis) ? 1 : -1);
 
       orderedFarms.forEach((el) => {
@@ -607,10 +607,10 @@ window.FarmGod.Main = (function(Library, Translation) {
           if (!plan.farms.hasOwnProperty(prop)) plan.farms[prop] = [];
 
           plan.farms[prop].push({
-            'origin': {'coord': prop, 'name': data.villages[prop].name, 'id': data.villages[prop].id},
-            'target': {'coord': el.coord, 'id': farmIndex.id},
-            'fields' : distance,
-            'template': {'name': template_name, 'id': template.id}
+            'origin': { 'coord': prop, 'name': data.villages[prop].name, 'id': data.villages[prop].id },
+            'target': { 'coord': el.coord, 'id': farmIndex.id },
+            'fields': distance,
+            'template': { 'name': template_name, 'id': template.id }
           });
 
           data.villages[prop].units = unitsLeft;
@@ -622,7 +622,7 @@ window.FarmGod.Main = (function(Library, Translation) {
     return plan;
   };
 
-  const sendFarm = function($this) {
+  const sendFarm = function ($this) {
     let n = Timing.getElapsedTimeSinceLoad();
     if (!farmBusy && !(Accountmanager.farm.last_click && n - Accountmanager.farm.last_click < 200)) {
       farmBusy = true;
@@ -633,13 +633,13 @@ window.FarmGod.Main = (function(Library, Translation) {
         target: $this.data('target'),
         template_id: $this.data('template'),
         source: $this.data('origin')
-      }, function(r) {
+      }, function (r) {
         UI.SuccessMessage(r.success);
         $pb.data('current', $pb.data('current') + 1);
         UI.updateProgressBar($pb, $pb.data('current'), $pb.data('max'));
         $this.closest('.farmRow').remove();
         farmBusy = false;
-      }, function(r) {
+      }, function (r) {
         UI.ErrorMessage(r || t.messages.sendError);
         $pb.data('current', $pb.data('current') + 1);
         UI.updateProgressBar($pb, $pb.data('current'), $pb.data('max'));
@@ -650,7 +650,7 @@ window.FarmGod.Main = (function(Library, Translation) {
   };
 
   return {
-   init
+    init
   };
 })(window.FarmGod.Library, window.FarmGod.Translation);
 
