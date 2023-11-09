@@ -269,6 +269,34 @@ window.FarmGod.Translation = (function () {
         sendError: 'Error: farm niet verstuurd!'
       }
     },
+    hu_HU: {
+      missingFeatures: 'A scriptnek szüksége van Prémium fiókra és Farmkezelőre!',
+      options: {
+        title: 'FarmGod opciók',
+        warning: '<b>Figyelem:</b><br>- Bizonyosodj meg róla, hogy az "A" sablon az alapértelmezett és a "B" egy nagyobb mennyiségű mikró-farm<br>- Bizonyosodj meg róla, hogy a farm-filterek megfelelően vannak beállítva mielőtt használod a sctiptet',
+        filterImage: 'https://higamy.github.io/TW/Scripts/Assets/farmGodFilters_HU.png',
+        group: 'Ebből a csoportból küldje:',
+        distance: 'Maximális mező távolság:',
+        time: 'Mekkora időintervallumban küldje a támadásokat percben:',
+        losses: 'Küldjön támadást olyan falvakba ahol részleges veszteséggel járhat a támadás:',
+        maxloot: 'A "B" sablont küldje abban az esetben, ha az előző támadás maximális fosztogatással járt:',
+        newbarbs: 'Adj hozzá új barbár falukat:',
+        button: 'Farm megtervezése',
+      },
+      table: {
+        noFarmsPlanned: 'A jelenlegi beállításokkal nem lehet új támadást kiküldeni.',
+        origin: 'Origin',
+        target: 'Célpont',
+        fields: 'Távolság',
+        farm: 'Farm',
+        goTo: 'Go to'
+      },
+      messages: {
+        villageChanged: 'Falu sikeresen megváltoztatva!',
+        villageError: 'Minden farm kiment a jelenlegi faluból!',
+        sendError: 'Hiba: Farm nemvolt elküldve!'
+      }
+    },
     int: {
       missingFeatures: 'Script requires a premium account and loot assistent!',
       options: {
@@ -345,7 +373,11 @@ window.FarmGod.Main = (function (Library, Translation) {
               $('#FarmGodProgessbar').data('current', 0).data('max', plan.counter);
             });
           });
+
+          document.querySelector(".optionButton").focus();
         });
+
+
       } else {
         location.href = game_data.link_base_pure + 'am_farm';
       }
