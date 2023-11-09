@@ -1,3 +1,6 @@
+// Hungarian translation provided by =Krumpli=
+
+
 ScriptAPI.register('FarmGod', true, 'Warre', 'nl.tribalwars@coma.innogames.de');
 
 window.FarmGod = {};
