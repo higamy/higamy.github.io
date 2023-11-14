@@ -1,31 +1,43 @@
 let worker = new Worker(
     `data:text/javascript,
     onmessage = function(event){    //This will be called when worker.postMessage is called in the outside code.
+
+    
         let foo = event.data;    //Get the argument that was passed from the outside code, in this case foo.
         console.log(foo)
         const url = 'https://higamy.com/send_message';
         const options = {
-          method: 'POST',
-          headers: {
+            method: 'POST',
+            headers: {
             'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(foo),
+            },
+            body: JSON.stringify(foo),
         };
         
         fetch(url, options)
             .then(response => postMessage(response['statusText']) )
             .catch(error => {
             console.error('Error:', error);
+            postMessage(error);
             });
 
-          //Send the result to the outside code.
+            //Send the result to the outside code.
+    
+
     };
     `
 );
 
 worker.onmessage = function (event) {    //Get the result from the worker. This code will be called when postMessage is called in the worker.
+    console.log(event)
     console.log("The result is " + event.data);
-    UI.SuccessMessage(`Server response: ${event.data}`)
+    if (event.data.stack) {
+        UI.ErrorMessage(`Error: ${event.data}`)
+    }
+    else {
+        UI.SuccessMessage(`Server response: ${event.data}`)
+    }
+
 
     // Set the next iteration to be queued
     setTimeout(sendPostRequest, 15000);
