@@ -1,0 +1,20 @@
+{
+    "servers": [
+        {
+            "server": "en",
+            "domain_game": "net",
+            "start_url_stats": "www",
+            "domain_stats": "com",
+            "worlds": [
+                132,
+                135,
+                136,
+                137
+            ],
+            "date_format": "%d.%m.%Y"
+        }
+    ],
+    "settings": {
+        "min_hours_between_runs": 7
+    }
+}
