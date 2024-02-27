@@ -8,7 +8,20 @@
             "worlds": [
                 136,
                 137,
-                138
+                138,
+                139
+            ],
+            "date_format": "%d.%m.%Y"
+        },
+        {
+            "server": "zz",
+            "domain_game": "works",
+            "start_url_stats": "beta",
+            "domain_stats": "com",
+            "worlds": [
+                1,
+                2,
+                3
             ],
             "date_format": "%d.%m.%Y"
         }
