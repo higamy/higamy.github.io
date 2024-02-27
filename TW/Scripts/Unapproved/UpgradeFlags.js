@@ -10,7 +10,7 @@ async function runFunctionNTimes(func, n, delay) {
 }
 
 let n_flags_upgraded = 0;
-let n_to_upgrade = 1698;
+let n_to_upgrade = 8631;
 
 // example usage
 runFunctionNTimes(() => {
