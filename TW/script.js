@@ -135,16 +135,16 @@ function getDistinctColors(n, seed) {
 }
 
 
-function getTopNPlayers(n = 10, metric = "current_points"){
+function getTopNPlayers(n = 10, metric = "current_points") {
 
-    let topPlayers = current_data['players'].sort(function(a, b) {
+    let topPlayers = current_data['players'].sort(function (a, b) {
         return b[metric] - a[metric];
-      });
+    });
 
     //new GroupSelector(`Top ${n}`,  topPlayers.slice(0,n), Group.PLAYER).selectGroup(); 
-    
-    console.log("result: ",metric,topPlayers.slice(0,n) )
-    return topPlayers.slice(0,n)
+
+    console.log("result: ", metric, topPlayers.slice(0, n))
+    return topPlayers.slice(0, n)
 }
 
 
@@ -244,16 +244,16 @@ class ServerSelector {
                         // Calculate the data for the top players in each category
                         topPlayerData = {};
                         let n = 10;
-                        for (let topPlayerType of availableStatistics){
-                            let matchingTopData = getTopNPlayers(n,`current_${topPlayerType.toLowerCase()}`);
+                        for (let topPlayerType of availableStatistics) {
+                            let matchingTopData = getTopNPlayers(n, `current_${topPlayerType.toLowerCase()}`);
                             let groupName = `Top ${n} ${topPlayerType}`;
                             let dataOut = {
-                                "Name" : groupName,
-                                "Data" : matchingTopData
+                                "Name": groupName,
+                                "Data": matchingTopData
                             }
                             topPlayerData[topPlayerType] = dataOut;
                         }
-                        
+
 
                         // Data has loaded, so enable the search bar again
                         graphAdder.placeholder = "Start typing a player or tribe name..."
@@ -677,7 +677,7 @@ class GroupSelector {
         else if (Type == Group.PLAYER) {
             this.PlayerData = [Data];
         }
-        else if (Type == Group.TOP_PLAYERS){
+        else if (Type == Group.TOP_PLAYERS) {
             this.PlayerData = Data.Data;
         }
 
@@ -881,7 +881,7 @@ function redrawChart() {
 
 
     const tribeCount = selectedGroups.reduce((count, obj) => {
-        if (obj.Type === Group.PLAYER) {
+        if (obj.Type === Group.TRIBE) {
             return count + 1;
         }
         return count;
@@ -893,14 +893,13 @@ function redrawChart() {
     // Show the option to group tribes, only if at least 1 tribe is selected
     if (playerCount == numGroups) groupTribeDiv.classList.add("hidden"); else groupTribeDiv.classList.remove("hidden");
 
-
     // Title text signifying what groups / players are present
     let titleText;
     if ((numGroups == 1) && (tribeCount == 1)) {
-        titleText = `${activeGroupSelector.Data.tribe}`
+        titleText = `${selectedGroups[0].Data.tribe}`
     }
     else if ((numGroups == 1) && (playerCount == 1)) {
-        titleText = `${activeGroupSelector.Name}`
+        titleText = `${selectedGroups[0].Name}`
     }
     else if ((numGroups > 1) && (playerCount == 0)) {
         titleText = `${numGroups} Tribes`
@@ -908,10 +907,10 @@ function redrawChart() {
     else if ((numGroups > 1) && (tribeCount == 0)) {
         titleText = `${numGroups} Players`
     }
-    else if((playerCount == 0) && (tribeCount == 0) && (specialGroupCount == 1)) {
-        titleText = `${activeGroupSelector.Name}`
+    else if ((playerCount == 0) && (tribeCount == 0) && (specialGroupCount == 1)) {
+        titleText = `${selectedGroups[0].Name}`
     }
-    else if((playerCount == 0) && (tribeCount == 0) && (specialGroupCount > 1)) {
+    else if ((playerCount == 0) && (tribeCount == 0) && (specialGroupCount > 1)) {
         titleText = `${numGroups} Special Groups`
     }
     else {
