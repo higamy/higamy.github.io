@@ -424,23 +424,28 @@ window.onkeydown = function (e) {
     }
 };
 
-
+const delayBetweenSends = 501
 function tryClick(button) {
 
     console.log('blah')
     let n = Timing.getElapsedTimeSinceLoad();
-    if (canSend && !(Accountmanager.farm.last_click && n - Accountmanager.farm.last_click < 200)) {
+    if (canSend && !(Accountmanager.farm.last_click && n - Accountmanager.farm.last_click < delayBetweenSends)) {
 
         if (button.classList.contains("farm_icon_disabled")) {
 
             window.top.UI.ErrorMessage("That button is not selectable. Skipping row...", 500);
         }
         else {
+            console.log("Removing button");
             button.click();
+            button.parentElement.parentElement.remove()
             window.top.UI.SuccessMessage('Troops sent.')
-            doTime(200, button);
+            doTime(delayBetweenSends, button);
         }
 
+    }
+    else {
+        console.log("Not time yet.");
     }
 }
 
@@ -448,7 +453,7 @@ function doTime(millsec, button) {
     canSend = false;
     setTimeout(function () {
         canSend = true;
-        button.parentElement.parentElement.remove()
+        //button.parentElement.parentElement.remove()
     }, millsec);
 }
 function getCurrentVillageFromUrl(urlIn) {

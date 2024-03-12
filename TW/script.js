@@ -36,8 +36,6 @@ $.ajax({
     }
 });
 
-
-
 // Constants
 const githubLocation = 'https://higamy.github.io/TW/Data';
 const availableStatistics = ['Points', 'Rank', 'Villages', 'OD', 'ODA', 'ODD', 'Daily Defend', 'Daily Attack', 'Daily Support', 'Daily Loot Amount', 'Daily Loot Villages', 'Daily Scavenge', 'Combined Income', 'Daily Conquer'];
