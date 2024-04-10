@@ -136,28 +136,17 @@ window.FarmGod.Library = (function () {
 
     if (!getUnitSpeeds()) setUnitSpeeds();
 
-    /*  
-        let [$html, page, villageLength, navSelect, navLength, pageSize] = debugVar;
-    */
-
-
     const determineNextPage = function (page, $html) {
         let villageLength = ($html.find('#scavenge_mass_screen').length > 0) ? $html.find('tr[id*="scavenge_village"]').length : $html.find('tr.row_a, tr.row_ax, tr.row_b, tr.row_bx').length;
         let navSelect = $html.find('.paged-nav-item').first().closest('td').find('select').first();
-
-        // NEED TO CHANGE HOW THIS WORKS TO NOT COUNT THE LENGTH OF THE LIST BUT RATHER LOOK AT THE LAST ITEM AND GRAB THE VALUE, MINUS ONE.
         let navLength = ($html.find('#am_widget_Farm').length > 0) ? parseInt($('#plunder_list_nav').first().find('a.paged-nav-item')[$('#plunder_list_nav').first().find('a.paged-nav-item').length - 1].text.replace(/\D/g, '')) - 1 : ((navSelect.length > 0) ? navSelect.find('option').length - 1 : $html.find('.paged-nav-item').not('[href*="page=-1"]').length);
         let pageSize = ($('#mobileHeader').length > 0) ? 10 : parseInt($html.find('input[name="page_size"]').val());
-
-        //console.log(villageLength, navSelect, navLength, pageSize)
 
         if (page == -1 && villageLength == 1000) {
             return Math.floor(1000 / pageSize);
         } else if (page < navLength) {
             return page + 1;
         }
-
-        if (navLength == 6) debugVar = [$html, page, villageLength, navSelect, navLength, pageSize];
 
         return false;
     };
