@@ -6,11 +6,12 @@ const modeParam = urlParams.get('mode');
 if ((modeParam != 'exchange') | (screenParam != 'market')) {
     UI.SuccessMessage("Redirecting to PP Exchange...", 1000)
 
+    urlParams.delete('village');
     urlParams.set('mode', 'exchange');
     urlParams.set('screen', 'market');
 
     // Perform the redirect
-    window.location.replace(`game.php?/${urlParams}`);
+    window.location.replace(`game.php?${urlParams}`);
 }
 else {
 
