@@ -11,5 +11,38 @@
     "date_format": "%d.%m.%Y",
     "world": 1,
     "tribes": [],
-    "players": []
+    "players": [
+        {
+            "name": "kubina1232",
+            "id": 1403750,
+            "tribe": 0,
+            "current_villages": 3,
+            "current_points": 327,
+            "current_rank": 1,
+            "dates": [
+                1718150400000
+            ],
+            "Rank": [
+                1
+            ],
+            "Points": [
+                327
+            ],
+            "Villages": [
+                3
+            ],
+            "OD": [
+                0
+            ],
+            "ODA": [
+                0
+            ],
+            "ODD": [
+                0
+            ],
+            "current_od": 0,
+            "current_oda": 0,
+            "current_odd": 0
+        }
+    ]
 }
