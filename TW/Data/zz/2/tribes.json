@@ -17,17 +17,17 @@
             "code": "TRL",
             "members": 7,
             "villages": 7,
-            "points": 8669,
+            "points": 8810,
             "rank": 13
         },
         {
             "tribe": "NoLimit (NL)",
             "id": 5,
             "code": "NL",
-            "members": 8,
-            "villages": 248,
-            "points": 1563418,
-            "rank": 2
+            "members": 7,
+            "villages": 182,
+            "points": 1097282,
+            "rank": 4
         },
         {
             "tribe": "Bad Company (Wicked)",
@@ -35,8 +35,8 @@
             "code": "Wicked",
             "members": 2,
             "villages": 1,
-            "points": 924,
-            "rank": 21
+            "points": 947,
+            "rank": 20
         },
         {
             "tribe": "Cimmerian (CROM)",
@@ -51,9 +51,9 @@
             "tribe": "Hit squad (Hs*)",
             "id": 18,
             "code": "Hs%2A",
-            "members": 9,
-            "villages": 716,
-            "points": 5825655,
+            "members": 10,
+            "villages": 793,
+            "points": 6394805,
             "rank": 1
         },
         {
@@ -62,7 +62,7 @@
             "code": "RMNA",
             "members": 5,
             "villages": 6,
-            "points": 9647,
+            "points": 9919,
             "rank": 12
         },
         {
@@ -71,8 +71,8 @@
             "code": "HSL",
             "members": 9,
             "villages": 202,
-            "points": 1334224,
-            "rank": 3
+            "points": 1334089,
+            "rank": 2
         },
         {
             "tribe": "~Ragnar\u00f6k~ (Viking)",
@@ -80,7 +80,7 @@
             "code": "Viking",
             "members": 1,
             "villages": 2,
-            "points": 14985,
+            "points": 15044,
             "rank": 9
         },
         {
@@ -98,7 +98,7 @@
             "code": "SAD",
             "members": 6,
             "villages": 9,
-            "points": 13406,
+            "points": 14571,
             "rank": 10
         },
         {
@@ -107,7 +107,7 @@
             "code": "HYPE%21",
             "members": 3,
             "villages": 2,
-            "points": 1697,
+            "points": 1825,
             "rank": 16
         },
         {
@@ -115,8 +115,8 @@
             "id": 30,
             "code": "%2A%2A%2A",
             "members": 1,
-            "villages": 10,
-            "points": 97650,
+            "villages": 14,
+            "points": 127591,
             "rank": 8
         },
         {
@@ -161,7 +161,7 @@
             "code": "-Hell-",
             "members": 6,
             "villages": 27,
-            "points": 187182,
+            "points": 189507,
             "rank": 7
         },
         {
@@ -169,8 +169,8 @@
             "id": 43,
             "code": "KARESi",
             "members": 10,
-            "villages": 118,
-            "points": 566139,
+            "villages": 110,
+            "points": 508190,
             "rank": 5
         },
         {
@@ -188,16 +188,16 @@
             "code": "G-F",
             "members": 2,
             "villages": 1,
-            "points": 895,
-            "rank": 20
+            "points": 917,
+            "rank": 21
         },
         {
             "tribe": "IYRTITL (OVO)",
             "id": 47,
             "code": "OVO",
             "members": 3,
-            "villages": 49,
-            "points": 312971,
+            "villages": 50,
+            "points": 317441,
             "rank": 6
         },
         {
@@ -214,9 +214,9 @@
             "id": 55,
             "code": "Party",
             "members": 7,
-            "villages": 179,
-            "points": 1224082,
-            "rank": 4
+            "villages": 181,
+            "points": 1238260,
+            "rank": 3
         },
         {
             "tribe": "Tugas (PT)",
@@ -224,7 +224,7 @@
             "code": "PT",
             "members": 3,
             "villages": 6,
-            "points": 10288,
+            "points": 10388,
             "rank": 11
         }
     ],
@@ -233,9 +233,9 @@
             "name": "Dux2311",
             "id": 2101,
             "tribe": 43,
-            "current_villages": 24,
-            "current_points": 134811,
-            "current_rank": 25,
+            "current_villages": 15,
+            "current_points": 69955,
+            "current_rank": 36,
             "dates": [
                 1714867200000,
                 1714953600000,
@@ -1288,7 +1288,7 @@
             "id": 10544,
             "tribe": 19,
             "current_villages": 1,
-            "current_points": 3126,
+            "current_points": 3197,
             "current_rank": 61,
             "dates": [
                 1713744000000,
@@ -2436,8 +2436,8 @@
             "id": 12175,
             "tribe": 46,
             "current_villages": 1,
-            "current_points": 869,
-            "current_rank": 86,
+            "current_points": 891,
+            "current_rank": 87,
             "dates": [
                 1713484800000,
                 1713571200000,
@@ -3714,7 +3714,7 @@
             "id": 20555,
             "tribe": 43,
             "current_villages": 11,
-            "current_points": 50484,
+            "current_points": 52747,
             "current_rank": 38,
             "dates": [
                 1716768000000,
@@ -5316,6 +5316,24 @@
             "current_odd": 0
         },
         {
+            "name": "1234554321",
+            "id": 43252,
+            "tribe": 0,
+            "current_villages": 1,
+            "current_points": 26,
+            "current_rank": 142,
+            "dates": [],
+            "Rank": [],
+            "Points": [],
+            "Villages": [],
+            "OD": [],
+            "ODA": [],
+            "ODD": [],
+            "current_od": 0,
+            "current_oda": 0,
+            "current_odd": 0
+        },
+        {
             "name": "deine Oma123",
             "id": 43781,
             "tribe": 0,
@@ -5444,7 +5462,7 @@
             "tribe": 19,
             "current_villages": 1,
             "current_points": 269,
-            "current_rank": 104,
+            "current_rank": 105,
             "dates": [
                 1713744000000,
                 1713830400000,
@@ -7264,8 +7282,8 @@
             "id": 50530,
             "tribe": 26,
             "current_villages": 1,
-            "current_points": 2042,
-            "current_rank": 74,
+            "current_points": 2581,
+            "current_rank": 66,
             "dates": [
                 1713571200000,
                 1713657600000,
@@ -8439,7 +8457,7 @@
             "tribe": 0,
             "current_villages": 1,
             "current_points": 26,
-            "current_rank": 142,
+            "current_rank": 143,
             "dates": [
                 1716076800000,
                 1716163200000,
@@ -10042,7 +10060,7 @@
             "id": 1397372,
             "tribe": 55,
             "current_villages": 3,
-            "current_points": 12889,
+            "current_points": 13378,
             "current_rank": 45,
             "dates": [
                 1713484800000,
@@ -11845,8 +11863,8 @@
             "id": 1399198,
             "tribe": 19,
             "current_villages": 1,
-            "current_points": 116,
-            "current_rank": 117,
+            "current_points": 123,
+            "current_rank": 116,
             "dates": [
                 1713484800000,
                 1713571200000,
@@ -13032,8 +13050,8 @@
             "id": 1399505,
             "tribe": 0,
             "current_villages": 1,
-            "current_points": 2471,
-            "current_rank": 70,
+            "current_points": 2564,
+            "current_rank": 68,
             "dates": [
                 1713484800000,
                 1713571200000,
@@ -14310,8 +14328,8 @@
             "id": 1401118,
             "tribe": 19,
             "current_villages": 2,
-            "current_points": 4133,
-            "current_rank": 59,
+            "current_points": 4212,
+            "current_rank": 58,
             "dates": [
                 1713484800000,
                 1713571200000,
@@ -15227,7 +15245,7 @@
             "tribe": 0,
             "current_villages": 1,
             "current_points": 26,
-            "current_rank": 143,
+            "current_rank": 144,
             "dates": [
                 1720137600000,
                 1720224000000,
@@ -15329,7 +15347,7 @@
             "tribe": 0,
             "current_villages": 1,
             "current_points": 26,
-            "current_rank": 144,
+            "current_rank": 145,
             "dates": [
                 1720396800000,
                 1720483200000,
@@ -15409,8 +15427,8 @@
             "id": 1411090,
             "tribe": 43,
             "current_villages": 7,
-            "current_points": 31510,
-            "current_rank": 41,
+            "current_points": 32446,
+            "current_rank": 40,
             "dates": [
                 1713484800000,
                 1713571200000,
@@ -16492,9 +16510,9 @@
             "name": "geecha-x",
             "id": 1416005,
             "tribe": 55,
-            "current_villages": 27,
-            "current_points": 124078,
-            "current_rank": 27,
+            "current_villages": 28,
+            "current_points": 126881,
+            "current_rank": 26,
             "dates": [
                 1713484800000,
                 1713571200000,
@@ -17680,7 +17698,7 @@
             "id": 1416103,
             "tribe": 55,
             "current_villages": 39,
-            "current_points": 187396,
+            "current_points": 190341,
             "current_rank": 18,
             "dates": [
                 1714089600000,
@@ -18776,7 +18794,7 @@
             "id": 1417008,
             "tribe": 20,
             "current_villages": 26,
-            "current_points": 110317,
+            "current_points": 110344,
             "current_rank": 30,
             "dates": [
                 1713484800000,
@@ -20055,7 +20073,7 @@
             "tribe": 0,
             "current_villages": 1,
             "current_points": 26,
-            "current_rank": 145,
+            "current_rank": 146,
             "dates": [
                 1720137600000,
                 1720224000000,
@@ -20157,7 +20175,7 @@
             "tribe": 0,
             "current_villages": 1,
             "current_points": 4197,
-            "current_rank": 58,
+            "current_rank": 59,
             "dates": [
                 1713484800000,
                 1713571200000,
@@ -21070,8 +21088,8 @@
             "id": 1431929,
             "tribe": 55,
             "current_villages": 1,
-            "current_points": 498,
-            "current_rank": 92,
+            "current_points": 544,
+            "current_rank": 91,
             "dates": [
                 1713484800000,
                 1713571200000,
@@ -22334,8 +22352,8 @@
             "id": 1435005,
             "tribe": 29,
             "current_villages": 1,
-            "current_points": 342,
-            "current_rank": 100,
+            "current_points": 446,
+            "current_rank": 97,
             "dates": [
                 1713484800000,
                 1713571200000,
@@ -23556,8 +23574,8 @@
             "id": 1442896,
             "tribe": 20,
             "current_villages": 9,
-            "current_points": 74408,
-            "current_rank": 36,
+            "current_points": 75104,
+            "current_rank": 35,
             "dates": [
                 1713830400000,
                 1713916800000,
@@ -25739,8 +25757,8 @@
             "id": 1445667,
             "tribe": 55,
             "current_villages": 1,
-            "current_points": 1490,
-            "current_rank": 78,
+            "current_points": 1901,
+            "current_rank": 77,
             "dates": [
                 1713484800000,
                 1713571200000,
@@ -28204,7 +28222,7 @@
             "id": 1446741,
             "tribe": 47,
             "current_villages": 13,
-            "current_points": 117866,
+            "current_points": 118571,
             "current_rank": 28,
             "dates": [
                 1713484800000,
@@ -29481,8 +29499,8 @@
             "name": "coogar",
             "id": 1448207,
             "tribe": 20,
-            "current_villages": 35,
-            "current_points": 162217,
+            "current_villages": 36,
+            "current_points": 165766,
             "current_rank": 21,
             "dates": [
                 1713484800000,
@@ -30759,9 +30777,9 @@
             "name": "Gnedler",
             "id": 1450954,
             "tribe": 30,
-            "current_villages": 10,
-            "current_points": 97650,
-            "current_rank": 33,
+            "current_villages": 14,
+            "current_points": 127577,
+            "current_rank": 27,
             "dates": [
                 1713484800000,
                 1713571200000,
@@ -32039,7 +32057,7 @@
             "tribe": 0,
             "current_villages": 1,
             "current_points": 26,
-            "current_rank": 146,
+            "current_rank": 147,
             "dates": [
                 1716249600000,
                 1716336000000,
@@ -32725,9 +32743,9 @@
             "name": "Lord DciBelia",
             "id": 1454041,
             "tribe": 20,
-            "current_villages": 27,
-            "current_points": 249473,
-            "current_rank": 15,
+            "current_villages": 29,
+            "current_points": 268602,
+            "current_rank": 14,
             "dates": [
                 1716076800000,
                 1716163200000,
@@ -33524,7 +33542,7 @@
             "tribe": 46,
             "current_villages": 1,
             "current_points": 26,
-            "current_rank": 147,
+            "current_rank": 148,
             "dates": [
                 1713484800000,
                 1713571200000,
@@ -34710,7 +34728,7 @@
             "id": 1456993,
             "tribe": 0,
             "current_villages": 9,
-            "current_points": 17895,
+            "current_points": 18221,
             "current_rank": 43,
             "dates": [
                 1713484800000,
@@ -36592,7 +36610,7 @@
             "id": 1457912,
             "tribe": 18,
             "current_villages": 77,
-            "current_points": 653218,
+            "current_points": 657041,
             "current_rank": 5,
             "dates": [
                 1713484800000,
@@ -37870,7 +37888,7 @@
             "id": 1459805,
             "tribe": 5,
             "current_villages": 56,
-            "current_points": 302733,
+            "current_points": 307332,
             "current_rank": 12,
             "dates": [
                 1713484800000,
@@ -40336,7 +40354,7 @@
             "tribe": 15,
             "current_villages": 1,
             "current_points": 1582,
-            "current_rank": 77,
+            "current_rank": 78,
             "dates": [
                 1713484800000,
                 1713571200000,
@@ -41473,7 +41491,7 @@
             "id": 1466301,
             "tribe": 21,
             "current_villages": 2,
-            "current_points": 14985,
+            "current_points": 15044,
             "current_rank": 44,
             "dates": [
                 1713484800000,
@@ -42659,8 +42677,8 @@
             "name": "tomasm12",
             "id": 1466404,
             "tribe": 20,
-            "current_villages": 42,
-            "current_points": 334165,
+            "current_villages": 43,
+            "current_points": 338627,
             "current_rank": 11,
             "dates": [
                 1713484800000,
@@ -44651,7 +44669,7 @@
             "tribe": 2,
             "current_villages": 1,
             "current_points": 411,
-            "current_rank": 97,
+            "current_rank": 99,
             "dates": [
                 1713484800000,
                 1713571200000,
@@ -45463,9 +45481,9 @@
             "name": "atom ant1",
             "id": 1467077,
             "tribe": 20,
-            "current_villages": 8,
-            "current_points": 48720,
-            "current_rank": 39,
+            "current_villages": 4,
+            "current_points": 18246,
+            "current_rank": 42,
             "dates": [
                 1713484800000,
                 1713571200000,
@@ -46743,7 +46761,7 @@
             "tribe": 32,
             "current_villages": 1,
             "current_points": 2580,
-            "current_rank": 66,
+            "current_rank": 67,
             "dates": [
                 1714089600000,
                 1714176000000,
@@ -47670,7 +47688,7 @@
             "id": 1467224,
             "tribe": 2,
             "current_villages": 1,
-            "current_points": 3553,
+            "current_points": 3668,
             "current_rank": 60,
             "dates": [
                 1713484800000,
@@ -48948,8 +48966,8 @@
             "id": 1467836,
             "tribe": 19,
             "current_villages": 1,
-            "current_points": 2003,
-            "current_rank": 75,
+            "current_points": 2105,
+            "current_rank": 74,
             "dates": [
                 1713484800000,
                 1713571200000,
@@ -50122,7 +50140,7 @@
             "id": 1467953,
             "tribe": 20,
             "current_villages": 25,
-            "current_points": 186088,
+            "current_points": 186987,
             "current_rank": 19,
             "dates": [
                 1713484800000,
@@ -51399,8 +51417,8 @@
             "name": "karesi",
             "id": 1468205,
             "tribe": 43,
-            "current_villages": 47,
-            "current_points": 236934,
+            "current_villages": 49,
+            "current_points": 242205,
             "current_rank": 16,
             "dates": [
                 1713484800000,
@@ -52622,7 +52640,7 @@
             "id": 1468421,
             "tribe": 18,
             "current_villages": 36,
-            "current_points": 287664,
+            "current_points": 289970,
             "current_rank": 13,
             "dates": [
                 1713484800000,
@@ -53900,8 +53918,8 @@
             "id": 1469092,
             "tribe": 43,
             "current_villages": 8,
-            "current_points": 26449,
-            "current_rank": 42,
+            "current_points": 27569,
+            "current_rank": 41,
             "dates": [
                 1713484800000,
                 1713571200000,
@@ -54813,8 +54831,8 @@
             "name": "I Love Milfs",
             "id": 1470028,
             "tribe": 47,
-            "current_villages": 30,
-            "current_points": 161898,
+            "current_villages": 31,
+            "current_points": 165389,
             "current_rank": 22,
             "dates": [
                 1713484800000,
@@ -56092,7 +56110,7 @@
             "id": 1470615,
             "tribe": 18,
             "current_villages": 48,
-            "current_points": 387124,
+            "current_points": 389638,
             "current_rank": 10,
             "dates": [
                 1713484800000,
@@ -58480,7 +58498,7 @@
             "tribe": 0,
             "current_villages": 1,
             "current_points": 26,
-            "current_rank": 148,
+            "current_rank": 149,
             "dates": [
                 1720137600000,
                 1720224000000,
@@ -58580,8 +58598,8 @@
             "name": "Zara",
             "id": 1471625,
             "tribe": 55,
-            "current_villages": 54,
-            "current_points": 437992,
+            "current_villages": 55,
+            "current_points": 442529,
             "current_rank": 9,
             "dates": [
                 1713744000000,
@@ -59818,7 +59836,7 @@
             "tribe": 0,
             "current_villages": 1,
             "current_points": 26,
-            "current_rank": 149,
+            "current_rank": 150,
             "dates": [
                 1720828800000,
                 1720915200000,
@@ -61134,7 +61152,7 @@
             "id": 1472683,
             "tribe": 18,
             "current_villages": 79,
-            "current_points": 660125,
+            "current_points": 667408,
             "current_rank": 4,
             "dates": [
                 1713484800000,
@@ -63460,8 +63478,8 @@
             "id": 1474748,
             "tribe": 10,
             "current_villages": 1,
-            "current_points": 898,
-            "current_rank": 87,
+            "current_points": 921,
+            "current_rank": 85,
             "dates": [
                 1713484800000,
                 1713571200000,
@@ -65382,7 +65400,7 @@
             "tribe": 0,
             "current_villages": 1,
             "current_points": 26,
-            "current_rank": 150,
+            "current_rank": 151,
             "dates": [
                 1713484800000,
                 1713571200000,
@@ -66696,7 +66714,7 @@
             "id": 1477515,
             "tribe": 0,
             "current_villages": 1,
-            "current_points": 382,
+            "current_points": 416,
             "current_rank": 98,
             "dates": [
                 1713484800000,
@@ -67884,7 +67902,7 @@
             "tribe": 0,
             "current_villages": 1,
             "current_points": 26,
-            "current_rank": 151,
+            "current_rank": 152,
             "dates": [
                 1720569600000,
                 1720742400000,
@@ -67951,7 +67969,7 @@
             "tribe": 0,
             "current_villages": 1,
             "current_points": 2543,
-            "current_rank": 67,
+            "current_rank": 69,
             "dates": [
                 1713484800000,
                 1713571200000,
@@ -69137,8 +69155,8 @@
             "id": 1477818,
             "tribe": 26,
             "current_villages": 4,
-            "current_points": 6403,
-            "current_rank": 53,
+            "current_points": 6855,
+            "current_rank": 52,
             "dates": [
                 1719273600000,
                 1719360000000,
@@ -69405,8 +69423,8 @@
             "id": 1478127,
             "tribe": 20,
             "current_villages": 17,
-            "current_points": 82427,
-            "current_rank": 35,
+            "current_points": 83353,
+            "current_rank": 34,
             "dates": [
                 1713484800000,
                 1713571200000,
@@ -70683,8 +70701,8 @@
             "id": 1478172,
             "tribe": 0,
             "current_villages": 1,
-            "current_points": 251,
-            "current_rank": 106,
+            "current_points": 274,
+            "current_rank": 103,
             "dates": [
                 1713744000000,
                 1713830400000,
@@ -71731,8 +71749,8 @@
             "id": 1478748,
             "tribe": 20,
             "current_villages": 13,
-            "current_points": 86454,
-            "current_rank": 34,
+            "current_points": 86915,
+            "current_rank": 33,
             "dates": [
                 1713484800000,
                 1713571200000,
@@ -73077,7 +73095,7 @@
             "tribe": 0,
             "current_villages": 1,
             "current_points": 26,
-            "current_rank": 152,
+            "current_rank": 153,
             "dates": [
                 1720742400000,
                 1720828800000,
@@ -73933,7 +73951,7 @@
             "tribe": 0,
             "current_villages": 1,
             "current_points": 26,
-            "current_rank": 153,
+            "current_rank": 154,
             "dates": [
                 1714089600000,
                 1714176000000,
@@ -76886,7 +76904,7 @@
             "tribe": 0,
             "current_villages": 1,
             "current_points": 26,
-            "current_rank": 154,
+            "current_rank": 155,
             "dates": [
                 1717200000000,
                 1717286400000,
@@ -77227,9 +77245,9 @@
         {
             "name": "xRayQore",
             "id": 1481689,
-            "tribe": 5,
+            "tribe": 18,
             "current_villages": 69,
-            "current_points": 476066,
+            "current_points": 483940,
             "current_rank": 6,
             "dates": [
                 1713484800000,
@@ -78506,8 +78524,8 @@
             "name": "kepitar",
             "id": 1481901,
             "tribe": 18,
-            "current_villages": 112,
-            "current_points": 876365,
+            "current_villages": 119,
+            "current_points": 927397,
             "current_rank": 3,
             "dates": [
                 1713484800000,
@@ -79846,7 +79864,7 @@
             "tribe": 0,
             "current_villages": 1,
             "current_points": 2517,
-            "current_rank": 68,
+            "current_rank": 70,
             "dates": [
                 1715126400000,
                 1715212800000,
@@ -80641,7 +80659,7 @@
             "id": 1482847,
             "tribe": 18,
             "current_villages": 81,
-            "current_points": 470176,
+            "current_points": 475550,
             "current_rank": 7,
             "dates": [
                 1713484800000,
@@ -82943,7 +82961,7 @@
             "id": 1483528,
             "tribe": 42,
             "current_villages": 20,
-            "current_points": 157143,
+            "current_points": 158866,
             "current_rank": 23,
             "dates": [
                 1715212800000,
@@ -83941,7 +83959,7 @@
             "id": 1483900,
             "tribe": 18,
             "current_villages": 148,
-            "current_points": 1309726,
+            "current_points": 1314463,
             "current_rank": 1,
             "dates": [
                 1713484800000,
@@ -85220,7 +85238,7 @@
             "tribe": 0,
             "current_villages": 1,
             "current_points": 26,
-            "current_rank": 155,
+            "current_rank": 156,
             "dates": [
                 1719187200000,
                 1719273600000,
@@ -86151,7 +86169,7 @@
             "tribe": 0,
             "current_villages": 1,
             "current_points": 26,
-            "current_rank": 156,
+            "current_rank": 157,
             "dates": [
                 1713571200000,
                 1713657600000,
@@ -86364,8 +86382,8 @@
             "id": 1484570,
             "tribe": 5,
             "current_villages": 15,
-            "current_points": 127564,
-            "current_rank": 26,
+            "current_points": 127740,
+            "current_rank": 25,
             "dates": [
                 1713484800000,
                 1713571200000,
@@ -87642,7 +87660,7 @@
             "id": 1484582,
             "tribe": 43,
             "current_villages": 12,
-            "current_points": 65351,
+            "current_points": 65704,
             "current_rank": 37,
             "dates": [
                 1713916800000,
@@ -88752,7 +88770,7 @@
             "tribe": 0,
             "current_villages": 1,
             "current_points": 26,
-            "current_rank": 157,
+            "current_rank": 158,
             "dates": [
                 1714694400000,
                 1714780800000,
@@ -89049,7 +89067,7 @@
             "id": 1484738,
             "tribe": 56,
             "current_villages": 4,
-            "current_points": 8452,
+            "current_points": 8481,
             "current_rank": 49,
             "dates": [
                 1713484800000,
@@ -90145,8 +90163,8 @@
             "id": 1484798,
             "tribe": 0,
             "current_villages": 1,
-            "current_points": 2619,
-            "current_rank": 65,
+            "current_points": 2685,
+            "current_rank": 64,
             "dates": [
                 1715126400000,
                 1715212800000,
@@ -91085,7 +91103,7 @@
             "id": 1484990,
             "tribe": 0,
             "current_villages": 1,
-            "current_points": 2869,
+            "current_points": 2907,
             "current_rank": 63,
             "dates": [
                 1714953600000,
@@ -91934,7 +91952,7 @@
             "id": 1485016,
             "tribe": 2,
             "current_villages": 1,
-            "current_points": 280,
+            "current_points": 290,
             "current_rank": 102,
             "dates": [
                 1713484800000,
@@ -93465,7 +93483,7 @@
             "id": 1485672,
             "tribe": 0,
             "current_villages": 1,
-            "current_points": 5229,
+            "current_points": 5409,
             "current_rank": 55,
             "dates": [
                 1714176000000,
@@ -94466,7 +94484,7 @@
             "tribe": 42,
             "current_villages": 1,
             "current_points": 2061,
-            "current_rank": 73,
+            "current_rank": 75,
             "dates": [
                 1715212800000,
                 1715299200000,
@@ -95020,7 +95038,7 @@
             "tribe": 0,
             "current_villages": 1,
             "current_points": 26,
-            "current_rank": 158,
+            "current_rank": 159,
             "dates": [
                 1720137600000,
                 1720224000000,
@@ -95122,7 +95140,7 @@
             "tribe": 0,
             "current_villages": 1,
             "current_points": 26,
-            "current_rank": 159,
+            "current_rank": 160,
             "dates": [
                 1714348800000,
                 1714435200000,
@@ -96244,7 +96262,7 @@
             "tribe": 0,
             "current_villages": 1,
             "current_points": 877,
-            "current_rank": 85,
+            "current_rank": 86,
             "dates": [
                 1713571200000,
                 1713657600000,
@@ -97303,7 +97321,7 @@
             "id": 1487378,
             "tribe": 5,
             "current_villages": 23,
-            "current_points": 115734,
+            "current_points": 117777,
             "current_rank": 29,
             "dates": [
                 1713484800000,
@@ -98490,8 +98508,8 @@
             "id": 1487530,
             "tribe": 0,
             "current_villages": 1,
-            "current_points": 369,
-            "current_rank": 99,
+            "current_points": 379,
+            "current_rank": 100,
             "dates": [
                 1713484800000,
                 1713571200000,
@@ -99531,7 +99549,7 @@
             "tribe": 0,
             "current_villages": 1,
             "current_points": 26,
-            "current_rank": 160,
+            "current_rank": 161,
             "dates": [
                 1720483200000,
                 1720569600000,
@@ -99603,8 +99621,8 @@
             "name": "takeshi kovacs",
             "id": 1487699,
             "tribe": 5,
-            "current_villages": 28,
-            "current_points": 142971,
+            "current_villages": 30,
+            "current_points": 145683,
             "current_rank": 24,
             "dates": [
                 1718409600000,
@@ -100051,7 +100069,7 @@
             "tribe": 0,
             "current_villages": 1,
             "current_points": 26,
-            "current_rank": 161,
+            "current_rank": 162,
             "dates": [
                 1720483200000,
                 1720569600000,
@@ -100125,7 +100143,7 @@
             "tribe": 10,
             "current_villages": 1,
             "current_points": 26,
-            "current_rank": 162,
+            "current_rank": 163,
             "dates": [
                 1713744000000,
                 1713830400000,
@@ -102355,7 +102373,7 @@
             "id": 1488119,
             "tribe": 18,
             "current_villages": 104,
-            "current_points": 928165,
+            "current_points": 929300,
             "current_rank": 2,
             "dates": [
                 1713484800000,
@@ -104821,7 +104839,7 @@
             "tribe": 0,
             "current_villages": 1,
             "current_points": 26,
-            "current_rank": 163,
+            "current_rank": 164,
             "dates": [
                 1713484800000,
                 1713571200000,
@@ -105120,7 +105138,7 @@
             "id": 1488454,
             "tribe": 2,
             "current_villages": 1,
-            "current_points": 850,
+            "current_points": 866,
             "current_rank": 88,
             "dates": [
                 1713744000000,
@@ -106269,7 +106287,7 @@
             "tribe": 0,
             "current_villages": 1,
             "current_points": 26,
-            "current_rank": 164,
+            "current_rank": 165,
             "dates": [
                 1720310400000,
                 1720396800000,
@@ -107150,8 +107168,8 @@
             "id": 1488522,
             "tribe": 18,
             "current_villages": 31,
-            "current_points": 253240,
-            "current_rank": 14,
+            "current_points": 255167,
+            "current_rank": 15,
             "dates": [
                 1713484800000,
                 1713571200000,
@@ -108429,7 +108447,7 @@
             "tribe": 0,
             "current_villages": 1,
             "current_points": 26,
-            "current_rank": 165,
+            "current_rank": 166,
             "dates": [
                 1720828800000,
                 1720915200000,
@@ -108565,7 +108583,7 @@
             "id": 1488898,
             "tribe": 55,
             "current_villages": 54,
-            "current_points": 459758,
+            "current_points": 462395,
             "current_rank": 8,
             "dates": [
                 1713484800000,
@@ -109844,7 +109862,7 @@
             "tribe": 0,
             "current_villages": 1,
             "current_points": 26,
-            "current_rank": 166,
+            "current_rank": 167,
             "dates": [
                 1720396800000,
                 1720483200000,
@@ -109924,8 +109942,8 @@
             "id": 1489007,
             "tribe": 26,
             "current_villages": 1,
-            "current_points": 508,
-            "current_rank": 91,
+            "current_points": 533,
+            "current_rank": 92,
             "dates": [
                 1713484800000,
                 1713571200000,
@@ -111008,7 +111026,7 @@
             "id": 1489059,
             "tribe": 0,
             "current_villages": 31,
-            "current_points": 213377,
+            "current_points": 214052,
             "current_rank": 17,
             "dates": [
                 1713484800000,
@@ -113461,7 +113479,7 @@
             "tribe": 29,
             "current_villages": 1,
             "current_points": 270,
-            "current_rank": 103,
+            "current_rank": 104,
             "dates": [
                 1714089600000,
                 1714176000000,
@@ -114345,7 +114363,7 @@
             "tribe": 43,
             "current_villages": 4,
             "current_points": 6613,
-            "current_rank": 52,
+            "current_rank": 53,
             "dates": [
                 1713484800000,
                 1713571200000,
@@ -115337,7 +115355,7 @@
             "tribe": 0,
             "current_villages": 0,
             "current_points": 0,
-            "current_rank": 195,
+            "current_rank": 197,
             "dates": [
                 1713484800000,
                 1713571200000,
@@ -116279,7 +116297,7 @@
             "tribe": 15,
             "current_villages": 1,
             "current_points": 26,
-            "current_rank": 167,
+            "current_rank": 168,
             "dates": [
                 1713484800000,
                 1713571200000,
@@ -117327,7 +117345,7 @@
             "tribe": 0,
             "current_villages": 1,
             "current_points": 26,
-            "current_rank": 168,
+            "current_rank": 169,
             "dates": [
                 1714176000000,
                 1714262400000,
@@ -117691,7 +117709,7 @@
             "tribe": 0,
             "current_villages": 3,
             "current_points": 2189,
-            "current_rank": 71,
+            "current_rank": 72,
             "dates": [
                 1714262400000,
                 1714348800000,
@@ -118747,7 +118765,7 @@
             "id": 1489501,
             "tribe": 42,
             "current_villages": 2,
-            "current_points": 11423,
+            "current_points": 11786,
             "current_rank": 46,
             "dates": [
                 1714262400000,
@@ -119700,8 +119718,8 @@
             "id": 1489569,
             "tribe": 47,
             "current_villages": 6,
-            "current_points": 33207,
-            "current_rank": 40,
+            "current_points": 33322,
+            "current_rank": 39,
             "dates": [
                 1715904000000,
                 1715990400000,
@@ -120523,7 +120541,7 @@
             "id": 1489572,
             "tribe": 26,
             "current_villages": 1,
-            "current_points": 2969,
+            "current_points": 3115,
             "current_rank": 62,
             "dates": [
                 1715904000000,
@@ -121176,7 +121194,7 @@
             "tribe": 43,
             "current_villages": 1,
             "current_points": 2187,
-            "current_rank": 72,
+            "current_rank": 73,
             "dates": [
                 1716076800000,
                 1716163200000,
@@ -121729,7 +121747,7 @@
             "tribe": 0,
             "current_villages": 1,
             "current_points": 26,
-            "current_rank": 169,
+            "current_rank": 170,
             "dates": [
                 1716681600000,
                 1716768000000,
@@ -121985,7 +122003,7 @@
             "tribe": 0,
             "current_villages": 1,
             "current_points": 26,
-            "current_rank": 170,
+            "current_rank": 171,
             "dates": [
                 1717113600000,
                 1717200000000,
@@ -122318,7 +122336,7 @@
             "tribe": 0,
             "current_villages": 1,
             "current_points": 26,
-            "current_rank": 171,
+            "current_rank": 172,
             "dates": [
                 1717372800000,
                 1717459200000,
@@ -122581,7 +122599,7 @@
             "tribe": 48,
             "current_villages": 1,
             "current_points": 269,
-            "current_rank": 105,
+            "current_rank": 106,
             "dates": [
                 1717545600000,
                 1717632000000,
@@ -123238,7 +123256,7 @@
             "id": 1489668,
             "tribe": 0,
             "current_villages": 2,
-            "current_points": 10333,
+            "current_points": 10179,
             "current_rank": 47,
             "dates": [
                 1717891200000,
@@ -123722,7 +123740,7 @@
             "id": 1489693,
             "tribe": 43,
             "current_villages": 3,
-            "current_points": 5484,
+            "current_points": 5615,
             "current_rank": 54,
             "dates": [
                 1718409600000,
@@ -124569,7 +124587,7 @@
             "tribe": 42,
             "current_villages": 1,
             "current_points": 2672,
-            "current_rank": 64,
+            "current_rank": 65,
             "dates": [
                 1718496000000,
                 1718582400000,
@@ -124903,7 +124921,7 @@
             "tribe": 0,
             "current_villages": 1,
             "current_points": 26,
-            "current_rank": 172,
+            "current_rank": 173,
             "dates": [
                 1718496000000,
                 1718582400000,
@@ -125296,7 +125314,7 @@
             "id": 1489753,
             "tribe": 56,
             "current_villages": 1,
-            "current_points": 1394,
+            "current_points": 1443,
             "current_rank": 80,
             "dates": [
                 1719532800000,
@@ -125839,7 +125857,7 @@
             "tribe": 0,
             "current_villages": 1,
             "current_points": 26,
-            "current_rank": 173,
+            "current_rank": 174,
             "dates": [
                 1719619200000,
                 1719705600000,
@@ -126113,7 +126131,7 @@
             "tribe": 0,
             "current_villages": 1,
             "current_points": 2478,
-            "current_rank": 69,
+            "current_rank": 71,
             "dates": [
                 1719878400000,
                 1719964800000,
@@ -126287,7 +126305,7 @@
             "tribe": 0,
             "current_villages": 1,
             "current_points": 26,
-            "current_rank": 174,
+            "current_rank": 175,
             "dates": [
                 1719964800000,
                 1720051200000,
@@ -126519,7 +126537,7 @@
             "tribe": 0,
             "current_villages": 1,
             "current_points": 26,
-            "current_rank": 175,
+            "current_rank": 176,
             "dates": [
                 1719964800000,
                 1720051200000,
@@ -126744,7 +126762,7 @@
             "tribe": 0,
             "current_villages": 1,
             "current_points": 26,
-            "current_rank": 176,
+            "current_rank": 177,
             "dates": [
                 1720051200000,
                 1720137600000,
@@ -127036,7 +127054,7 @@
             "tribe": 0,
             "current_villages": 1,
             "current_points": 26,
-            "current_rank": 177,
+            "current_rank": 178,
             "dates": [
                 1720396800000,
                 1720483200000,
@@ -127117,7 +127135,7 @@
             "tribe": 0,
             "current_villages": 1,
             "current_points": 26,
-            "current_rank": 178,
+            "current_rank": 179,
             "dates": [
                 1720396800000,
                 1720483200000,
@@ -127198,7 +127216,7 @@
             "tribe": 0,
             "current_villages": 1,
             "current_points": 26,
-            "current_rank": 179,
+            "current_rank": 180,
             "dates": [
                 1720396800000,
                 1720483200000,
@@ -127279,7 +127297,7 @@
             "tribe": 0,
             "current_villages": 1,
             "current_points": 26,
-            "current_rank": 180,
+            "current_rank": 181,
             "dates": [
                 1720396800000,
                 1720483200000,
@@ -127360,7 +127378,7 @@
             "tribe": 0,
             "current_villages": 1,
             "current_points": 26,
-            "current_rank": 181,
+            "current_rank": 182,
             "dates": [
                 1720483200000,
                 1720569600000,
@@ -127582,7 +127600,7 @@
             "tribe": 0,
             "current_villages": 1,
             "current_points": 26,
-            "current_rank": 182,
+            "current_rank": 183,
             "dates": [
                 1720483200000,
                 1720569600000,
@@ -127656,7 +127674,7 @@
             "tribe": 0,
             "current_villages": 1,
             "current_points": 26,
-            "current_rank": 183,
+            "current_rank": 184,
             "dates": [
                 1720483200000,
                 1720569600000,
@@ -127730,7 +127748,7 @@
             "tribe": 0,
             "current_villages": 1,
             "current_points": 26,
-            "current_rank": 184,
+            "current_rank": 185,
             "dates": [
                 1720483200000,
                 1720569600000,
@@ -127804,7 +127822,7 @@
             "tribe": 0,
             "current_villages": 1,
             "current_points": 119,
-            "current_rank": 116,
+            "current_rank": 117,
             "dates": [
                 1720569600000,
                 1720742400000,
@@ -128023,7 +128041,7 @@
             "tribe": 0,
             "current_villages": 1,
             "current_points": 26,
-            "current_rank": 185,
+            "current_rank": 186,
             "dates": [
                 1720569600000,
                 1720742400000,
@@ -128089,7 +128107,7 @@
             "id": 1489801,
             "tribe": 56,
             "current_villages": 1,
-            "current_points": 442,
+            "current_points": 454,
             "current_rank": 96,
             "dates": [
                 1720742400000,
@@ -128166,7 +128184,7 @@
             "tribe": 0,
             "current_villages": 1,
             "current_points": 26,
-            "current_rank": 186,
+            "current_rank": 187,
             "dates": [
                 1720742400000,
                 1720828800000,
@@ -128226,7 +128244,7 @@
             "tribe": 0,
             "current_villages": 1,
             "current_points": 26,
-            "current_rank": 187,
+            "current_rank": 188,
             "dates": [
                 1720742400000,
                 1720828800000,
@@ -128466,7 +128484,7 @@
             "tribe": 0,
             "current_villages": 1,
             "current_points": 26,
-            "current_rank": 188,
+            "current_rank": 189,
             "dates": [
                 1720915200000,
                 1721001600000,
@@ -128558,7 +128576,7 @@
             "tribe": 0,
             "current_villages": 1,
             "current_points": 26,
-            "current_rank": 189,
+            "current_rank": 190,
             "dates": [
                 1720915200000,
                 1721001600000,
@@ -128604,7 +128622,7 @@
             "tribe": 0,
             "current_villages": 1,
             "current_points": 26,
-            "current_rank": 190,
+            "current_rank": 191,
             "dates": [
                 1720915200000,
                 1721001600000,
@@ -128689,7 +128707,7 @@
             "tribe": 0,
             "current_villages": 1,
             "current_points": 26,
-            "current_rank": 191,
+            "current_rank": 192,
             "dates": [
                 1721001600000,
                 1721088000000
@@ -128728,7 +128746,7 @@
             "tribe": 0,
             "current_villages": 1,
             "current_points": 26,
-            "current_rank": 192,
+            "current_rank": 193,
             "dates": [
                 1721001600000,
                 1721088000000
@@ -128806,7 +128824,7 @@
             "tribe": 0,
             "current_villages": 1,
             "current_points": 26,
-            "current_rank": 193,
+            "current_rank": 194,
             "dates": [
                 1721088000000
             ],
@@ -128838,7 +128856,7 @@
             "tribe": 0,
             "current_villages": 1,
             "current_points": 26,
-            "current_rank": 194,
+            "current_rank": 195,
             "dates": [
                 1721088000000
             ],
@@ -128892,6 +128910,24 @@
             "ODD": [
                 0
             ],
+            "current_od": 0,
+            "current_oda": 0,
+            "current_odd": 0
+        },
+        {
+            "name": "sauddd",
+            "id": 1489822,
+            "tribe": 0,
+            "current_villages": 1,
+            "current_points": 26,
+            "current_rank": 196,
+            "dates": [],
+            "Rank": [],
+            "Points": [],
+            "Villages": [],
+            "OD": [],
+            "ODA": [],
+            "ODD": [],
             "current_od": 0,
             "current_oda": 0,
             "current_odd": 0
