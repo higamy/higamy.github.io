@@ -17,34 +17,34 @@
             "code": "%2BVlag%2B",
             "members": 1,
             "villages": 0,
-            "points": 509,
-            "rank": 4
+            "points": 604,
+            "rank": 5
         },
         {
             "tribe": "Wolves (WOLVES)",
             "id": 2,
             "code": "WOLVES",
-            "members": 6,
-            "villages": 18,
-            "points": 3661,
-            "rank": 1
+            "members": 7,
+            "villages": 21,
+            "points": 5597,
+            "rank": 2
         },
         {
             "tribe": "The Red Lion (TRL)",
             "id": 3,
             "code": "TRL",
-            "members": 4,
-            "villages": 12,
-            "points": 2070,
-            "rank": 2
+            "members": 8,
+            "villages": 24,
+            "points": 5602,
+            "rank": 1
         },
         {
             "tribe": "**STEEL WARRIORS** (STEEL)",
             "id": 4,
             "code": "STEEL",
-            "members": 1,
-            "villages": 0,
-            "points": 560,
+            "members": 7,
+            "villages": 21,
+            "points": 4657,
             "rank": 3
         },
         {
@@ -53,25 +53,48 @@
             "code": "-M%40d-",
             "members": 1,
             "villages": 3,
-            "points": 442,
-            "rank": 5
+            "points": 453,
+            "rank": 6
+        },
+        {
+            "tribe": "Only Premium Team (PP)",
+            "id": 6,
+            "code": "PP",
+            "members": 1,
+            "villages": 3,
+            "points": 756,
+            "rank": 4
         }
     ],
     "players": [
         {
             "name": "bilosu it",
             "id": 10544,
-            "tribe": 0,
+            "tribe": 2,
             "current_villages": 3,
-            "current_points": 327,
-            "current_rank": 67,
-            "dates": [],
-            "Rank": [],
-            "Points": [],
-            "Villages": [],
-            "OD": [],
-            "ODA": [],
-            "ODD": [],
+            "current_points": 679,
+            "current_rank": 19,
+            "dates": [
+                1722556800000
+            ],
+            "Rank": [
+                25
+            ],
+            "Points": [
+                644
+            ],
+            "Villages": [
+                3
+            ],
+            "OD": [
+                0
+            ],
+            "ODA": [
+                0
+            ],
+            "ODD": [
+                0
+            ],
             "current_od": 0,
             "current_oda": 0,
             "current_odd": 0
@@ -81,113 +104,251 @@
             "id": 12175,
             "tribe": 0,
             "current_villages": 3,
-            "current_points": 327,
-            "current_rank": 48,
-            "dates": [],
-            "Rank": [],
-            "Points": [],
-            "Villages": [],
-            "OD": [],
-            "ODA": [],
-            "ODD": [],
+            "current_points": 629,
+            "current_rank": 31,
+            "dates": [
+                1722556800000
+            ],
+            "Rank": [
+                26
+            ],
+            "Points": [
+                629
+            ],
+            "Villages": [
+                3
+            ],
+            "OD": [
+                0
+            ],
+            "ODA": [
+                0
+            ],
+            "ODD": [
+                0
+            ],
             "current_od": 0,
             "current_oda": 0,
             "current_odd": 0,
-            "Daily Loot Amount": [],
-            "current_daily loot amount": 88433,
-            "Daily Loot Villages": [],
-            "current_daily loot villages": 70,
-            "Daily Scavenge": [],
+            "Daily Loot Amount": [
+                400
+            ],
+            "current_daily loot amount": 400,
+            "Daily Loot Villages": [
+                1
+            ],
+            "current_daily loot villages": 1,
+            "Daily Scavenge": [
+                43520
+            ],
             "current_daily scavenge": 43520,
-            "Daily Defend": [],
+            "Daily Defend": [
+                5432
+            ],
             "current_daily defend": 5432,
-            "Daily Attack": [],
+            "Daily Attack": [
+                101
+            ],
             "current_daily attack": 101,
-            "Daily Conquer": [],
+            "Daily Conquer": [
+                2
+            ],
             "current_daily conquer": 2
+        },
+        {
+            "name": "Doom",
+            "id": 14309,
+            "tribe": 0,
+            "current_villages": 3,
+            "current_points": 327,
+            "current_rank": 81,
+            "dates": [
+                1722556800000
+            ],
+            "Rank": [
+                74
+            ],
+            "Points": [
+                327
+            ],
+            "Villages": [
+                3
+            ],
+            "OD": [
+                0
+            ],
+            "ODA": [
+                0
+            ],
+            "ODD": [
+                0
+            ],
+            "current_od": 0,
+            "current_oda": 0,
+            "current_odd": 0,
+            "Daily Loot Amount": [
+                900
+            ],
+            "current_daily loot amount": 900,
+            "Daily Loot Villages": [
+                3
+            ],
+            "current_daily loot villages": 3
         },
         {
             "name": "engineering",
             "id": 20084,
             "tribe": 0,
             "current_villages": 3,
-            "current_points": 500,
-            "current_rank": 28,
-            "dates": [],
-            "Rank": [],
-            "Points": [],
-            "Villages": [],
-            "OD": [],
-            "ODA": [],
-            "ODD": [],
+            "current_points": 605,
+            "current_rank": 37,
+            "dates": [
+                1722556800000
+            ],
+            "Rank": [
+                46
+            ],
+            "Points": [
+                533
+            ],
+            "Villages": [
+                3
+            ],
+            "OD": [
+                0
+            ],
+            "ODA": [
+                0
+            ],
+            "ODD": [
+                0
+            ],
             "current_od": 0,
             "current_oda": 0,
             "current_odd": 0,
-            "Daily Loot Amount": [],
-            "current_daily loot amount": 3225,
-            "Daily Loot Villages": [],
-            "current_daily loot villages": 25,
-            "Daily Scavenge": [],
-            "current_daily scavenge": 887
+            "Daily Loot Amount": [
+                4495
+            ],
+            "current_daily loot amount": 4495,
+            "Daily Loot Villages": [
+                12
+            ],
+            "current_daily loot villages": 12,
+            "Daily Scavenge": [
+                30
+            ],
+            "current_daily scavenge": 30
         },
         {
             "name": "kitiku",
             "id": 20555,
             "tribe": 2,
             "current_villages": 3,
-            "current_points": 613,
-            "current_rank": 6,
-            "dates": [],
-            "Rank": [],
-            "Points": [],
-            "Villages": [],
-            "OD": [],
-            "ODA": [],
-            "ODD": [],
+            "current_points": 988,
+            "current_rank": 3,
+            "dates": [
+                1722556800000
+            ],
+            "Rank": [
+                3
+            ],
+            "Points": [
+                942
+            ],
+            "Villages": [
+                3
+            ],
+            "OD": [
+                0
+            ],
+            "ODA": [
+                0
+            ],
+            "ODD": [
+                0
+            ],
             "current_od": 0,
             "current_oda": 0,
             "current_odd": 0,
-            "Daily Loot Amount": [],
-            "current_daily loot amount": 8262554,
-            "Daily Loot Villages": [],
-            "current_daily loot villages": 7309,
-            "Daily Scavenge": [],
+            "Daily Loot Amount": [
+                9625
+            ],
+            "current_daily loot amount": 9625,
+            "Daily Loot Villages": [
+                23
+            ],
+            "current_daily loot villages": 23,
+            "Daily Scavenge": [
+                2123887
+            ],
             "current_daily scavenge": 2123887,
-            "Daily Conquer": [],
+            "Daily Conquer": [
+                11
+            ],
             "current_daily conquer": 11,
-            "Daily Defend": [],
+            "Daily Defend": [
+                12037
+            ],
             "current_daily defend": 12037,
-            "Daily Support": [],
+            "Daily Support": [
+                245915
+            ],
             "current_daily support": 245915,
-            "Daily Attack": [],
+            "Daily Attack": [
+                84415
+            ],
             "current_daily attack": 84415
         },
         {
             "name": "alhal34",
             "id": 47759,
-            "tribe": 0,
+            "tribe": 4,
             "current_villages": 3,
-            "current_points": 537,
-            "current_rank": 27,
-            "dates": [],
-            "Rank": [],
-            "Points": [],
-            "Villages": [],
-            "OD": [],
-            "ODA": [],
-            "ODD": [],
+            "current_points": 682,
+            "current_rank": 22,
+            "dates": [
+                1722556800000
+            ],
+            "Rank": [
+                13
+            ],
+            "Points": [
+                658
+            ],
+            "Villages": [
+                3
+            ],
+            "OD": [
+                0
+            ],
+            "ODA": [
+                0
+            ],
+            "ODD": [
+                0
+            ],
             "current_od": 0,
             "current_oda": 0,
             "current_odd": 0,
-            "Daily Loot Amount": [],
+            "Daily Loot Amount": [
+                71360
+            ],
             "current_daily loot amount": 71360,
-            "Daily Loot Villages": [],
+            "Daily Loot Villages": [
+                9
+            ],
             "current_daily loot villages": 9,
-            "Daily Scavenge": [],
+            "Daily Scavenge": [
+                557
+            ],
             "current_daily scavenge": 557,
-            "Daily Defend": [],
+            "Daily Defend": [
+                9217
+            ],
             "current_daily defend": 9217,
-            "Daily Conquer": [],
+            "Daily Conquer": [
+                2
+            ],
             "current_daily conquer": 2
         },
         {
@@ -195,31 +356,59 @@
             "id": 1391654,
             "tribe": 0,
             "current_villages": 3,
-            "current_points": 327,
-            "current_rank": 55,
-            "dates": [],
-            "Rank": [],
-            "Points": [],
-            "Villages": [],
-            "OD": [],
-            "ODA": [],
-            "ODD": [],
+            "current_points": 650,
+            "current_rank": 26,
+            "dates": [
+                1722556800000
+            ],
+            "Rank": [
+                16
+            ],
+            "Points": [
+                650
+            ],
+            "Villages": [
+                3
+            ],
+            "OD": [
+                0
+            ],
+            "ODA": [
+                0
+            ],
+            "ODD": [
+                0
+            ],
             "current_od": 0,
             "current_oda": 0,
             "current_odd": 0,
-            "Daily Attack": [],
+            "Daily Attack": [
+                850
+            ],
             "current_daily attack": 850,
-            "Daily Defend": [],
+            "Daily Defend": [
+                4282
+            ],
             "current_daily defend": 4282,
-            "Daily Loot Amount": [],
-            "current_daily loot amount": 1453596,
-            "Daily Loot Villages": [],
-            "current_daily loot villages": 906,
-            "Daily Scavenge": [],
+            "Daily Loot Amount": [
+                1576
+            ],
+            "current_daily loot amount": 1576,
+            "Daily Loot Villages": [
+                5
+            ],
+            "current_daily loot villages": 5,
+            "Daily Scavenge": [
+                8695
+            ],
             "current_daily scavenge": 8695,
-            "Daily Conquer": [],
+            "Daily Conquer": [
+                1
+            ],
             "current_daily conquer": 1,
-            "Daily Support": [],
+            "Daily Support": [
+                3346
+            ],
             "current_daily support": 3346
         },
         {
@@ -228,48 +417,130 @@
             "tribe": 0,
             "current_villages": 3,
             "current_points": 327,
-            "current_rank": 71,
-            "dates": [],
-            "Rank": [],
-            "Points": [],
-            "Villages": [],
-            "OD": [],
-            "ODA": [],
-            "ODD": [],
+            "current_rank": 74,
+            "dates": [
+                1722556800000
+            ],
+            "Rank": [
+                81
+            ],
+            "Points": [
+                327
+            ],
+            "Villages": [
+                3
+            ],
+            "OD": [
+                0
+            ],
+            "ODA": [
+                0
+            ],
+            "ODD": [
+                0
+            ],
             "current_od": 0,
             "current_oda": 0,
             "current_odd": 0
+        },
+        {
+            "name": "Grave Digger",
+            "id": 1395851,
+            "tribe": 0,
+            "current_villages": 3,
+            "current_points": 375,
+            "current_rank": 66,
+            "dates": [
+                1722556800000
+            ],
+            "Rank": [
+                66
+            ],
+            "Points": [
+                375
+            ],
+            "Villages": [
+                3
+            ],
+            "OD": [
+                0
+            ],
+            "ODA": [
+                0
+            ],
+            "ODD": [
+                0
+            ],
+            "current_od": 0,
+            "current_oda": 0,
+            "current_odd": 0,
+            "Daily Loot Amount": [
+                200
+            ],
+            "current_daily loot amount": 200,
+            "Daily Loot Villages": [
+                2
+            ],
+            "current_daily loot villages": 2
         },
         {
             "name": "-Mojito*",
             "id": 1396176,
             "tribe": 0,
             "current_villages": 3,
-            "current_points": 423,
-            "current_rank": 37,
-            "dates": [],
-            "Rank": [],
-            "Points": [],
-            "Villages": [],
-            "OD": [],
-            "ODA": [],
-            "ODD": [],
+            "current_points": 531,
+            "current_rank": 51,
+            "dates": [
+                1722556800000
+            ],
+            "Rank": [
+                55
+            ],
+            "Points": [
+                501
+            ],
+            "Villages": [
+                3
+            ],
+            "OD": [
+                0
+            ],
+            "ODA": [
+                0
+            ],
+            "ODD": [
+                0
+            ],
             "current_od": 0,
             "current_oda": 0,
             "current_odd": 0,
-            "Daily Loot Amount": [],
+            "Daily Loot Amount": [
+                72401
+            ],
             "current_daily loot amount": 72401,
-            "Daily Loot Villages": [],
+            "Daily Loot Villages": [
+                16
+            ],
             "current_daily loot villages": 16,
-            "Daily Scavenge": [],
+            "Daily Scavenge": [
+                48000
+            ],
             "current_daily scavenge": 48000,
-            "Daily Conquer": [],
+            "Daily Conquer": [
+                2
+            ],
             "current_daily conquer": 2,
-            "Daily Support": [],
+            "Daily Support": [
+                7608
+            ],
             "current_daily support": 7608,
-            "Daily Attack": [],
+            "Daily Attack": [
+                112
+            ],
             "current_daily attack": 112,
-            "Daily Defend": [],
+            "Daily Defend": [
+                24086
+            ],
             "current_daily defend": 24086
         },
         {
@@ -277,27 +548,51 @@
             "id": 1397372,
             "tribe": 0,
             "current_villages": 3,
-            "current_points": 327,
-            "current_rank": 76,
-            "dates": [],
-            "Rank": [],
-            "Points": [],
-            "Villages": [],
-            "OD": [],
-            "ODA": [],
-            "ODD": [],
+            "current_points": 543,
+            "current_rank": 49,
+            "dates": [
+                1722556800000
+            ],
+            "Rank": [
+                45
+            ],
+            "Points": [
+                543
+            ],
+            "Villages": [
+                3
+            ],
+            "OD": [
+                0
+            ],
+            "ODA": [
+                0
+            ],
+            "ODD": [
+                0
+            ],
             "current_od": 0,
             "current_oda": 0,
             "current_odd": 0,
-            "Daily Loot Amount": [],
+            "Daily Loot Amount": [
+                1120043
+            ],
             "current_daily loot amount": 1120043,
-            "Daily Loot Villages": [],
+            "Daily Loot Villages": [
+                13
+            ],
             "current_daily loot villages": 13,
-            "Daily Defend": [],
+            "Daily Defend": [
+                1509
+            ],
             "current_daily defend": 1509,
-            "Daily Conquer": [],
+            "Daily Conquer": [
+                1
+            ],
             "current_daily conquer": 1,
-            "Daily Attack": [],
+            "Daily Attack": [
+                5590
+            ],
             "current_daily attack": 5590
         },
         {
@@ -306,24 +601,46 @@
             "tribe": 3,
             "current_villages": 3,
             "current_points": 327,
-            "current_rank": 75,
-            "dates": [],
-            "Rank": [],
-            "Points": [],
-            "Villages": [],
-            "OD": [],
-            "ODA": [],
-            "ODD": [],
+            "current_rank": 83,
+            "dates": [
+                1722556800000
+            ],
+            "Rank": [
+                75
+            ],
+            "Points": [
+                327
+            ],
+            "Villages": [
+                3
+            ],
+            "OD": [
+                0
+            ],
+            "ODA": [
+                0
+            ],
+            "ODD": [
+                0
+            ],
             "current_od": 0,
             "current_oda": 0,
             "current_odd": 0,
-            "Daily Loot Amount": [],
+            "Daily Loot Amount": [
+                50736
+            ],
             "current_daily loot amount": 50736,
-            "Daily Loot Villages": [],
+            "Daily Loot Villages": [
+                4
+            ],
             "current_daily loot villages": 4,
-            "Daily Defend": [],
+            "Daily Defend": [
+                6886
+            ],
             "current_daily defend": 6886,
-            "Daily Scavenge": [],
+            "Daily Scavenge": [
+                938
+            ],
             "current_daily scavenge": 938
         },
         {
@@ -332,69 +649,219 @@
             "tribe": 0,
             "current_villages": 3,
             "current_points": 439,
-            "current_rank": 36,
-            "dates": [],
-            "Rank": [],
-            "Points": [],
-            "Villages": [],
-            "OD": [],
-            "ODA": [],
-            "ODD": [],
+            "current_rank": 63,
+            "dates": [
+                1722556800000
+            ],
+            "Rank": [
+                62
+            ],
+            "Points": [
+                439
+            ],
+            "Villages": [
+                3
+            ],
+            "OD": [
+                0
+            ],
+            "ODA": [
+                0
+            ],
+            "ODD": [
+                0
+            ],
             "current_od": 0,
             "current_oda": 0,
             "current_odd": 0
+        },
+        {
+            "name": "middle",
+            "id": 1399505,
+            "tribe": 0,
+            "current_villages": 3,
+            "current_points": 530,
+            "current_rank": 55,
+            "dates": [
+                1722556800000
+            ],
+            "Rank": [
+                53
+            ],
+            "Points": [
+                496
+            ],
+            "Villages": [
+                3
+            ],
+            "OD": [
+                0
+            ],
+            "ODA": [
+                0
+            ],
+            "ODD": [
+                0
+            ],
+            "current_od": 0,
+            "current_oda": 0,
+            "current_odd": 0,
+            "Daily Defend": [
+                1947
+            ],
+            "current_daily defend": 1947,
+            "Daily Loot Amount": [
+                100
+            ],
+            "current_daily loot amount": 100,
+            "Daily Loot Villages": [
+                1
+            ],
+            "current_daily loot villages": 1,
+            "Daily Scavenge": [
+                34488
+            ],
+            "current_daily scavenge": 34488,
+            "Daily Attack": [
+                13031
+            ],
+            "current_daily attack": 13031,
+            "Daily Conquer": [
+                6
+            ],
+            "current_daily conquer": 6,
+            "Daily Support": [
+                14
+            ],
+            "current_daily support": 14
         },
         {
             "name": "Nosferatu",
             "id": 1400314,
             "tribe": 2,
             "current_villages": 3,
-            "current_points": 596,
-            "current_rank": 18,
-            "dates": [],
-            "Rank": [],
-            "Points": [],
-            "Villages": [],
-            "OD": [],
-            "ODA": [],
-            "ODD": [],
+            "current_points": 819,
+            "current_rank": 7,
+            "dates": [
+                1722556800000
+            ],
+            "Rank": [
+                7
+            ],
+            "Points": [
+                756
+            ],
+            "Villages": [
+                3
+            ],
+            "OD": [
+                0
+            ],
+            "ODA": [
+                0
+            ],
+            "ODD": [
+                0
+            ],
             "current_od": 0,
             "current_oda": 0,
             "current_odd": 0,
-            "Daily Loot Amount": [],
-            "current_daily loot amount": 12725,
-            "Daily Loot Villages": [],
-            "current_daily loot villages": 14
+            "Daily Loot Amount": [
+                25942
+            ],
+            "current_daily loot amount": 25942,
+            "Daily Loot Villages": [
+                56
+            ],
+            "current_daily loot villages": 56
         },
         {
             "name": "Hailamunte",
             "id": 1401118,
-            "tribe": 0,
+            "tribe": 3,
             "current_villages": 3,
-            "current_points": 327,
-            "current_rank": 74,
-            "dates": [],
-            "Rank": [],
-            "Points": [],
-            "Villages": [],
-            "OD": [],
-            "ODA": [],
-            "ODD": [],
+            "current_points": 688,
+            "current_rank": 16,
+            "dates": [
+                1722556800000
+            ],
+            "Rank": [
+                47
+            ],
+            "Points": [
+                570
+            ],
+            "Villages": [
+                3
+            ],
+            "OD": [
+                0
+            ],
+            "ODA": [
+                0
+            ],
+            "ODD": [
+                0
+            ],
             "current_od": 0,
             "current_oda": 0,
             "current_odd": 0,
-            "Daily Loot Amount": [],
+            "Daily Loot Amount": [
+                165859
+            ],
             "current_daily loot amount": 165859,
-            "Daily Loot Villages": [],
+            "Daily Loot Villages": [
+                8
+            ],
             "current_daily loot villages": 8,
-            "Daily Scavenge": [],
+            "Daily Scavenge": [
+                32250
+            ],
             "current_daily scavenge": 32250,
-            "Daily Defend": [],
+            "Daily Defend": [
+                18107
+            ],
             "current_daily defend": 18107,
-            "Daily Attack": [],
+            "Daily Attack": [
+                211
+            ],
             "current_daily attack": 211,
-            "Daily Conquer": [],
+            "Daily Conquer": [
+                1
+            ],
             "current_daily conquer": 1
+        },
+        {
+            "name": "The Gas",
+            "id": 1411090,
+            "tribe": 0,
+            "current_villages": 3,
+            "current_points": 342,
+            "current_rank": 71,
+            "dates": [
+                1722556800000
+            ],
+            "Rank": [
+                71
+            ],
+            "Points": [
+                342
+            ],
+            "Villages": [
+                3
+            ],
+            "OD": [
+                0
+            ],
+            "ODA": [
+                0
+            ],
+            "ODD": [
+                0
+            ],
+            "current_od": 0,
+            "current_oda": 0,
+            "current_odd": 0
         },
         {
             "name": "geecha-x",
@@ -402,22 +869,42 @@
             "tribe": 0,
             "current_villages": 3,
             "current_points": 327,
-            "current_rank": 73,
-            "dates": [],
-            "Rank": [],
-            "Points": [],
-            "Villages": [],
-            "OD": [],
-            "ODA": [],
-            "ODD": [],
+            "current_rank": 89,
+            "dates": [
+                1722556800000
+            ],
+            "Rank": [
+                73
+            ],
+            "Points": [
+                327
+            ],
+            "Villages": [
+                3
+            ],
+            "OD": [
+                0
+            ],
+            "ODA": [
+                0
+            ],
+            "ODD": [
+                0
+            ],
             "current_od": 0,
             "current_oda": 0,
             "current_odd": 0,
-            "Daily Defend": [],
+            "Daily Defend": [
+                160
+            ],
             "current_daily defend": 160,
-            "Daily Loot Amount": [],
+            "Daily Loot Amount": [
+                1460
+            ],
             "current_daily loot amount": 1460,
-            "Daily Loot Villages": [],
+            "Daily Loot Villages": [
+                4
+            ],
             "current_daily loot villages": 4
         },
         {
@@ -425,15 +912,29 @@
             "id": 1421858,
             "tribe": 0,
             "current_villages": 3,
-            "current_points": 327,
+            "current_points": 333,
             "current_rank": 72,
-            "dates": [],
-            "Rank": [],
-            "Points": [],
-            "Villages": [],
-            "OD": [],
-            "ODA": [],
-            "ODD": [],
+            "dates": [
+                1722556800000
+            ],
+            "Rank": [
+                72
+            ],
+            "Points": [
+                333
+            ],
+            "Villages": [
+                3
+            ],
+            "OD": [
+                0
+            ],
+            "ODA": [
+                0
+            ],
+            "ODD": [
+                0
+            ],
             "current_od": 0,
             "current_oda": 0,
             "current_odd": 0
@@ -441,29 +942,53 @@
         {
             "name": "Lady Shanna",
             "id": 1422663,
-            "tribe": 0,
+            "tribe": 4,
             "current_villages": 3,
-            "current_points": 327,
-            "current_rank": 70,
-            "dates": [],
-            "Rank": [],
-            "Points": [],
-            "Villages": [],
-            "OD": [],
-            "ODA": [],
-            "ODD": [],
+            "current_points": 647,
+            "current_rank": 27,
+            "dates": [
+                1722556800000
+            ],
+            "Rank": [
+                19
+            ],
+            "Points": [
+                647
+            ],
+            "Villages": [
+                3
+            ],
+            "OD": [
+                0
+            ],
+            "ODA": [
+                0
+            ],
+            "ODD": [
+                0
+            ],
             "current_od": 0,
             "current_oda": 0,
             "current_odd": 0,
-            "Daily Loot Amount": [],
+            "Daily Loot Amount": [
+                120897
+            ],
             "current_daily loot amount": 120897,
-            "Daily Loot Villages": [],
+            "Daily Loot Villages": [
+                14
+            ],
             "current_daily loot villages": 14,
-            "Daily Defend": [],
+            "Daily Defend": [
+                1260
+            ],
             "current_daily defend": 1260,
-            "Daily Attack": [],
+            "Daily Attack": [
+                144
+            ],
             "current_daily attack": 144,
-            "Daily Conquer": [],
+            "Daily Conquer": [
+                1
+            ],
             "current_daily conquer": 1
         },
         {
@@ -471,29 +996,55 @@
             "id": 1425594,
             "tribe": 0,
             "current_villages": 3,
-            "current_points": 327,
-            "current_rank": 69,
-            "dates": [],
-            "Rank": [],
-            "Points": [],
-            "Villages": [],
-            "OD": [],
-            "ODA": [],
-            "ODD": [],
+            "current_points": 375,
+            "current_rank": 67,
+            "dates": [
+                1722556800000
+            ],
+            "Rank": [
+                67
+            ],
+            "Points": [
+                375
+            ],
+            "Villages": [
+                3
+            ],
+            "OD": [
+                0
+            ],
+            "ODA": [
+                0
+            ],
+            "ODD": [
+                0
+            ],
             "current_od": 0,
             "current_oda": 0,
             "current_odd": 0,
-            "Daily Defend": [],
+            "Daily Defend": [
+                1195
+            ],
             "current_daily defend": 1195,
-            "Daily Loot Amount": [],
+            "Daily Loot Amount": [
+                370413
+            ],
             "current_daily loot amount": 370413,
-            "Daily Loot Villages": [],
+            "Daily Loot Villages": [
+                764
+            ],
             "current_daily loot villages": 764,
-            "Daily Attack": [],
+            "Daily Attack": [
+                1122
+            ],
             "current_daily attack": 1122,
-            "Daily Scavenge": [],
+            "Daily Scavenge": [
+                25166
+            ],
             "current_daily scavenge": 25166,
-            "Daily Conquer": [],
+            "Daily Conquer": [
+                1
+            ],
             "current_daily conquer": 1
         },
         {
@@ -501,47 +1052,147 @@
             "id": 1431929,
             "tribe": 0,
             "current_villages": 3,
-            "current_points": 569,
-            "current_rank": 14,
-            "dates": [],
-            "Rank": [],
-            "Points": [],
-            "Villages": [],
-            "OD": [],
-            "ODA": [],
-            "ODD": [],
+            "current_points": 679,
+            "current_rank": 20,
+            "dates": [
+                1722556800000
+            ],
+            "Rank": [
+                32
+            ],
+            "Points": [
+                611
+            ],
+            "Villages": [
+                3
+            ],
+            "OD": [
+                0
+            ],
+            "ODA": [
+                0
+            ],
+            "ODD": [
+                0
+            ],
             "current_od": 0,
             "current_oda": 0,
             "current_odd": 0,
-            "Daily Defend": [],
+            "Daily Defend": [
+                15051
+            ],
             "current_daily defend": 15051,
-            "Daily Loot Amount": [],
-            "current_daily loot amount": 245850,
-            "Daily Loot Villages": [],
-            "current_daily loot villages": 272,
-            "Daily Attack": [],
+            "Daily Loot Amount": [
+                2000
+            ],
+            "current_daily loot amount": 2000,
+            "Daily Loot Villages": [
+                5
+            ],
+            "current_daily loot villages": 5,
+            "Daily Attack": [
+                26
+            ],
             "current_daily attack": 26,
-            "Daily Conquer": [],
+            "Daily Conquer": [
+                1
+            ],
             "current_daily conquer": 1
+        },
+        {
+            "name": "Patrykos",
+            "id": 1442896,
+            "tribe": 0,
+            "current_villages": 3,
+            "current_points": 557,
+            "current_rank": 47,
+            "dates": [
+                1722556800000
+            ],
+            "Rank": [
+                43
+            ],
+            "Points": [
+                557
+            ],
+            "Villages": [
+                3
+            ],
+            "OD": [
+                0
+            ],
+            "ODA": [
+                0
+            ],
+            "ODD": [
+                0
+            ],
+            "current_od": 0,
+            "current_oda": 0,
+            "current_odd": 0,
+            "Daily Attack": [
+                185462
+            ],
+            "current_daily attack": 185462,
+            "Daily Loot Amount": [
+                2400
+            ],
+            "current_daily loot amount": 2400,
+            "Daily Loot Villages": [
+                4
+            ],
+            "current_daily loot villages": 4,
+            "Daily Scavenge": [
+                11779574
+            ],
+            "current_daily scavenge": 11779574,
+            "Daily Defend": [
+                3788
+            ],
+            "current_daily defend": 3788,
+            "Daily Support": [
+                261
+            ],
+            "current_daily support": 261,
+            "Daily Conquer": [
+                19
+            ],
+            "current_daily conquer": 19
         },
         {
             "name": "LORD SABER",
             "id": 1443565,
             "tribe": 4,
             "current_villages": 3,
-            "current_points": 560,
-            "current_rank": 17,
-            "dates": [],
-            "Rank": [],
-            "Points": [],
-            "Villages": [],
-            "OD": [],
-            "ODA": [],
-            "ODD": [],
+            "current_points": 701,
+            "current_rank": 15,
+            "dates": [
+                1722556800000
+            ],
+            "Rank": [
+                17
+            ],
+            "Points": [
+                650
+            ],
+            "Villages": [
+                3
+            ],
+            "OD": [
+                0
+            ],
+            "ODA": [
+                0
+            ],
+            "ODD": [
+                0
+            ],
             "current_od": 0,
             "current_oda": 0,
             "current_odd": 0,
-            "Daily Defend": [],
+            "Daily Defend": [
+                7
+            ],
             "current_daily defend": 7
         },
         {
@@ -549,31 +1200,59 @@
             "id": 1446741,
             "tribe": 2,
             "current_villages": 3,
-            "current_points": 573,
-            "current_rank": 15,
-            "dates": [],
-            "Rank": [],
-            "Points": [],
-            "Villages": [],
-            "OD": [],
-            "ODA": [],
-            "ODD": [],
+            "current_points": 794,
+            "current_rank": 11,
+            "dates": [
+                1722556800000
+            ],
+            "Rank": [
+                12
+            ],
+            "Points": [
+                674
+            ],
+            "Villages": [
+                3
+            ],
+            "OD": [
+                0
+            ],
+            "ODA": [
+                0
+            ],
+            "ODD": [
+                0
+            ],
             "current_od": 0,
             "current_oda": 0,
             "current_odd": 0,
-            "Daily Attack": [],
+            "Daily Attack": [
+                8536
+            ],
             "current_daily attack": 8536,
-            "Daily Defend": [],
+            "Daily Defend": [
+                96020
+            ],
             "current_daily defend": 96020,
-            "Daily Loot Amount": [],
-            "current_daily loot amount": 1445143,
-            "Daily Loot Villages": [],
-            "current_daily loot villages": 935,
-            "Daily Scavenge": [],
+            "Daily Loot Amount": [
+                9017
+            ],
+            "current_daily loot amount": 9017,
+            "Daily Loot Villages": [
+                20
+            ],
+            "current_daily loot villages": 20,
+            "Daily Scavenge": [
+                7283
+            ],
             "current_daily scavenge": 7283,
-            "Daily Conquer": [],
+            "Daily Conquer": [
+                3
+            ],
             "current_daily conquer": 3,
-            "Daily Support": [],
+            "Daily Support": [
+                9025
+            ],
             "current_daily support": 9025
         },
         {
@@ -581,25 +1260,47 @@
             "id": 1448207,
             "tribe": 0,
             "current_villages": 3,
-            "current_points": 607,
-            "current_rank": 10,
-            "dates": [],
-            "Rank": [],
-            "Points": [],
-            "Villages": [],
-            "OD": [],
-            "ODA": [],
-            "ODD": [],
+            "current_points": 724,
+            "current_rank": 12,
+            "dates": [
+                1722556800000
+            ],
+            "Rank": [
+                9
+            ],
+            "Points": [
+                724
+            ],
+            "Villages": [
+                3
+            ],
+            "OD": [
+                0
+            ],
+            "ODA": [
+                0
+            ],
+            "ODD": [
+                0
+            ],
             "current_od": 0,
             "current_oda": 0,
             "current_odd": 0,
-            "Daily Defend": [],
+            "Daily Defend": [
+                164
+            ],
             "current_daily defend": 164,
-            "Daily Loot Amount": [],
-            "current_daily loot amount": 20368,
-            "Daily Loot Villages": [],
-            "current_daily loot villages": 87,
-            "Daily Scavenge": [],
+            "Daily Loot Amount": [
+                15200
+            ],
+            "current_daily loot amount": 15200,
+            "Daily Loot Villages": [
+                27
+            ],
+            "current_daily loot villages": 27,
+            "Daily Scavenge": [
+                24992
+            ],
             "current_daily scavenge": 24992
         },
         {
@@ -607,47 +1308,133 @@
             "id": 1450954,
             "tribe": 0,
             "current_villages": 3,
-            "current_points": 384,
-            "current_rank": 42,
-            "dates": [],
-            "Rank": [],
-            "Points": [],
-            "Villages": [],
-            "OD": [],
-            "ODA": [],
-            "ODD": [],
+            "current_points": 563,
+            "current_rank": 48,
+            "dates": [
+                1722556800000
+            ],
+            "Rank": [
+                49
+            ],
+            "Points": [
+                512
+            ],
+            "Villages": [
+                3
+            ],
+            "OD": [
+                0
+            ],
+            "ODA": [
+                0
+            ],
+            "ODD": [
+                0
+            ],
             "current_od": 0,
             "current_oda": 0,
             "current_odd": 0,
-            "Daily Loot Amount": [],
+            "Daily Loot Amount": [
+                523476
+            ],
             "current_daily loot amount": 523476,
-            "Daily Loot Villages": [],
+            "Daily Loot Villages": [
+                3113
+            ],
             "current_daily loot villages": 3113,
-            "Daily Scavenge": [],
+            "Daily Scavenge": [
+                18083
+            ],
             "current_daily scavenge": 18083,
-            "Daily Attack": [],
+            "Daily Attack": [
+                7102
+            ],
             "current_daily attack": 7102,
-            "Daily Conquer": [],
+            "Daily Conquer": [
+                3
+            ],
             "current_daily conquer": 3,
-            "Daily Defend": [],
+            "Daily Defend": [
+                29166
+            ],
             "current_daily defend": 29166,
-            "Daily Support": [],
+            "Daily Support": [
+                7367
+            ],
             "current_daily support": 7367
         },
         {
             "name": "Lord DciBelia",
             "id": 1454041,
+            "tribe": 6,
+            "current_villages": 3,
+            "current_points": 756,
+            "current_rank": 8,
+            "dates": [
+                1722556800000
+            ],
+            "Rank": [
+                10
+            ],
+            "Points": [
+                724
+            ],
+            "Villages": [
+                3
+            ],
+            "OD": [
+                0
+            ],
+            "ODA": [
+                0
+            ],
+            "ODD": [
+                0
+            ],
+            "current_od": 0,
+            "current_oda": 0,
+            "current_odd": 0,
+            "Daily Loot Amount": [
+                3020
+            ],
+            "current_daily loot amount": 3020,
+            "Daily Loot Villages": [
+                12
+            ],
+            "current_daily loot villages": 12,
+            "Daily Scavenge": [
+                70
+            ],
+            "current_daily scavenge": 70
+        },
+        {
+            "name": "Monster Munch",
+            "id": 1454535,
             "tribe": 0,
             "current_villages": 3,
-            "current_points": 548,
-            "current_rank": 20,
-            "dates": [],
-            "Rank": [],
-            "Points": [],
-            "Villages": [],
-            "OD": [],
-            "ODA": [],
-            "ODD": [],
+            "current_points": 327,
+            "current_rank": 92,
+            "dates": [
+                1722556800000
+            ],
+            "Rank": [
+                84
+            ],
+            "Points": [
+                327
+            ],
+            "Villages": [
+                3
+            ],
+            "OD": [
+                0
+            ],
+            "ODA": [
+                0
+            ],
+            "ODD": [
+                0
+            ],
             "current_od": 0,
             "current_oda": 0,
             "current_odd": 0
@@ -657,29 +1444,55 @@
             "id": 1456993,
             "tribe": 3,
             "current_villages": 3,
-            "current_points": 614,
-            "current_rank": 7,
-            "dates": [],
-            "Rank": [],
-            "Points": [],
-            "Villages": [],
-            "OD": [],
-            "ODA": [],
-            "ODD": [],
+            "current_points": 652,
+            "current_rank": 23,
+            "dates": [
+                1722556800000
+            ],
+            "Rank": [
+                14
+            ],
+            "Points": [
+                652
+            ],
+            "Villages": [
+                3
+            ],
+            "OD": [
+                0
+            ],
+            "ODA": [
+                0
+            ],
+            "ODD": [
+                0
+            ],
             "current_od": 0,
             "current_oda": 0,
             "current_odd": 0,
-            "Daily Scavenge": [],
-            "current_daily scavenge": 280,
-            "Daily Defend": [],
+            "Daily Scavenge": [
+                80
+            ],
+            "current_daily scavenge": 80,
+            "Daily Defend": [
+                345
+            ],
             "current_daily defend": 345,
-            "Daily Loot Amount": [],
+            "Daily Loot Amount": [
+                21840
+            ],
             "current_daily loot amount": 21840,
-            "Daily Loot Villages": [],
+            "Daily Loot Villages": [
+                8
+            ],
             "current_daily loot villages": 8,
-            "Daily Conquer": [],
+            "Daily Conquer": [
+                2
+            ],
             "current_daily conquer": 2,
-            "Daily Attack": [],
+            "Daily Attack": [
+                104
+            ],
             "current_daily attack": 104
         },
         {
@@ -687,63 +1500,231 @@
             "id": 1460886,
             "tribe": 3,
             "current_villages": 3,
-            "current_points": 523,
-            "current_rank": 24,
-            "dates": [],
-            "Rank": [],
-            "Points": [],
-            "Villages": [],
-            "OD": [],
-            "ODA": [],
-            "ODD": [],
+            "current_points": 708,
+            "current_rank": 14,
+            "dates": [
+                1722556800000
+            ],
+            "Rank": [
+                21
+            ],
+            "Points": [
+                644
+            ],
+            "Villages": [
+                3
+            ],
+            "OD": [
+                0
+            ],
+            "ODA": [
+                0
+            ],
+            "ODD": [
+                0
+            ],
             "current_od": 0,
             "current_oda": 0,
             "current_odd": 0,
-            "Daily Defend": [],
+            "Daily Defend": [
+                8421
+            ],
             "current_daily defend": 8421,
-            "Daily Loot Amount": [],
-            "current_daily loot amount": 96310,
-            "Daily Loot Villages": [],
-            "current_daily loot villages": 8,
-            "Daily Scavenge": [],
+            "Daily Loot Amount": [
+                1200
+            ],
+            "current_daily loot amount": 1200,
+            "Daily Loot Villages": [
+                3
+            ],
+            "current_daily loot villages": 3,
+            "Daily Scavenge": [
+                2943
+            ],
             "current_daily scavenge": 2943,
-            "Daily Support": [],
+            "Daily Support": [
+                2
+            ],
             "current_daily support": 2,
-            "Daily Attack": [],
+            "Daily Attack": [
+                352
+            ],
             "current_daily attack": 352,
-            "Daily Conquer": [],
+            "Daily Conquer": [
+                1
+            ],
             "current_daily conquer": 1
+        },
+        {
+            "name": "Henkepenke73",
+            "id": 1466301,
+            "tribe": 0,
+            "current_villages": 3,
+            "current_points": 475,
+            "current_rank": 59,
+            "dates": [
+                1722556800000
+            ],
+            "Rank": [
+                58
+            ],
+            "Points": [
+                475
+            ],
+            "Villages": [
+                3
+            ],
+            "OD": [
+                0
+            ],
+            "ODA": [
+                0
+            ],
+            "ODD": [
+                0
+            ],
+            "current_od": 0,
+            "current_oda": 0,
+            "current_odd": 0,
+            "Daily Defend": [
+                2421
+            ],
+            "current_daily defend": 2421,
+            "Daily Loot Amount": [
+                1150
+            ],
+            "current_daily loot amount": 1150,
+            "Daily Loot Villages": [
+                2
+            ],
+            "current_daily loot villages": 2,
+            "Daily Scavenge": [
+                86377
+            ],
+            "current_daily scavenge": 86377,
+            "Daily Conquer": [
+                1
+            ],
+            "current_daily conquer": 1
+        },
+        {
+            "name": "tomasm12",
+            "id": 1466404,
+            "tribe": 0,
+            "current_villages": 3,
+            "current_points": 452,
+            "current_rank": 62,
+            "dates": [
+                1722556800000
+            ],
+            "Rank": [
+                63
+            ],
+            "Points": [
+                452
+            ],
+            "Villages": [
+                3
+            ],
+            "OD": [
+                0
+            ],
+            "ODA": [
+                0
+            ],
+            "ODD": [
+                0
+            ],
+            "current_od": 0,
+            "current_oda": 0,
+            "current_odd": 0,
+            "Daily Attack": [
+                4291
+            ],
+            "current_daily attack": 4291,
+            "Daily Support": [
+                213
+            ],
+            "current_daily support": 213,
+            "Daily Loot Amount": [
+                800
+            ],
+            "current_daily loot amount": 800,
+            "Daily Loot Villages": [
+                1
+            ],
+            "current_daily loot villages": 1,
+            "Daily Scavenge": [
+                896052
+            ],
+            "current_daily scavenge": 896052,
+            "Daily Defend": [
+                9936
+            ],
+            "current_daily defend": 9936,
+            "Daily Conquer": [
+                4
+            ],
+            "current_daily conquer": 4
         },
         {
             "name": "testament.",
             "id": 1466914,
             "tribe": 2,
             "current_villages": 3,
-            "current_points": 767,
-            "current_rank": 2,
-            "dates": [],
-            "Rank": [],
-            "Points": [],
-            "Villages": [],
-            "OD": [],
-            "ODA": [],
-            "ODD": [],
+            "current_points": 1030,
+            "current_rank": 5,
+            "dates": [
+                1722556800000
+            ],
+            "Rank": [
+                4
+            ],
+            "Points": [
+                883
+            ],
+            "Villages": [
+                3
+            ],
+            "OD": [
+                0
+            ],
+            "ODA": [
+                0
+            ],
+            "ODD": [
+                0
+            ],
             "current_od": 0,
             "current_oda": 0,
             "current_odd": 0,
-            "Daily Attack": [],
+            "Daily Attack": [
+                144197
+            ],
             "current_daily attack": 144197,
-            "Daily Loot Amount": [],
-            "current_daily loot amount": 15068125,
-            "Daily Loot Villages": [],
-            "current_daily loot villages": 4747,
-            "Daily Scavenge": [],
-            "current_daily scavenge": 2370250,
-            "Daily Defend": [],
+            "Daily Loot Amount": [
+                20005
+            ],
+            "current_daily loot amount": 20005,
+            "Daily Loot Villages": [
+                43
+            ],
+            "current_daily loot villages": 43,
+            "Daily Scavenge": [
+                24
+            ],
+            "current_daily scavenge": 24,
+            "Daily Defend": [
+                288549
+            ],
             "current_daily defend": 288549,
-            "Daily Conquer": [],
+            "Daily Conquer": [
+                13
+            ],
             "current_daily conquer": 13,
-            "Daily Support": [],
+            "Daily Support": [
+                106
+            ],
             "current_daily support": 106
         },
         {
@@ -751,19 +1732,35 @@
             "id": 1467105,
             "tribe": 5,
             "current_villages": 3,
-            "current_points": 442,
-            "current_rank": 34,
-            "dates": [],
-            "Rank": [],
-            "Points": [],
-            "Villages": [],
-            "OD": [],
-            "ODA": [],
-            "ODD": [],
+            "current_points": 453,
+            "current_rank": 61,
+            "dates": [
+                1722556800000
+            ],
+            "Rank": [
+                60
+            ],
+            "Points": [
+                453
+            ],
+            "Villages": [
+                3
+            ],
+            "OD": [
+                0
+            ],
+            "ODA": [
+                0
+            ],
+            "ODD": [
+                0
+            ],
             "current_od": 0,
             "current_oda": 0,
             "current_odd": 0,
-            "Daily Defend": [],
+            "Daily Defend": [
+                172
+            ],
             "current_daily defend": 172
         },
         {
@@ -771,29 +1768,55 @@
             "id": 1467224,
             "tribe": 1,
             "current_villages": 3,
-            "current_points": 477,
-            "current_rank": 31,
-            "dates": [],
-            "Rank": [],
-            "Points": [],
-            "Villages": [],
-            "OD": [],
-            "ODA": [],
-            "ODD": [],
+            "current_points": 604,
+            "current_rank": 38,
+            "dates": [
+                1722556800000
+            ],
+            "Rank": [
+                33
+            ],
+            "Points": [
+                604
+            ],
+            "Villages": [
+                3
+            ],
+            "OD": [
+                0
+            ],
+            "ODA": [
+                0
+            ],
+            "ODD": [
+                0
+            ],
             "current_od": 0,
             "current_oda": 0,
             "current_odd": 0,
-            "Daily Loot Amount": [],
-            "current_daily loot amount": 16850,
-            "Daily Loot Villages": [],
-            "current_daily loot villages": 20,
-            "Daily Scavenge": [],
-            "current_daily scavenge": 83245,
-            "Daily Defend": [],
+            "Daily Loot Amount": [
+                400
+            ],
+            "current_daily loot amount": 400,
+            "Daily Loot Villages": [
+                1
+            ],
+            "current_daily loot villages": 1,
+            "Daily Scavenge": [
+                624
+            ],
+            "current_daily scavenge": 624,
+            "Daily Defend": [
+                29190
+            ],
             "current_daily defend": 29190,
-            "Daily Attack": [],
+            "Daily Attack": [
+                88
+            ],
             "current_daily attack": 88,
-            "Daily Conquer": [],
+            "Daily Conquer": [
+                1
+            ],
             "current_daily conquer": 1
         },
         {
@@ -801,61 +1824,115 @@
             "id": 1467836,
             "tribe": 3,
             "current_villages": 3,
-            "current_points": 568,
-            "current_rank": 13,
-            "dates": [],
-            "Rank": [],
-            "Points": [],
-            "Villages": [],
-            "OD": [],
-            "ODA": [],
-            "ODD": [],
+            "current_points": 637,
+            "current_rank": 30,
+            "dates": [
+                1722556800000
+            ],
+            "Rank": [
+                35
+            ],
+            "Points": [
+                617
+            ],
+            "Villages": [
+                3
+            ],
+            "OD": [
+                0
+            ],
+            "ODA": [
+                0
+            ],
+            "ODD": [
+                0
+            ],
             "current_od": 0,
             "current_oda": 0,
             "current_odd": 0,
-            "Daily Loot Amount": [],
-            "current_daily loot amount": 490939,
-            "Daily Loot Villages": [],
-            "current_daily loot villages": 28,
-            "Daily Scavenge": [],
+            "Daily Loot Amount": [
+                800
+            ],
+            "current_daily loot amount": 800,
+            "Daily Loot Villages": [
+                2
+            ],
+            "current_daily loot villages": 2,
+            "Daily Scavenge": [
+                115
+            ],
             "current_daily scavenge": 115,
-            "Daily Defend": [],
+            "Daily Defend": [
+                16547
+            ],
             "current_daily defend": 16547,
-            "Daily Attack": [],
+            "Daily Attack": [
+                14221
+            ],
             "current_daily attack": 14221,
-            "Daily Conquer": [],
+            "Daily Conquer": [
+                2
+            ],
             "current_daily conquer": 2
         },
         {
             "name": "legyesapa",
             "id": 1467953,
-            "tribe": 0,
+            "tribe": 4,
             "current_villages": 3,
-            "current_points": 508,
-            "current_rank": 25,
-            "dates": [],
-            "Rank": [],
-            "Points": [],
-            "Villages": [],
-            "OD": [],
-            "ODA": [],
-            "ODD": [],
+            "current_points": 619,
+            "current_rank": 34,
+            "dates": [
+                1722556800000
+            ],
+            "Rank": [
+                28
+            ],
+            "Points": [
+                619
+            ],
+            "Villages": [
+                3
+            ],
+            "OD": [
+                0
+            ],
+            "ODA": [
+                0
+            ],
+            "ODD": [
+                0
+            ],
             "current_od": 0,
             "current_oda": 0,
             "current_odd": 0,
-            "Daily Attack": [],
+            "Daily Attack": [
+                2006
+            ],
             "current_daily attack": 2006,
-            "Daily Loot Amount": [],
-            "current_daily loot amount": 459954,
-            "Daily Loot Villages": [],
-            "current_daily loot villages": 330,
-            "Daily Scavenge": [],
+            "Daily Loot Amount": [
+                1127
+            ],
+            "current_daily loot amount": 1127,
+            "Daily Loot Villages": [
+                3
+            ],
+            "current_daily loot villages": 3,
+            "Daily Scavenge": [
+                21484
+            ],
             "current_daily scavenge": 21484,
-            "Daily Defend": [],
+            "Daily Defend": [
+                31218
+            ],
             "current_daily defend": 31218,
-            "Daily Conquer": [],
+            "Daily Conquer": [
+                2
+            ],
             "current_daily conquer": 2,
-            "Daily Support": [],
+            "Daily Support": [
+                12719
+            ],
             "current_daily support": 12719
         },
         {
@@ -863,31 +1940,59 @@
             "id": 1468205,
             "tribe": 0,
             "current_villages": 3,
-            "current_points": 596,
-            "current_rank": 16,
-            "dates": [],
-            "Rank": [],
-            "Points": [],
-            "Villages": [],
-            "OD": [],
-            "ODA": [],
-            "ODD": [],
+            "current_points": 612,
+            "current_rank": 35,
+            "dates": [
+                1722556800000
+            ],
+            "Rank": [
+                30
+            ],
+            "Points": [
+                612
+            ],
+            "Villages": [
+                3
+            ],
+            "OD": [
+                0
+            ],
+            "ODA": [
+                0
+            ],
+            "ODD": [
+                0
+            ],
             "current_od": 0,
             "current_oda": 0,
             "current_odd": 0,
-            "Daily Loot Amount": [],
-            "current_daily loot amount": 2881553,
-            "Daily Loot Villages": [],
-            "current_daily loot villages": 470,
-            "Daily Scavenge": [],
+            "Daily Loot Amount": [
+                4008
+            ],
+            "current_daily loot amount": 4008,
+            "Daily Loot Villages": [
+                5
+            ],
+            "current_daily loot villages": 5,
+            "Daily Scavenge": [
+                17631
+            ],
             "current_daily scavenge": 17631,
-            "Daily Defend": [],
+            "Daily Defend": [
+                205234
+            ],
             "current_daily defend": 205234,
-            "Daily Support": [],
+            "Daily Support": [
+                39
+            ],
             "current_daily support": 39,
-            "Daily Conquer": [],
+            "Daily Conquer": [
+                5
+            ],
             "current_daily conquer": 5,
-            "Daily Attack": [],
+            "Daily Attack": [
+                421
+            ],
             "current_daily attack": 421
         },
         {
@@ -895,59 +2000,111 @@
             "id": 1468421,
             "tribe": 0,
             "current_villages": 3,
-            "current_points": 475,
-            "current_rank": 33,
-            "dates": [],
-            "Rank": [],
-            "Points": [],
-            "Villages": [],
-            "OD": [],
-            "ODA": [],
-            "ODD": [],
+            "current_points": 632,
+            "current_rank": 32,
+            "dates": [
+                1722556800000
+            ],
+            "Rank": [
+                39
+            ],
+            "Points": [
+                578
+            ],
+            "Villages": [
+                3
+            ],
+            "OD": [
+                0
+            ],
+            "ODA": [
+                0
+            ],
+            "ODD": [
+                0
+            ],
             "current_od": 0,
             "current_oda": 0,
             "current_odd": 0,
-            "Daily Loot Amount": [],
-            "current_daily loot amount": 17224988,
-            "Daily Loot Villages": [],
-            "current_daily loot villages": 2583,
-            "Daily Scavenge": [],
+            "Daily Loot Amount": [
+                4410
+            ],
+            "current_daily loot amount": 4410,
+            "Daily Loot Villages": [
+                17
+            ],
+            "current_daily loot villages": 17,
+            "Daily Scavenge": [
+                875469
+            ],
             "current_daily scavenge": 875469,
-            "Daily Support": [],
+            "Daily Support": [
+                383
+            ],
             "current_daily support": 383,
-            "Daily Defend": [],
+            "Daily Defend": [
+                37519
+            ],
             "current_daily defend": 37519,
-            "Daily Attack": [],
+            "Daily Attack": [
+                58246
+            ],
             "current_daily attack": 58246,
-            "Daily Conquer": [],
+            "Daily Conquer": [
+                8
+            ],
             "current_daily conquer": 8
         },
         {
             "name": "rew2",
             "id": 1469092,
-            "tribe": 0,
+            "tribe": 4,
             "current_villages": 3,
-            "current_points": 605,
-            "current_rank": 8,
-            "dates": [],
-            "Rank": [],
-            "Points": [],
-            "Villages": [],
-            "OD": [],
-            "ODA": [],
-            "ODD": [],
+            "current_points": 761,
+            "current_rank": 9,
+            "dates": [
+                1722556800000
+            ],
+            "Rank": [
+                11
+            ],
+            "Points": [
+                709
+            ],
+            "Villages": [
+                3
+            ],
+            "OD": [
+                0
+            ],
+            "ODA": [
+                0
+            ],
+            "ODD": [
+                0
+            ],
             "current_od": 0,
             "current_oda": 0,
             "current_odd": 0,
-            "Daily Loot Amount": [],
-            "current_daily loot amount": 1682938,
-            "Daily Loot Villages": [],
-            "current_daily loot villages": 75,
-            "Daily Defend": [],
+            "Daily Loot Amount": [
+                850
+            ],
+            "current_daily loot amount": 850,
+            "Daily Loot Villages": [
+                1
+            ],
+            "current_daily loot villages": 1,
+            "Daily Defend": [
+                8041
+            ],
             "current_daily defend": 8041,
-            "Daily Attack": [],
+            "Daily Attack": [
+                16489
+            ],
             "current_daily attack": 16489,
-            "Daily Conquer": [],
+            "Daily Conquer": [
+                3
+            ],
             "current_daily conquer": 3
         },
         {
@@ -955,29 +2112,55 @@
             "id": 1470028,
             "tribe": 0,
             "current_villages": 3,
-            "current_points": 327,
-            "current_rank": 62,
-            "dates": [],
-            "Rank": [],
-            "Points": [],
-            "Villages": [],
-            "OD": [],
-            "ODA": [],
-            "ODD": [],
+            "current_points": 336,
+            "current_rank": 85,
+            "dates": [
+                1722556800000
+            ],
+            "Rank": [
+                87
+            ],
+            "Points": [
+                327
+            ],
+            "Villages": [
+                3
+            ],
+            "OD": [
+                0
+            ],
+            "ODA": [
+                0
+            ],
+            "ODD": [
+                0
+            ],
             "current_od": 0,
             "current_oda": 0,
             "current_odd": 0,
-            "Daily Loot Amount": [],
+            "Daily Loot Amount": [
+                535250
+            ],
             "current_daily loot amount": 535250,
-            "Daily Loot Villages": [],
+            "Daily Loot Villages": [
+                113
+            ],
             "current_daily loot villages": 113,
-            "Daily Conquer": [],
+            "Daily Conquer": [
+                1
+            ],
             "current_daily conquer": 1,
-            "Daily Defend": [],
+            "Daily Defend": [
+                4984
+            ],
             "current_daily defend": 4984,
-            "Daily Scavenge": [],
+            "Daily Scavenge": [
+                17631
+            ],
             "current_daily scavenge": 17631,
-            "Daily Attack": [],
+            "Daily Attack": [
+                2760
+            ],
             "current_daily attack": 2760
         },
         {
@@ -986,7 +2169,59 @@
             "tribe": 0,
             "current_villages": 3,
             "current_points": 327,
-            "current_rank": 63,
+            "current_rank": 95,
+            "dates": [
+                1722556800000
+            ],
+            "Rank": [
+                88
+            ],
+            "Points": [
+                327
+            ],
+            "Villages": [
+                3
+            ],
+            "OD": [
+                0
+            ],
+            "ODA": [
+                0
+            ],
+            "ODD": [
+                0
+            ],
+            "current_od": 0,
+            "current_oda": 0,
+            "current_odd": 0,
+            "Daily Attack": [
+                732
+            ],
+            "current_daily attack": 732,
+            "Daily Loot Amount": [
+                27182
+            ],
+            "current_daily loot amount": 27182,
+            "Daily Loot Villages": [
+                14
+            ],
+            "current_daily loot villages": 14,
+            "Daily Scavenge": [
+                50704
+            ],
+            "current_daily scavenge": 50704,
+            "Daily Defend": [
+                17322
+            ],
+            "current_daily defend": 17322
+        },
+        {
+            "name": "Love*",
+            "id": 1472683,
+            "tribe": 0,
+            "current_villages": 3,
+            "current_points": 327,
+            "current_rank": 94,
             "dates": [],
             "Rank": [],
             "Points": [],
@@ -998,15 +2233,15 @@
             "current_oda": 0,
             "current_odd": 0,
             "Daily Attack": [],
-            "current_daily attack": 732,
-            "Daily Loot Amount": [],
-            "current_daily loot amount": 27182,
-            "Daily Loot Villages": [],
-            "current_daily loot villages": 14,
-            "Daily Scavenge": [],
-            "current_daily scavenge": 50704,
+            "current_daily attack": 2,
             "Daily Defend": [],
-            "current_daily defend": 17322
+            "current_daily defend": 1465,
+            "Daily Loot Amount": [],
+            "current_daily loot amount": 106066,
+            "Daily Loot Villages": [],
+            "current_daily loot villages": 1030,
+            "Daily Scavenge": [],
+            "current_daily scavenge": 71104
         },
         {
             "name": "AlwaysTired",
@@ -1014,14 +2249,28 @@
             "tribe": 0,
             "current_villages": 3,
             "current_points": 327,
-            "current_rank": 64,
-            "dates": [],
-            "Rank": [],
-            "Points": [],
-            "Villages": [],
-            "OD": [],
-            "ODA": [],
-            "ODD": [],
+            "current_rank": 77,
+            "dates": [
+                1722556800000
+            ],
+            "Rank": [
+                89
+            ],
+            "Points": [
+                327
+            ],
+            "Villages": [
+                3
+            ],
+            "OD": [
+                0
+            ],
+            "ODA": [
+                0
+            ],
+            "ODD": [
+                0
+            ],
             "current_od": 0,
             "current_oda": 0,
             "current_odd": 0
@@ -1031,43 +2280,139 @@
             "id": 1474071,
             "tribe": 0,
             "current_villages": 3,
-            "current_points": 327,
-            "current_rank": 65,
-            "dates": [],
-            "Rank": [],
-            "Points": [],
-            "Villages": [],
-            "OD": [],
-            "ODA": [],
-            "ODD": [],
+            "current_points": 611,
+            "current_rank": 36,
+            "dates": [
+                1722556800000
+            ],
+            "Rank": [
+                31
+            ],
+            "Points": [
+                611
+            ],
+            "Villages": [
+                3
+            ],
+            "OD": [
+                0
+            ],
+            "ODA": [
+                0
+            ],
+            "ODD": [
+                0
+            ],
             "current_od": 0,
             "current_oda": 0,
             "current_odd": 0
+        },
+        {
+            "name": "Arkadia1",
+            "id": 1474748,
+            "tribe": 0,
+            "current_villages": 3,
+            "current_points": 506,
+            "current_rank": 53,
+            "dates": [
+                1722556800000
+            ],
+            "Rank": [
+                51
+            ],
+            "Points": [
+                506
+            ],
+            "Villages": [
+                3
+            ],
+            "OD": [
+                0
+            ],
+            "ODA": [
+                0
+            ],
+            "ODD": [
+                0
+            ],
+            "current_od": 0,
+            "current_oda": 0,
+            "current_odd": 0,
+            "Daily Defend": [
+                19818
+            ],
+            "current_daily defend": 19818,
+            "Daily Loot Amount": [
+                130531
+            ],
+            "current_daily loot amount": 130531,
+            "Daily Loot Villages": [
+                13
+            ],
+            "current_daily loot villages": 13,
+            "Daily Scavenge": [
+                9718
+            ],
+            "current_daily scavenge": 9718,
+            "Daily Conquer": [
+                1
+            ],
+            "current_daily conquer": 1,
+            "Daily Support": [
+                25415
+            ],
+            "current_daily support": 25415,
+            "Daily Attack": [
+                60
+            ],
+            "current_daily attack": 60
         },
         {
             "name": "Traumhaft",
             "id": 1477515,
             "tribe": 0,
             "current_villages": 3,
-            "current_points": 367,
-            "current_rank": 44,
-            "dates": [],
-            "Rank": [],
-            "Points": [],
-            "Villages": [],
-            "OD": [],
-            "ODA": [],
-            "ODD": [],
+            "current_points": 515,
+            "current_rank": 52,
+            "dates": [
+                1722556800000
+            ],
+            "Rank": [
+                50
+            ],
+            "Points": [
+                515
+            ],
+            "Villages": [
+                3
+            ],
+            "OD": [
+                0
+            ],
+            "ODA": [
+                0
+            ],
+            "ODD": [
+                0
+            ],
             "current_od": 0,
             "current_oda": 0,
             "current_odd": 0,
-            "Daily Defend": [],
+            "Daily Defend": [
+                19561
+            ],
             "current_daily defend": 19561,
-            "Daily Loot Amount": [],
+            "Daily Loot Amount": [
+                37346
+            ],
             "current_daily loot amount": 37346,
-            "Daily Loot Villages": [],
+            "Daily Loot Villages": [
+                14
+            ],
             "current_daily loot villages": 14,
-            "Daily Attack": [],
+            "Daily Attack": [
+                7
+            ],
             "current_daily attack": 7
         },
         {
@@ -1076,14 +2421,28 @@
             "tribe": 0,
             "current_villages": 3,
             "current_points": 327,
-            "current_rank": 66,
-            "dates": [],
-            "Rank": [],
-            "Points": [],
-            "Villages": [],
-            "OD": [],
-            "ODA": [],
-            "ODD": [],
+            "current_rank": 79,
+            "dates": [
+                1722556800000
+            ],
+            "Rank": [
+                92
+            ],
+            "Points": [
+                327
+            ],
+            "Villages": [
+                3
+            ],
+            "OD": [
+                0
+            ],
+            "ODA": [
+                0
+            ],
+            "ODD": [
+                0
+            ],
             "current_od": 0,
             "current_oda": 0,
             "current_odd": 0
@@ -1094,24 +2453,46 @@
             "tribe": 0,
             "current_villages": 3,
             "current_points": 478,
-            "current_rank": 30,
-            "dates": [],
-            "Rank": [],
-            "Points": [],
-            "Villages": [],
-            "OD": [],
-            "ODA": [],
-            "ODD": [],
+            "current_rank": 57,
+            "dates": [
+                1722556800000
+            ],
+            "Rank": [
+                56
+            ],
+            "Points": [
+                478
+            ],
+            "Villages": [
+                3
+            ],
+            "OD": [
+                0
+            ],
+            "ODA": [
+                0
+            ],
+            "ODD": [
+                0
+            ],
             "current_od": 0,
             "current_oda": 0,
             "current_odd": 0,
-            "Daily Loot Amount": [],
-            "current_daily loot amount": 11644,
-            "Daily Loot Villages": [],
-            "current_daily loot villages": 64,
-            "Daily Scavenge": [],
+            "Daily Loot Amount": [
+                625
+            ],
+            "current_daily loot amount": 625,
+            "Daily Loot Villages": [
+                3
+            ],
+            "current_daily loot villages": 3,
+            "Daily Scavenge": [
+                2593
+            ],
             "current_daily scavenge": 2593,
-            "Daily Defend": [],
+            "Daily Defend": [
+                810
+            ],
             "current_daily defend": 810
         },
         {
@@ -1120,84 +2501,270 @@
             "tribe": 0,
             "current_villages": 3,
             "current_points": 327,
-            "current_rank": 68,
-            "dates": [],
-            "Rank": [],
-            "Points": [],
-            "Villages": [],
-            "OD": [],
-            "ODA": [],
-            "ODD": [],
+            "current_rank": 82,
+            "dates": [
+                1722556800000
+            ],
+            "Rank": [
+                94
+            ],
+            "Points": [
+                327
+            ],
+            "Villages": [
+                3
+            ],
+            "OD": [
+                0
+            ],
+            "ODA": [
+                0
+            ],
+            "ODD": [
+                0
+            ],
             "current_od": 0,
             "current_oda": 0,
             "current_odd": 0,
-            "Daily Loot Amount": [],
+            "Daily Loot Amount": [
+                4040
+            ],
             "current_daily loot amount": 4040,
-            "Daily Loot Villages": [],
+            "Daily Loot Villages": [
+                12
+            ],
             "current_daily loot villages": 12,
-            "Daily Scavenge": [],
+            "Daily Scavenge": [
+                965
+            ],
             "current_daily scavenge": 965,
-            "Daily Defend": [],
+            "Daily Defend": [
+                92
+            ],
             "current_daily defend": 92
+        },
+        {
+            "name": "St. Joachim",
+            "id": 1479666,
+            "tribe": 0,
+            "current_villages": 3,
+            "current_points": 521,
+            "current_rank": 60,
+            "dates": [
+                1722556800000
+            ],
+            "Rank": [
+                59
+            ],
+            "Points": [
+                468
+            ],
+            "Villages": [
+                3
+            ],
+            "OD": [
+                0
+            ],
+            "ODA": [
+                0
+            ],
+            "ODD": [
+                0
+            ],
+            "current_od": 0,
+            "current_oda": 0,
+            "current_odd": 0,
+            "Daily Loot Amount": [
+                400
+            ],
+            "current_daily loot amount": 400,
+            "Daily Loot Villages": [
+                1
+            ],
+            "current_daily loot villages": 1,
+            "Daily Scavenge": [
+                639
+            ],
+            "current_daily scavenge": 639,
+            "Daily Attack": [
+                197
+            ],
+            "current_daily attack": 197,
+            "Daily Conquer": [
+                1
+            ],
+            "current_daily conquer": 1
         },
         {
             "name": "ura237",
             "id": 1481104,
             "tribe": 0,
             "current_villages": 3,
-            "current_points": 618,
-            "current_rank": 11,
-            "dates": [],
-            "Rank": [],
-            "Points": [],
-            "Villages": [],
-            "OD": [],
-            "ODA": [],
-            "ODD": [],
+            "current_points": 961,
+            "current_rank": 4,
+            "dates": [
+                1722556800000
+            ],
+            "Rank": [
+                5
+            ],
+            "Points": [
+                886
+            ],
+            "Villages": [
+                3
+            ],
+            "OD": [
+                0
+            ],
+            "ODA": [
+                0
+            ],
+            "ODD": [
+                0
+            ],
             "current_od": 0,
             "current_oda": 0,
             "current_odd": 0,
-            "Daily Defend": [],
+            "Daily Defend": [
+                33124
+            ],
             "current_daily defend": 33124,
-            "Daily Loot Amount": [],
-            "current_daily loot amount": 1819158,
-            "Daily Loot Villages": [],
-            "current_daily loot villages": 112,
-            "Daily Scavenge": [],
-            "current_daily scavenge": 45600,
-            "Daily Attack": [],
+            "Daily Loot Amount": [
+                27248
+            ],
+            "current_daily loot amount": 27248,
+            "Daily Loot Villages": [
+                78
+            ],
+            "current_daily loot villages": 78,
+            "Daily Scavenge": [
+                76
+            ],
+            "current_daily scavenge": 76,
+            "Daily Attack": [
+                16473
+            ],
             "current_daily attack": 16473,
-            "Daily Support": [],
+            "Daily Support": [
+                1
+            ],
             "current_daily support": 1,
-            "Daily Conquer": [],
+            "Daily Conquer": [
+                3
+            ],
             "current_daily conquer": 3
+        },
+        {
+            "name": "xRayQore",
+            "id": 1481689,
+            "tribe": 0,
+            "current_villages": 3,
+            "current_points": 493,
+            "current_rank": 56,
+            "dates": [
+                1722556800000
+            ],
+            "Rank": [
+                61
+            ],
+            "Points": [
+                459
+            ],
+            "Villages": [
+                3
+            ],
+            "OD": [
+                0
+            ],
+            "ODA": [
+                0
+            ],
+            "ODD": [
+                0
+            ],
+            "current_od": 0,
+            "current_oda": 0,
+            "current_odd": 0,
+            "Daily Loot Amount": [
+                1099140
+            ],
+            "current_daily loot amount": 1099140,
+            "Daily Loot Villages": [
+                938
+            ],
+            "current_daily loot villages": 938,
+            "Daily Scavenge": [
+                5160
+            ],
+            "current_daily scavenge": 5160,
+            "Daily Conquer": [
+                2
+            ],
+            "current_daily conquer": 2,
+            "Daily Attack": [
+                12664
+            ],
+            "current_daily attack": 12664,
+            "Daily Defend": [
+                38701
+            ],
+            "current_daily defend": 38701,
+            "Daily Support": [
+                454
+            ],
+            "current_daily support": 454
         },
         {
             "name": "kepitar",
             "id": 1481901,
             "tribe": 0,
             "current_villages": 3,
-            "current_points": 852,
+            "current_points": 1124,
             "current_rank": 1,
-            "dates": [],
-            "Rank": [],
-            "Points": [],
-            "Villages": [],
-            "OD": [],
-            "ODA": [],
-            "ODD": [],
+            "dates": [
+                1722556800000
+            ],
+            "Rank": [
+                1
+            ],
+            "Points": [
+                1060
+            ],
+            "Villages": [
+                3
+            ],
+            "OD": [
+                0
+            ],
+            "ODA": [
+                0
+            ],
+            "ODD": [
+                0
+            ],
             "current_od": 0,
             "current_oda": 0,
             "current_odd": 0,
-            "Daily Loot Amount": [],
-            "current_daily loot amount": 179302,
-            "Daily Loot Villages": [],
-            "current_daily loot villages": 561,
-            "Daily Scavenge": [],
-            "current_daily scavenge": 110399,
-            "Daily Defend": [],
+            "Daily Loot Amount": [
+                48038
+            ],
+            "current_daily loot amount": 48038,
+            "Daily Loot Villages": [
+                131
+            ],
+            "current_daily loot villages": 131,
+            "Daily Scavenge": [
+                602
+            ],
+            "current_daily scavenge": 602,
+            "Daily Defend": [
+                22
+            ],
             "current_daily defend": 22,
-            "Daily Attack": [],
+            "Daily Attack": [
+                104
+            ],
             "current_daily attack": 104
         },
         {
@@ -1205,18 +2772,40 @@
             "id": 1482847,
             "tribe": 0,
             "current_villages": 3,
-            "current_points": 498,
-            "current_rank": 41,
-            "dates": [],
-            "Rank": [],
-            "Points": [],
-            "Villages": [],
-            "OD": [],
-            "ODA": [],
-            "ODD": [],
+            "current_points": 571,
+            "current_rank": 43,
+            "dates": [
+                1722556800000
+            ],
+            "Rank": [
+                40
+            ],
+            "Points": [
+                571
+            ],
+            "Villages": [
+                3
+            ],
+            "OD": [
+                0
+            ],
+            "ODA": [
+                0
+            ],
+            "ODD": [
+                0
+            ],
             "current_od": 0,
             "current_oda": 0,
-            "current_odd": 0
+            "current_odd": 0,
+            "Daily Loot Amount": [
+                3000
+            ],
+            "current_daily loot amount": 3000,
+            "Daily Loot Villages": [
+                16
+            ],
+            "current_daily loot villages": 16
         },
         {
             "name": "Leco65",
@@ -1224,30 +2813,58 @@
             "tribe": 0,
             "current_villages": 3,
             "current_points": 502,
-            "current_rank": 26,
-            "dates": [],
-            "Rank": [],
-            "Points": [],
-            "Villages": [],
-            "OD": [],
-            "ODA": [],
-            "ODD": [],
+            "current_rank": 54,
+            "dates": [
+                1722556800000
+            ],
+            "Rank": [
+                52
+            ],
+            "Points": [
+                502
+            ],
+            "Villages": [
+                3
+            ],
+            "OD": [
+                0
+            ],
+            "ODA": [
+                0
+            ],
+            "ODD": [
+                0
+            ],
             "current_od": 0,
             "current_oda": 0,
             "current_odd": 0,
-            "Daily Defend": [],
+            "Daily Defend": [
+                97
+            ],
             "current_daily defend": 97,
-            "Daily Loot Amount": [],
-            "current_daily loot amount": 13650,
-            "Daily Loot Villages": [],
-            "current_daily loot villages": 5,
-            "Daily Scavenge": [],
+            "Daily Loot Amount": [
+                500
+            ],
+            "current_daily loot amount": 500,
+            "Daily Loot Villages": [
+                1
+            ],
+            "current_daily loot villages": 1,
+            "Daily Scavenge": [
+                450
+            ],
             "current_daily scavenge": 450,
-            "Daily Support": [],
+            "Daily Support": [
+                161
+            ],
             "current_daily support": 161,
-            "Daily Attack": [],
+            "Daily Attack": [
+                77
+            ],
             "current_daily attack": 77,
-            "Daily Conquer": [],
+            "Daily Conquer": [
+                1
+            ],
             "current_daily conquer": 1
         },
         {
@@ -1255,46 +2872,92 @@
             "id": 1482985,
             "tribe": 0,
             "current_villages": 3,
-            "current_points": 327,
-            "current_rank": 61,
-            "dates": [],
-            "Rank": [],
-            "Points": [],
-            "Villages": [],
-            "OD": [],
-            "ODA": [],
-            "ODD": [],
+            "current_points": 545,
+            "current_rank": 50,
+            "dates": [
+                1722556800000
+            ],
+            "Rank": [
+                54
+            ],
+            "Points": [
+                500
+            ],
+            "Villages": [
+                3
+            ],
+            "OD": [
+                0
+            ],
+            "ODA": [
+                0
+            ],
+            "ODD": [
+                0
+            ],
             "current_od": 0,
             "current_oda": 0,
             "current_odd": 0,
-            "Daily Loot Amount": [],
-            "current_daily loot amount": 250,
-            "Daily Loot Villages": [],
+            "Daily Loot Amount": [
+                400
+            ],
+            "current_daily loot amount": 400,
+            "Daily Loot Villages": [
+                1
+            ],
             "current_daily loot villages": 1,
-            "Daily Scavenge": [],
+            "Daily Scavenge": [
+                92838
+            ],
             "current_daily scavenge": 92838,
-            "Daily Defend": [],
+            "Daily Defend": [
+                4411
+            ],
             "current_daily defend": 4411,
-            "Daily Support": [],
+            "Daily Support": [
+                231
+            ],
             "current_daily support": 231
         },
         {
             "name": "ooeL",
             "id": 1483188,
-            "tribe": 0,
+            "tribe": 3,
             "current_villages": 3,
-            "current_points": 666,
-            "current_rank": 4,
-            "dates": [],
-            "Rank": [],
-            "Points": [],
-            "Villages": [],
-            "OD": [],
-            "ODA": [],
-            "ODD": [],
+            "current_points": 859,
+            "current_rank": 6,
+            "dates": [
+                1722556800000
+            ],
+            "Rank": [
+                6
+            ],
+            "Points": [
+                816
+            ],
+            "Villages": [
+                3
+            ],
+            "OD": [
+                0
+            ],
+            "ODA": [
+                0
+            ],
+            "ODD": [
+                0
+            ],
             "current_od": 0,
             "current_oda": 0,
-            "current_odd": 0
+            "current_odd": 0,
+            "Daily Loot Amount": [
+                14120
+            ],
+            "current_daily loot amount": 14120,
+            "Daily Loot Villages": [
+                72
+            ],
+            "current_daily loot villages": 72
         },
         {
             "name": "didi11",
@@ -1302,14 +2965,28 @@
             "tribe": 0,
             "current_villages": 3,
             "current_points": 351,
-            "current_rank": 45,
-            "dates": [],
-            "Rank": [],
-            "Points": [],
-            "Villages": [],
-            "OD": [],
-            "ODA": [],
-            "ODD": [],
+            "current_rank": 69,
+            "dates": [
+                1722556800000
+            ],
+            "Rank": [
+                69
+            ],
+            "Points": [
+                351
+            ],
+            "Villages": [
+                3
+            ],
+            "OD": [
+                0
+            ],
+            "ODA": [
+                0
+            ],
+            "ODD": [
+                0
+            ],
             "current_od": 0,
             "current_oda": 0,
             "current_odd": 0
@@ -1319,67 +2996,131 @@
             "id": 1484012,
             "tribe": 2,
             "current_villages": 3,
-            "current_points": 547,
-            "current_rank": 21,
-            "dates": [],
-            "Rank": [],
-            "Points": [],
-            "Villages": [],
-            "OD": [],
-            "ODA": [],
-            "ODD": [],
+            "current_points": 729,
+            "current_rank": 13,
+            "dates": [
+                1722556800000
+            ],
+            "Rank": [
+                20
+            ],
+            "Points": [
+                669
+            ],
+            "Villages": [
+                3
+            ],
+            "OD": [
+                0
+            ],
+            "ODA": [
+                0
+            ],
+            "ODD": [
+                0
+            ],
             "current_od": 0,
             "current_oda": 0,
-            "current_odd": 0
+            "current_odd": 0,
+            "Daily Scavenge": [
+                1745
+            ],
+            "current_daily scavenge": 1745
         },
         {
             "name": "Luke29",
             "id": 1484013,
             "tribe": 0,
             "current_villages": 3,
-            "current_points": 562,
-            "current_rank": 19,
-            "dates": [],
-            "Rank": [],
-            "Points": [],
-            "Villages": [],
-            "OD": [],
-            "ODA": [],
-            "ODD": [],
+            "current_points": 651,
+            "current_rank": 24,
+            "dates": [
+                1722556800000
+            ],
+            "Rank": [
+                15
+            ],
+            "Points": [
+                651
+            ],
+            "Villages": [
+                3
+            ],
+            "OD": [
+                0
+            ],
+            "ODA": [
+                0
+            ],
+            "ODD": [
+                0
+            ],
             "current_od": 0,
             "current_oda": 0,
-            "current_odd": 0
+            "current_odd": 0,
+            "Daily Scavenge": [
+                140
+            ],
+            "current_daily scavenge": 140
         },
         {
             "name": "sag ich nicht",
             "id": 1484570,
             "tribe": 0,
             "current_villages": 3,
-            "current_points": 491,
-            "current_rank": 29,
-            "dates": [],
-            "Rank": [],
-            "Points": [],
-            "Villages": [],
-            "OD": [],
-            "ODA": [],
-            "ODD": [],
+            "current_points": 602,
+            "current_rank": 39,
+            "dates": [
+                1722556800000
+            ],
+            "Rank": [
+                34
+            ],
+            "Points": [
+                602
+            ],
+            "Villages": [
+                3
+            ],
+            "OD": [
+                0
+            ],
+            "ODA": [
+                0
+            ],
+            "ODD": [
+                0
+            ],
             "current_od": 0,
             "current_oda": 0,
             "current_odd": 0,
-            "Daily Attack": [],
+            "Daily Attack": [
+                8523
+            ],
             "current_daily attack": 8523,
-            "Daily Defend": [],
+            "Daily Defend": [
+                1933
+            ],
             "current_daily defend": 1933,
-            "Daily Loot Amount": [],
-            "current_daily loot amount": 411440,
-            "Daily Loot Villages": [],
-            "current_daily loot villages": 1171,
-            "Daily Scavenge": [],
+            "Daily Loot Amount": [
+                800
+            ],
+            "current_daily loot amount": 800,
+            "Daily Loot Villages": [
+                2
+            ],
+            "current_daily loot villages": 2,
+            "Daily Scavenge": [
+                57630
+            ],
             "current_daily scavenge": 57630,
-            "Daily Conquer": [],
+            "Daily Conquer": [
+                1
+            ],
             "current_daily conquer": 1,
-            "Daily Support": [],
+            "Daily Support": [
+                455
+            ],
             "current_daily support": 455
         },
         {
@@ -1387,72 +3128,200 @@
             "id": 1484738,
             "tribe": 0,
             "current_villages": 3,
-            "current_points": 604,
-            "current_rank": 9,
-            "dates": [],
-            "Rank": [],
-            "Points": [],
-            "Villages": [],
-            "OD": [],
-            "ODA": [],
-            "ODD": [],
+            "current_points": 640,
+            "current_rank": 29,
+            "dates": [
+                1722556800000
+            ],
+            "Rank": [
+                23
+            ],
+            "Points": [
+                640
+            ],
+            "Villages": [
+                3
+            ],
+            "OD": [
+                0
+            ],
+            "ODA": [
+                0
+            ],
+            "ODD": [
+                0
+            ],
             "current_od": 0,
             "current_oda": 0,
             "current_odd": 0,
-            "Daily Loot Amount": [],
+            "Daily Loot Amount": [
+                378848
+            ],
             "current_daily loot amount": 378848,
-            "Daily Loot Villages": [],
+            "Daily Loot Villages": [
+                19
+            ],
             "current_daily loot villages": 19,
-            "Daily Attack": [],
+            "Daily Attack": [
+                498
+            ],
             "current_daily attack": 498,
-            "Daily Conquer": [],
+            "Daily Conquer": [
+                1
+            ],
             "current_daily conquer": 1,
-            "Daily Defend": [],
+            "Daily Defend": [
+                266
+            ],
             "current_daily defend": 266
         },
         {
             "name": "Kasdeya",
             "id": 1484782,
-            "tribe": 0,
+            "tribe": 3,
             "current_villages": 3,
-            "current_points": 750,
-            "current_rank": 3,
-            "dates": [],
-            "Rank": [],
-            "Points": [],
-            "Villages": [],
-            "OD": [],
-            "ODA": [],
-            "ODD": [],
+            "current_points": 996,
+            "current_rank": 2,
+            "dates": [
+                1722556800000
+            ],
+            "Rank": [
+                2
+            ],
+            "Points": [
+                944
+            ],
+            "Villages": [
+                3
+            ],
+            "OD": [
+                0
+            ],
+            "ODA": [
+                0
+            ],
+            "ODD": [
+                0
+            ],
             "current_od": 0,
             "current_oda": 0,
-            "current_odd": 0
+            "current_odd": 0,
+            "Daily Loot Amount": [
+                17485
+            ],
+            "current_daily loot amount": 17485,
+            "Daily Loot Villages": [
+                29
+            ],
+            "current_daily loot villages": 29,
+            "Daily Scavenge": [
+                303
+            ],
+            "current_daily scavenge": 303
         },
         {
             "name": "Lamigra",
             "id": 1485016,
             "tribe": 0,
             "current_villages": 3,
-            "current_points": 545,
-            "current_rank": 22,
-            "dates": [],
-            "Rank": [],
-            "Points": [],
-            "Villages": [],
-            "OD": [],
-            "ODA": [],
-            "ODD": [],
+            "current_points": 569,
+            "current_rank": 44,
+            "dates": [
+                1722556800000
+            ],
+            "Rank": [
+                44
+            ],
+            "Points": [
+                545
+            ],
+            "Villages": [
+                3
+            ],
+            "OD": [
+                0
+            ],
+            "ODA": [
+                0
+            ],
+            "ODD": [
+                0
+            ],
             "current_od": 0,
             "current_oda": 0,
             "current_odd": 0,
-            "Daily Loot Amount": [],
+            "Daily Loot Amount": [
+                98012
+            ],
             "current_daily loot amount": 98012,
-            "Daily Loot Villages": [],
+            "Daily Loot Villages": [
+                3
+            ],
             "current_daily loot villages": 3,
-            "Daily Scavenge": [],
+            "Daily Scavenge": [
+                42529
+            ],
             "current_daily scavenge": 42529,
-            "Daily Defend": [],
+            "Daily Defend": [
+                7352
+            ],
             "current_daily defend": 7352
+        },
+        {
+            "name": "lorenzzo25",
+            "id": 1485020,
+            "tribe": 0,
+            "current_villages": 3,
+            "current_points": 584,
+            "current_rank": 41,
+            "dates": [
+                1722556800000
+            ],
+            "Rank": [
+                38
+            ],
+            "Points": [
+                584
+            ],
+            "Villages": [
+                3
+            ],
+            "OD": [
+                0
+            ],
+            "ODA": [
+                0
+            ],
+            "ODD": [
+                0
+            ],
+            "current_od": 0,
+            "current_oda": 0,
+            "current_odd": 0,
+            "Daily Loot Amount": [
+                363435
+            ],
+            "current_daily loot amount": 363435,
+            "Daily Loot Villages": [
+                233
+            ],
+            "current_daily loot villages": 233,
+            "Daily Scavenge": [
+                123516
+            ],
+            "current_daily scavenge": 123516,
+            "Daily Defend": [
+                22216
+            ],
+            "current_daily defend": 22216,
+            "Daily Conquer": [
+                3
+            ],
+            "current_daily conquer": 3,
+            "Daily Attack": [
+                2371
+            ],
+            "current_daily attack": 2371
         },
         {
             "name": "aridor",
@@ -1460,14 +3329,28 @@
             "tribe": 0,
             "current_villages": 3,
             "current_points": 327,
-            "current_rank": 77,
-            "dates": [],
-            "Rank": [],
-            "Points": [],
-            "Villages": [],
-            "OD": [],
-            "ODA": [],
-            "ODD": [],
+            "current_rank": 93,
+            "dates": [
+                1722556800000
+            ],
+            "Rank": [
+                93
+            ],
+            "Points": [
+                327
+            ],
+            "Villages": [
+                3
+            ],
+            "OD": [
+                0
+            ],
+            "ODA": [
+                0
+            ],
+            "ODD": [
+                0
+            ],
             "current_od": 0,
             "current_oda": 0,
             "current_odd": 0
@@ -1477,23 +3360,43 @@
             "id": 1485842,
             "tribe": 0,
             "current_villages": 3,
-            "current_points": 415,
-            "current_rank": 38,
-            "dates": [],
-            "Rank": [],
-            "Points": [],
-            "Villages": [],
-            "OD": [],
-            "ODA": [],
-            "ODD": [],
+            "current_points": 595,
+            "current_rank": 40,
+            "dates": [
+                1722556800000
+            ],
+            "Rank": [
+                37
+            ],
+            "Points": [
+                595
+            ],
+            "Villages": [
+                3
+            ],
+            "OD": [
+                0
+            ],
+            "ODA": [
+                0
+            ],
+            "ODD": [
+                0
+            ],
             "current_od": 0,
             "current_oda": 0,
             "current_odd": 0,
-            "Daily Loot Amount": [],
-            "current_daily loot amount": 3578,
-            "Daily Loot Villages": [],
-            "current_daily loot villages": 6,
-            "Daily Defend": [],
+            "Daily Loot Amount": [
+                1675
+            ],
+            "current_daily loot amount": 1675,
+            "Daily Loot Villages": [
+                4
+            ],
+            "current_daily loot villages": 4,
+            "Daily Defend": [
+                5
+            ],
             "current_daily defend": 5
         },
         {
@@ -1502,14 +3405,28 @@
             "tribe": 0,
             "current_villages": 3,
             "current_points": 327,
-            "current_rank": 78,
-            "dates": [],
-            "Rank": [],
-            "Points": [],
-            "Villages": [],
-            "OD": [],
-            "ODA": [],
-            "ODD": [],
+            "current_rank": 91,
+            "dates": [
+                1722556800000
+            ],
+            "Rank": [
+                91
+            ],
+            "Points": [
+                327
+            ],
+            "Villages": [
+                3
+            ],
+            "OD": [
+                0
+            ],
+            "ODA": [
+                0
+            ],
+            "ODD": [
+                0
+            ],
             "current_od": 0,
             "current_oda": 0,
             "current_odd": 0
@@ -1520,26 +3437,50 @@
             "tribe": 0,
             "current_villages": 3,
             "current_points": 327,
-            "current_rank": 79,
-            "dates": [],
-            "Rank": [],
-            "Points": [],
-            "Villages": [],
-            "OD": [],
-            "ODA": [],
-            "ODD": [],
+            "current_rank": 90,
+            "dates": [
+                1722556800000
+            ],
+            "Rank": [
+                90
+            ],
+            "Points": [
+                327
+            ],
+            "Villages": [
+                3
+            ],
+            "OD": [
+                0
+            ],
+            "ODA": [
+                0
+            ],
+            "ODD": [
+                0
+            ],
             "current_od": 0,
             "current_oda": 0,
             "current_odd": 0,
-            "Daily Loot Amount": [],
+            "Daily Loot Amount": [
+                63910
+            ],
             "current_daily loot amount": 63910,
-            "Daily Loot Villages": [],
+            "Daily Loot Villages": [
+                59
+            ],
             "current_daily loot villages": 59,
-            "Daily Scavenge": [],
+            "Daily Scavenge": [
+                11288
+            ],
             "current_daily scavenge": 11288,
-            "Daily Defend": [],
+            "Daily Defend": [
+                2676
+            ],
             "current_daily defend": 2676,
-            "Daily Attack": [],
+            "Daily Attack": [
+                71
+            ],
             "current_daily attack": 71
         },
         {
@@ -1547,31 +3488,59 @@
             "id": 1487530,
             "tribe": 0,
             "current_villages": 3,
-            "current_points": 582,
-            "current_rank": 12,
-            "dates": [],
-            "Rank": [],
-            "Points": [],
-            "Villages": [],
-            "OD": [],
-            "ODA": [],
-            "ODD": [],
+            "current_points": 647,
+            "current_rank": 28,
+            "dates": [
+                1722556800000
+            ],
+            "Rank": [
+                18
+            ],
+            "Points": [
+                647
+            ],
+            "Villages": [
+                3
+            ],
+            "OD": [
+                0
+            ],
+            "ODA": [
+                0
+            ],
+            "ODD": [
+                0
+            ],
             "current_od": 0,
             "current_oda": 0,
             "current_odd": 0,
-            "Daily Attack": [],
+            "Daily Attack": [
+                25510
+            ],
             "current_daily attack": 25510,
-            "Daily Defend": [],
+            "Daily Defend": [
+                81929
+            ],
             "current_daily defend": 81929,
-            "Daily Loot Amount": [],
-            "current_daily loot amount": 2947954,
-            "Daily Loot Villages": [],
-            "current_daily loot villages": 1171,
-            "Daily Scavenge": [],
+            "Daily Loot Amount": [
+                6185
+            ],
+            "current_daily loot amount": 6185,
+            "Daily Loot Villages": [
+                14
+            ],
+            "current_daily loot villages": 14,
+            "Daily Scavenge": [
+                112426
+            ],
             "current_daily scavenge": 112426,
-            "Daily Conquer": [],
+            "Daily Conquer": [
+                3
+            ],
             "current_daily conquer": 3,
-            "Daily Support": [],
+            "Daily Support": [
+                25504
+            ],
             "current_daily support": 25504
         },
         {
@@ -1579,25 +3548,47 @@
             "id": 1488128,
             "tribe": 0,
             "current_villages": 3,
-            "current_points": 398,
-            "current_rank": 40,
-            "dates": [],
-            "Rank": [],
-            "Points": [],
-            "Villages": [],
-            "OD": [],
-            "ODA": [],
-            "ODD": [],
+            "current_points": 566,
+            "current_rank": 45,
+            "dates": [
+                1722556800000
+            ],
+            "Rank": [
+                41
+            ],
+            "Points": [
+                566
+            ],
+            "Villages": [
+                3
+            ],
+            "OD": [
+                0
+            ],
+            "ODA": [
+                0
+            ],
+            "ODD": [
+                0
+            ],
             "current_od": 0,
             "current_oda": 0,
             "current_odd": 0,
-            "Daily Defend": [],
+            "Daily Defend": [
+                12877
+            ],
             "current_daily defend": 12877,
-            "Daily Loot Amount": [],
+            "Daily Loot Amount": [
+                64336
+            ],
             "current_daily loot amount": 64336,
-            "Daily Loot Villages": [],
+            "Daily Loot Villages": [
+                204
+            ],
             "current_daily loot villages": 204,
-            "Daily Scavenge": [],
+            "Daily Scavenge": [
+                5815
+            ],
             "current_daily scavenge": 5815
         },
         {
@@ -1605,31 +3596,59 @@
             "id": 1488522,
             "tribe": 0,
             "current_villages": 3,
-            "current_points": 440,
-            "current_rank": 35,
-            "dates": [],
-            "Rank": [],
-            "Points": [],
-            "Villages": [],
-            "OD": [],
-            "ODA": [],
-            "ODD": [],
+            "current_points": 622,
+            "current_rank": 33,
+            "dates": [
+                1722556800000
+            ],
+            "Rank": [
+                27
+            ],
+            "Points": [
+                622
+            ],
+            "Villages": [
+                3
+            ],
+            "OD": [
+                0
+            ],
+            "ODA": [
+                0
+            ],
+            "ODD": [
+                0
+            ],
             "current_od": 0,
             "current_oda": 0,
             "current_odd": 0,
-            "Daily Attack": [],
+            "Daily Attack": [
+                6956
+            ],
             "current_daily attack": 6956,
-            "Daily Loot Amount": [],
-            "current_daily loot amount": 488124,
-            "Daily Loot Villages": [],
-            "current_daily loot villages": 2192,
-            "Daily Scavenge": [],
-            "current_daily scavenge": 36133,
-            "Daily Defend": [],
+            "Daily Loot Amount": [
+                14286
+            ],
+            "current_daily loot amount": 14286,
+            "Daily Loot Villages": [
+                56
+            ],
+            "current_daily loot villages": 56,
+            "Daily Scavenge": [
+                172
+            ],
+            "current_daily scavenge": 172,
+            "Daily Defend": [
+                9047
+            ],
             "current_daily defend": 9047,
-            "Daily Conquer": [],
+            "Daily Conquer": [
+                2
+            ],
             "current_daily conquer": 2,
-            "Daily Support": [],
+            "Daily Support": [
+                9083
+            ],
             "current_daily support": 9083
         },
         {
@@ -1638,30 +3657,58 @@
             "tribe": 0,
             "current_villages": 3,
             "current_points": 327,
-            "current_rank": 50,
-            "dates": [],
-            "Rank": [],
-            "Points": [],
-            "Villages": [],
-            "OD": [],
-            "ODA": [],
-            "ODD": [],
+            "current_rank": 88,
+            "dates": [
+                1722556800000
+            ],
+            "Rank": [
+                86
+            ],
+            "Points": [
+                327
+            ],
+            "Villages": [
+                3
+            ],
+            "OD": [
+                0
+            ],
+            "ODA": [
+                0
+            ],
+            "ODD": [
+                0
+            ],
             "current_od": 0,
             "current_oda": 0,
             "current_odd": 0,
-            "Daily Attack": [],
+            "Daily Attack": [
+                14538
+            ],
             "current_daily attack": 14538,
-            "Daily Defend": [],
+            "Daily Defend": [
+                241903
+            ],
             "current_daily defend": 241903,
-            "Daily Loot Amount": [],
+            "Daily Loot Amount": [
+                1635003
+            ],
             "current_daily loot amount": 1635003,
-            "Daily Loot Villages": [],
+            "Daily Loot Villages": [
+                1373
+            ],
             "current_daily loot villages": 1373,
-            "Daily Scavenge": [],
+            "Daily Scavenge": [
+                953361
+            ],
             "current_daily scavenge": 953361,
-            "Daily Conquer": [],
+            "Daily Conquer": [
+                6
+            ],
             "current_daily conquer": 6,
-            "Daily Support": [],
+            "Daily Support": [
+                10803
+            ],
             "current_daily support": 10803
         },
         {
@@ -1670,28 +3717,54 @@
             "tribe": 0,
             "current_villages": 3,
             "current_points": 375,
-            "current_rank": 43,
-            "dates": [],
-            "Rank": [],
-            "Points": [],
-            "Villages": [],
-            "OD": [],
-            "ODA": [],
-            "ODD": [],
+            "current_rank": 68,
+            "dates": [
+                1722556800000
+            ],
+            "Rank": [
+                68
+            ],
+            "Points": [
+                375
+            ],
+            "Villages": [
+                3
+            ],
+            "OD": [
+                0
+            ],
+            "ODA": [
+                0
+            ],
+            "ODD": [
+                0
+            ],
             "current_od": 0,
             "current_oda": 0,
             "current_odd": 0,
-            "Daily Defend": [],
+            "Daily Defend": [
+                7
+            ],
             "current_daily defend": 7,
-            "Daily Loot Amount": [],
+            "Daily Loot Amount": [
+                887201
+            ],
             "current_daily loot amount": 887201,
-            "Daily Loot Villages": [],
+            "Daily Loot Villages": [
+                138
+            ],
             "current_daily loot villages": 138,
-            "Daily Conquer": [],
+            "Daily Conquer": [
+                4
+            ],
             "current_daily conquer": 4,
-            "Daily Scavenge": [],
+            "Daily Scavenge": [
+                15520
+            ],
             "current_daily scavenge": 15520,
-            "Daily Attack": [],
+            "Daily Attack": [
+                255
+            ],
             "current_daily attack": 255
         },
         {
@@ -1700,14 +3773,28 @@
             "tribe": 0,
             "current_villages": 3,
             "current_points": 327,
-            "current_rank": 52,
-            "dates": [],
-            "Rank": [],
-            "Points": [],
-            "Villages": [],
-            "OD": [],
-            "ODA": [],
-            "ODD": [],
+            "current_rank": 87,
+            "dates": [
+                1722556800000
+            ],
+            "Rank": [
+                85
+            ],
+            "Points": [
+                327
+            ],
+            "Villages": [
+                3
+            ],
+            "OD": [
+                0
+            ],
+            "ODA": [
+                0
+            ],
+            "ODD": [
+                0
+            ],
             "current_od": 0,
             "current_oda": 0,
             "current_odd": 0
@@ -1715,20 +3802,46 @@
         {
             "name": "rocfrog420",
             "id": 1489501,
-            "tribe": 0,
+            "tribe": 4,
             "current_villages": 3,
-            "current_points": 327,
-            "current_rank": 53,
-            "dates": [],
-            "Rank": [],
-            "Points": [],
-            "Villages": [],
-            "OD": [],
-            "ODA": [],
-            "ODD": [],
+            "current_points": 681,
+            "current_rank": 18,
+            "dates": [
+                1722556800000
+            ],
+            "Rank": [
+                22
+            ],
+            "Points": [
+                651
+            ],
+            "Villages": [
+                3
+            ],
+            "OD": [
+                0
+            ],
+            "ODA": [
+                0
+            ],
+            "ODD": [
+                0
+            ],
             "current_od": 0,
             "current_oda": 0,
-            "current_odd": 0
+            "current_odd": 0,
+            "Daily Loot Amount": [
+                800
+            ],
+            "current_daily loot amount": 800,
+            "Daily Loot Villages": [
+                2
+            ],
+            "current_daily loot villages": 2,
+            "Daily Scavenge": [
+                47
+            ],
+            "current_daily scavenge": 47
         },
         {
             "name": "Man of God",
@@ -1736,14 +3849,28 @@
             "tribe": 0,
             "current_villages": 3,
             "current_points": 327,
-            "current_rank": 54,
-            "dates": [],
-            "Rank": [],
-            "Points": [],
-            "Villages": [],
-            "OD": [],
-            "ODA": [],
-            "ODD": [],
+            "current_rank": 86,
+            "dates": [
+                1722556800000
+            ],
+            "Rank": [
+                83
+            ],
+            "Points": [
+                327
+            ],
+            "Villages": [
+                3
+            ],
+            "OD": [
+                0
+            ],
+            "ODA": [
+                0
+            ],
+            "ODD": [
+                0
+            ],
             "current_od": 0,
             "current_oda": 0,
             "current_odd": 0
@@ -1751,35 +3878,71 @@
         {
             "name": "TWARS",
             "id": 1489693,
-            "tribe": 0,
+            "tribe": 3,
             "current_villages": 3,
-            "current_points": 649,
-            "current_rank": 5,
-            "dates": [],
-            "Rank": [],
-            "Points": [],
-            "Villages": [],
-            "OD": [],
-            "ODA": [],
-            "ODD": [],
+            "current_points": 741,
+            "current_rank": 10,
+            "dates": [
+                1722556800000
+            ],
+            "Rank": [
+                8
+            ],
+            "Points": [
+                741
+            ],
+            "Villages": [
+                3
+            ],
+            "OD": [
+                0
+            ],
+            "ODA": [
+                0
+            ],
+            "ODD": [
+                0
+            ],
             "current_od": 0,
             "current_oda": 0,
-            "current_odd": 0
+            "current_odd": 0,
+            "Daily Loot Amount": [
+                9150
+            ],
+            "current_daily loot amount": 9150,
+            "Daily Loot Villages": [
+                17
+            ],
+            "current_daily loot villages": 17
         },
         {
             "name": "Maximomilano",
             "id": 1489728,
-            "tribe": 0,
+            "tribe": 4,
             "current_villages": 3,
-            "current_points": 327,
-            "current_rank": 56,
-            "dates": [],
-            "Rank": [],
-            "Points": [],
-            "Villages": [],
-            "OD": [],
-            "ODA": [],
-            "ODD": [],
+            "current_points": 578,
+            "current_rank": 42,
+            "dates": [
+                1722556800000
+            ],
+            "Rank": [
+                48
+            ],
+            "Points": [
+                534
+            ],
+            "Villages": [
+                3
+            ],
+            "OD": [
+                0
+            ],
+            "ODA": [
+                0
+            ],
+            "ODD": [
+                0
+            ],
             "current_od": 0,
             "current_oda": 0,
             "current_odd": 0
@@ -1790,14 +3953,60 @@
             "tribe": 0,
             "current_villages": 3,
             "current_points": 327,
-            "current_rank": 57,
-            "dates": [],
-            "Rank": [],
-            "Points": [],
-            "Villages": [],
-            "OD": [],
-            "ODA": [],
-            "ODD": [],
+            "current_rank": 84,
+            "dates": [
+                1722556800000
+            ],
+            "Rank": [
+                82
+            ],
+            "Points": [
+                327
+            ],
+            "Villages": [
+                3
+            ],
+            "OD": [
+                0
+            ],
+            "ODA": [
+                0
+            ],
+            "ODD": [
+                0
+            ],
+            "current_od": 0,
+            "current_oda": 0,
+            "current_odd": 0
+        },
+        {
+            "name": "Atila the Huno",
+            "id": 1489753,
+            "tribe": 0,
+            "current_villages": 3,
+            "current_points": 558,
+            "current_rank": 46,
+            "dates": [
+                1722556800000
+            ],
+            "Rank": [
+                42
+            ],
+            "Points": [
+                558
+            ],
+            "Villages": [
+                3
+            ],
+            "OD": [
+                0
+            ],
+            "ODA": [
+                0
+            ],
+            "ODD": [
+                0
+            ],
             "current_od": 0,
             "current_oda": 0,
             "current_odd": 0
@@ -1808,14 +4017,28 @@
             "tribe": 0,
             "current_villages": 3,
             "current_points": 346,
-            "current_rank": 46,
-            "dates": [],
-            "Rank": [],
-            "Points": [],
-            "Villages": [],
-            "OD": [],
-            "ODA": [],
-            "ODD": [],
+            "current_rank": 70,
+            "dates": [
+                1722556800000
+            ],
+            "Rank": [
+                70
+            ],
+            "Points": [
+                346
+            ],
+            "Villages": [
+                3
+            ],
+            "OD": [
+                0
+            ],
+            "ODA": [
+                0
+            ],
+            "ODD": [
+                0
+            ],
             "current_od": 0,
             "current_oda": 0,
             "current_odd": 0
@@ -1825,15 +4048,29 @@
             "id": 1489801,
             "tribe": 0,
             "current_villages": 3,
-            "current_points": 327,
-            "current_rank": 58,
-            "dates": [],
-            "Rank": [],
-            "Points": [],
-            "Villages": [],
-            "OD": [],
-            "ODA": [],
-            "ODD": [],
+            "current_points": 686,
+            "current_rank": 17,
+            "dates": [
+                1722556800000
+            ],
+            "Rank": [
+                24
+            ],
+            "Points": [
+                686
+            ],
+            "Villages": [
+                3
+            ],
+            "OD": [
+                0
+            ],
+            "ODA": [
+                0
+            ],
+            "ODD": [
+                0
+            ],
             "current_od": 0,
             "current_oda": 0,
             "current_odd": 0
@@ -1843,18 +4080,44 @@
             "id": 1489854,
             "tribe": 0,
             "current_villages": 3,
-            "current_points": 427,
-            "current_rank": 39,
-            "dates": [],
-            "Rank": [],
-            "Points": [],
-            "Villages": [],
-            "OD": [],
-            "ODA": [],
-            "ODD": [],
+            "current_points": 691,
+            "current_rank": 21,
+            "dates": [
+                1722556800000
+            ],
+            "Rank": [
+                36
+            ],
+            "Points": [
+                620
+            ],
+            "Villages": [
+                3
+            ],
+            "OD": [
+                0
+            ],
+            "ODA": [
+                0
+            ],
+            "ODD": [
+                0
+            ],
             "current_od": 0,
             "current_oda": 0,
-            "current_odd": 0
+            "current_odd": 0,
+            "Daily Loot Amount": [
+                2560
+            ],
+            "current_daily loot amount": 2560,
+            "Daily Loot Villages": [
+                6
+            ],
+            "current_daily loot villages": 6,
+            "Daily Scavenge": [
+                24
+            ],
+            "current_daily scavenge": 24
         },
         {
             "name": "Tjobidobapp",
@@ -1862,14 +4125,28 @@
             "tribe": 0,
             "current_villages": 3,
             "current_points": 327,
-            "current_rank": 60,
-            "dates": [],
-            "Rank": [],
-            "Points": [],
-            "Villages": [],
-            "OD": [],
-            "ODA": [],
-            "ODD": [],
+            "current_rank": 75,
+            "dates": [
+                1722556800000
+            ],
+            "Rank": [
+                76
+            ],
+            "Points": [
+                327
+            ],
+            "Villages": [
+                3
+            ],
+            "OD": [
+                0
+            ],
+            "ODA": [
+                0
+            ],
+            "ODD": [
+                0
+            ],
             "current_od": 0,
             "current_oda": 0,
             "current_odd": 0
@@ -1880,14 +4157,28 @@
             "tribe": 0,
             "current_villages": 3,
             "current_points": 327,
-            "current_rank": 59,
-            "dates": [],
-            "Rank": [],
-            "Points": [],
-            "Villages": [],
-            "OD": [],
-            "ODA": [],
-            "ODD": [],
+            "current_rank": 76,
+            "dates": [
+                1722556800000
+            ],
+            "Rank": [
+                77
+            ],
+            "Points": [
+                327
+            ],
+            "Villages": [
+                3
+            ],
+            "OD": [
+                0
+            ],
+            "ODA": [
+                0
+            ],
+            "ODD": [
+                0
+            ],
             "current_od": 0,
             "current_oda": 0,
             "current_odd": 0
@@ -1898,14 +4189,28 @@
             "tribe": 0,
             "current_villages": 3,
             "current_points": 327,
-            "current_rank": 47,
-            "dates": [],
-            "Rank": [],
-            "Points": [],
-            "Villages": [],
-            "OD": [],
-            "ODA": [],
-            "ODD": [],
+            "current_rank": 73,
+            "dates": [
+                1722556800000
+            ],
+            "Rank": [
+                78
+            ],
+            "Points": [
+                327
+            ],
+            "Villages": [
+                3
+            ],
+            "OD": [
+                0
+            ],
+            "ODA": [
+                0
+            ],
+            "ODD": [
+                0
+            ],
             "current_od": 0,
             "current_oda": 0,
             "current_odd": 0
@@ -1916,14 +4221,28 @@
             "tribe": 0,
             "current_villages": 3,
             "current_points": 327,
-            "current_rank": 51,
-            "dates": [],
-            "Rank": [],
-            "Points": [],
-            "Villages": [],
-            "OD": [],
-            "ODA": [],
-            "ODD": [],
+            "current_rank": 78,
+            "dates": [
+                1722556800000
+            ],
+            "Rank": [
+                79
+            ],
+            "Points": [
+                327
+            ],
+            "Villages": [
+                3
+            ],
+            "OD": [
+                0
+            ],
+            "ODA": [
+                0
+            ],
+            "ODD": [
+                0
+            ],
             "current_od": 0,
             "current_oda": 0,
             "current_odd": 0
@@ -1934,17 +4253,39 @@
             "tribe": 0,
             "current_villages": 3,
             "current_points": 477,
-            "current_rank": 32,
-            "dates": [],
-            "Rank": [],
-            "Points": [],
-            "Villages": [],
-            "OD": [],
-            "ODA": [],
-            "ODD": [],
+            "current_rank": 58,
+            "dates": [
+                1722556800000
+            ],
+            "Rank": [
+                57
+            ],
+            "Points": [
+                477
+            ],
+            "Villages": [
+                3
+            ],
+            "OD": [
+                0
+            ],
+            "ODA": [
+                0
+            ],
+            "ODD": [
+                0
+            ],
             "current_od": 0,
             "current_oda": 0,
-            "current_odd": 0
+            "current_odd": 0,
+            "Daily Loot Amount": [
+                800
+            ],
+            "current_daily loot amount": 800,
+            "Daily Loot Villages": [
+                2
+            ],
+            "current_daily loot villages": 2
         },
         {
             "name": "jobons",
@@ -1952,14 +4293,28 @@
             "tribe": 0,
             "current_villages": 3,
             "current_points": 327,
-            "current_rank": 49,
-            "dates": [],
-            "Rank": [],
-            "Points": [],
-            "Villages": [],
-            "OD": [],
-            "ODA": [],
-            "ODD": [],
+            "current_rank": 80,
+            "dates": [
+                1722556800000
+            ],
+            "Rank": [
+                80
+            ],
+            "Points": [
+                327
+            ],
+            "Villages": [
+                3
+            ],
+            "OD": [
+                0
+            ],
+            "ODA": [
+                0
+            ],
+            "ODD": [
+                0
+            ],
             "current_od": 0,
             "current_oda": 0,
             "current_odd": 0
@@ -1969,15 +4324,113 @@
             "id": 1489901,
             "tribe": 2,
             "current_villages": 3,
-            "current_points": 542,
-            "current_rank": 23,
-            "dates": [],
-            "Rank": [],
-            "Points": [],
-            "Villages": [],
-            "OD": [],
-            "ODA": [],
-            "ODD": [],
+            "current_points": 651,
+            "current_rank": 25,
+            "dates": [
+                1722556800000
+            ],
+            "Rank": [
+                29
+            ],
+            "Points": [
+                613
+            ],
+            "Villages": [
+                3
+            ],
+            "OD": [
+                0
+            ],
+            "ODA": [
+                0
+            ],
+            "ODD": [
+                0
+            ],
+            "current_od": 0,
+            "current_oda": 0,
+            "current_odd": 0,
+            "Daily Loot Amount": [
+                3584
+            ],
+            "current_daily loot amount": 3584,
+            "Daily Loot Villages": [
+                20
+            ],
+            "current_daily loot villages": 20,
+            "Daily Scavenge": [
+                40
+            ],
+            "current_daily scavenge": 40
+        },
+        {
+            "name": "BaraoGuerra",
+            "id": 1489902,
+            "tribe": 0,
+            "current_villages": 3,
+            "current_points": 389,
+            "current_rank": 65,
+            "dates": [
+                1722556800000
+            ],
+            "Rank": [
+                65
+            ],
+            "Points": [
+                389
+            ],
+            "Villages": [
+                3
+            ],
+            "OD": [
+                0
+            ],
+            "ODA": [
+                0
+            ],
+            "ODD": [
+                0
+            ],
+            "current_od": 0,
+            "current_oda": 0,
+            "current_odd": 0,
+            "Daily Loot Amount": [
+                400
+            ],
+            "current_daily loot amount": 400,
+            "Daily Loot Villages": [
+                1
+            ],
+            "current_daily loot villages": 1
+        },
+        {
+            "name": "Narinthus",
+            "id": 1489903,
+            "tribe": 0,
+            "current_villages": 3,
+            "current_points": 424,
+            "current_rank": 64,
+            "dates": [
+                1722556800000
+            ],
+            "Rank": [
+                64
+            ],
+            "Points": [
+                419
+            ],
+            "Villages": [
+                3
+            ],
+            "OD": [
+                0
+            ],
+            "ODA": [
+                0
+            ],
+            "ODD": [
+                0
+            ],
             "current_od": 0,
             "current_oda": 0,
             "current_odd": 0
