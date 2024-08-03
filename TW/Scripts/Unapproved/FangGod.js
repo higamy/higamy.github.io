@@ -58,7 +58,7 @@ let includeMediumAttacks;
 let keepFangGreen;
 
 // Variables that will need to be user settings later
-let coords = "706|381 704|386"
+let coords = "720|506 723|505 719|506 722|507 723|510 725|507 718|505 723|507 717|506 726|512 722|509 726|507 723|506 722|516 725|509 723|515 725|504 723|509 726|514 722|508 726|506 723|514 721|506 723|511 724|513 727|510 722|505 726|511 727|513 722|506 725|513 726|510 725|515 727|512 727|511 726|505"
 let minimum_units = {
     catapult: 50,
     light: 50
@@ -273,8 +273,13 @@ function fetchVillagesData() {
                 4000
             );
         });
+
 }
 
+
+function storeSettings() {
+
+}
 
 // Get ram / catapult travel speed
 let ramSpeed;
@@ -347,6 +352,11 @@ $.get('interface.php?func=get_unit_info', function (data) {
         white-space: nowrap;
     }
 
+    .settingSpan {
+        font-style: italic;
+        font-weight: bold;
+    }
+
     #loadingScreen {
         background-color: rgba(100, 100, 100, 0.5);
         width: 100%;
@@ -368,6 +378,7 @@ $.get('interface.php?func=get_unit_info', function (data) {
         border: 5px solid #603000;
         display: flex;
         flex-direction: column;
+        align-items: center;
     }
 
     #loadingContainer {
@@ -425,7 +436,12 @@ $.get('interface.php?func=get_unit_info', function (data) {
     .back {
         transform: rotateY(180deg);
         background-color: rgb(214, 179, 113);
-        margin-left: -10px;
+        margin-left: 5px;
+        width: 98% !important;
+    }
+
+    .settingsDiv {
+        margin-top: 10px;
     }
 
     #helpIcon {
@@ -447,13 +463,31 @@ $.get('interface.php?func=get_unit_info', function (data) {
         background-color: rgb(0, 128, 6);
         border-width: 5px;
     }
+
+    #btnCalculateFangs {
+        font-size: 18px;
+        border-radius: 5px;
+        background-color: green;
+        font-weight: bold;
+        padding: 5px 15px;
+        margin: 10px 0px;
+        cursor: pointer;
+        transition-duration: 0.2s;
+    }
+
+
+    #btnCalculateFangs:hover {
+        border-radius: 15px;
+        background-color: rgb(0, 104, 0);
+    }
 </style>
 
 
 <div class="flip-container" id="flipContainer">
 
 
-    <div style="font-size: 24px; font-weight: bold; background-color: rgb(193, 162, 100); padding: 5px; border-radius: 5px 5px 0px 0px;"
+    <div style="font-size: 24px; font-weight: bold; background-color: rgb(193, 162, 100); padding: 5px; border-radius: 5px 5px 0px 0px;     top: 0px;
+    z-index: 10000; position: sticky;"
         onclick="let flipContainer = document.getElementById('flipContainer'); flipContainer.classList.toggle('flipped')">
         Fang God
         <span id='helpIcon'>?</span>
@@ -463,6 +497,8 @@ $.get('interface.php?func=get_unit_info', function (data) {
             <!-- Front content -->
             <div id="loadingScreen" class="hidden">
                 <div id="loadingInformation">
+                    <img src="https://people.tamu.edu/~yasskin/SEE-Math/2017/CounselorMovies/mark-c.gif" alt=""
+                        style="width: 80px;">
                     <span id='loadingStatus'>Loading...</span>
                     <div id='loadingContainer'>
                         <div id='loadingBar'></div>
@@ -506,8 +542,8 @@ $.get('interface.php?func=get_unit_info', function (data) {
                     <div>
                         <span>Keep fang as "green" <img
                                 src="https://dsen.innogamescdn.com/asset/35e971b9/graphic/command/attack_small.png"
-                                alt="">
-                            (recommended on watchtower worlds)</span>
+                                width="20px" alt=""></span>
+                        <span id="spanWTRecommendation" class="hidden"> (recommended on watchtower worlds)</span>
                         <input type="checkbox" name="" id="keepFangGreen">
                     </div>
                     <div id="maxFangsDiv">
@@ -535,11 +571,11 @@ $.get('interface.php?func=get_unit_info', function (data) {
                     </div>
                     <div>
                         <span>Min hours after nuke</span>
-                        <input type="number" name="" id="minHoursAfterNuke" value=0>
+                        <input type="number" name="" id="minHoursAfterNuke" value=0 settingType="numeric">
                     </div>
                     <div>
                         <span>Max hours after nuke</span>
-                        <input type="number" name="" id="maxHoursAfterNuke" value=4>
+                        <input type="number" name="" id="maxHoursAfterNuke" value=4 settingType="numeric">
                     </div>
                     <div>
                         <span>Send only after final nuke?</span>
@@ -565,7 +601,139 @@ $.get('interface.php?func=get_unit_info', function (data) {
         <div class="back">
             <!-- Back content -->
             <h3>About the script</h3>
-            <div>This script is aimed to help fanging enemies down .</div>
+            <div>This script is aimed to help fanging enemies down. It allows the user to send fangs in bulk at enemy
+                villages, timed after nukes in a window provided by the user. Timing fangs in this way ensures they do
+                more damage as likely the village is cleared by the nuke.</div>
+
+            <h3>Settings</h3>
+
+            <fieldset>
+                <legend>Troops to Send</legend>
+                <div>The values here are interpreted the same as troop templates. There is no "all" option, but typing
+                    in
+                    99999 will effectively mean all troops will be sent!<br>
+                    Typing in, for example, "-5" will send all troops apart from leaving 5 in reserve (as it does in a
+                    troop
+                    template).
+                    Fang God will always leave 1 scout home so you won't get scouted by fakes accidentally.
+
+                    <br><br>
+                    <span class="settingSpan">Keep fang as "green" <img
+                            src="https://dsen.innogamescdn.com/asset/35e971b9/graphic/command/attack_small.png"
+                            alt=""></span>
+                    <span>This will limit the troops to 1000 maximum so that a watchtower cannot detect it is a real
+                        attack.
+                        Fang God does this according to the following rules
+                        <ul>
+                            <li>Send 1 scout</li>
+                            <li>Send as many catapults as possible</li>
+                            <li>The remaining troops are sent with as many possible in this priority order
+                                <ul>
+                                    <li><img src="/graphic/unit/unit_light.png" alt=""></li>
+                                    <li><img src="/graphic/unit/unit_heavy.png" alt=""></li>
+                                    <li><img src="/graphic/unit/unit_marcher.png" alt=""></li>
+                                    <li><img src="/graphic/unit/unit_axe.png" alt=""></li>
+                                    <li><img src="/graphic/unit/unit_sword.png" alt=""></li>
+                                    <li><img src="/graphic/unit/unit_archer.png" alt=""></li>
+                                    <li><img src="/graphic/unit/unit_spear.png" alt=""></li>
+                                </ul>
+
+                            </li>
+
+                        </ul>
+                    </span>
+
+                </div>
+
+
+                <span class="settingSpan">Max fangs per nuke</span><span> - simply limits the number of fangs to send
+                    after a nuke. Sending too many may
+                    advertise real attacks to a village.</span>
+            </fieldset>
+
+
+
+            <fieldset>
+                <legend>Timing</legend>
+                <div class="settingsDiv">
+                    <span class="settingSpan">Time fangs also after medium <img
+                            src="https://dsen.innogamescdn.com/asset/35e971b9/graphic/command/attack_medium.png" alt="">
+                        attacks?</span>
+                    <span>Counts medium sized attacks as permissible to time fangs after, may not be appropriate in all
+                        situations.</span>
+                </div>
+                <div class="settingsDiv">
+                    <span class="settingSpan">Send closest fang?</span>
+                    <span>Whether to send the tightest possible fang to the nuke, or whether to pick a random fang in
+                        the timing window selected. A random fang is recommended as even if a window with a delay is
+                        chosen (e.g. 1-3 hours), consistently having attacks just over 1 hour after nukes creates a
+                        pattern of attacks that the defender may use to identify both nukes and fangs.</span>
+                </div>
+                <div class="settingsDiv">
+                    <span class="settingSpan">Min hours after nuke</span>
+                    <span>Only time fangs at least this many hours after a nuke. Fractions of hours are permissible
+                        (e.g. 1.5)</span>
+                </div>
+                <div class="settingsDiv">
+                    <span class="settingSpan">Max hours after nuke</span>
+                    <span>Only time fangs that are no later than this many hours after a nuke.</span>
+                </div>
+                <div class="settingsDiv">
+                    <span class="settingSpan">Send only after final nuke?</span>
+                    <span>If multiple nukes are hitting a village, should fangs be planned after any / every nuke, or
+                        only after the final nuke? Typically the final nuke is best to time after (since the village is
+                        most likely to be empty after multiple nukes), however with constant
+                        nuke spam there may be very long range nukes that you don't want to wait for and so you may be
+                        happy to time after earlier nukes.</span>
+                </div>
+
+                <div class="settingsDiv">
+                    <span class="settingSpan">Number of launches per tab</span>
+                    <span>The launches will be split over multiple browser tabs. To avoid overloading the browser in the
+                        case of hundreds of fangs, these are split into batches, very similar to the beloved Costache
+                        fake script. This setting controls how many to partition into.</span>
+                </div>
+
+            </fieldset>
+
+
+            <h3>Bugs?</h3>
+            <div>If there is a feature of the script not working, or a feature request, please contact higamy <img
+                    width="20px"
+                    src="https://cdn.discordapp.com/icons/1196758274767331348/0ada44812ebc04b4ee14048f47381f8b.webp"
+                    alt=""> on Discord
+                (username is simply "higamy") or in-game (.net server).</div>
+
+            <h3>Features in Development</h3>
+
+            Please contact higamy if you would like any other features or have feedback on which of these to prioritise.
+
+            <ul>
+                <li>Avoid sending fangs in night bonus. Currently the script will plan fangs in night bonus (if
+                    applicable to world settings).</li>
+                <li>Filter out tribemate co-ordinates automatically.</li>
+                <li>Identify existing fangs after nukes to avoid "over-fanging" a village.</li>
+                <li>Support for running from mobile browser.</li>
+                <li>Option to include randomised fakes in the attacks -> i.e. if 50 fangs are found, can have the option
+                    to add 100 fakes as part of the planned sends (to various coordinates in the coordinate list).</li>
+            </ul>
+
+            <h3>Disclaimer</h3>
+            <div>
+                <ul>
+                    <li>This script has only been recently developed and so may contain bugs!</li>
+                    <li>The script does not currently check what the troops in the orange / red attacks are. It would
+                        time fangs after a large scout attack for example, this could possibly be a future improvement
+                        though is not likely to occur frequently.</li>
+                </ul>
+
+            </div>
+
+            <h3>Credits</h3>
+            <div>
+                Thanks to <b>Red Alert</b> for allowing me to copy a section of code from the Single Village Snipe
+                script which collects the troops home in each village.
+            </div>
         </div>
     </div>
 
@@ -574,6 +742,7 @@ $.get('interface.php?func=get_unit_info', function (data) {
     $.get('interface.php?func=get_building_info', function (data) {
         if ($(data).find("watchtower").length == 1) {
             keepFangGreen.setAttribute('checked', true);
+            document.getElementById('spanWTRecommendation').classList.remove('hidden');
         }
     });
 
@@ -984,11 +1153,12 @@ async function init() {
                 divFangLaunches.appendChild(btnSendAttacks);
 
 
-                btnSendAttacks.onclick = () => {
+                btnSendAttacks.onclick = (event) => {
                     btnSendAttacks.classList.remove('btn-confirm-yes');
                     btnSendAttacks.classList.add('btn-confirm-no');
 
-                    let sendsForThisLaunch = confirmedSends.splice(btnSendAttacks.getAttribute('firstSend'), btnSendAttacks.getAttribute('lastSend'));
+                    let sendsForThisLaunch = confirmedSends.slice(); // Make a copy so that splice doesn't affect the original array
+                    sendsForThisLaunch = sendsForThisLaunch.splice(event.target.getAttribute('firstSend'), event.target.getAttribute('lastSend'));
 
                     sendsForThisLaunch.forEach((url, index) => {
                         setTimeout(() => {
@@ -997,7 +1167,7 @@ async function init() {
                     });
 
                     // So that the button isn't accidentally clicked twice
-                    fangFinderUI.focus();
+                    event.target.blur();
                 };
 
                 // Update the number left to send
