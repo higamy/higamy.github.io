@@ -1,0 +1,279 @@
+<style>
+    body {
+        font-family: Verdana, Arial;
+    }
+
+    legend {
+        font-weight: bold;
+        padding: 0px 10px;
+    }
+
+    fieldset {
+        margin: 2px 5px 5px 2px;
+        border-color: #c1a264;
+        border-width: 1px;
+    }
+
+    .inputUnits {
+        text-align: center;
+        width: 50px;
+        height: 20px;
+    }
+
+    .thUnit {
+        text-align: center;
+    }
+
+    .hidden {
+        display: none !important
+    }
+
+
+    input[type=number]::-webkit-inner-spin-button,
+    input[type=number]::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        margin: 0;
+    }
+
+    .nukeButton {
+        display: inline-block;
+        padding: 5px 10px;
+        margin: 0 2px;
+        text-align: center;
+        font-family: Verdana, Arial;
+        font-size: 12px !important;
+        font-weight: bold;
+        line-height: normal;
+        cursor: pointer;
+        -webkit-border-radius: 5px;
+        border-radius: 5px;
+        border: 1px solid #000;
+        color: #fff;
+        white-space: nowrap;
+    }
+
+    #loadingScreen {
+        background-color: rgba(100, 100, 100, 0.5);
+        width: 100%;
+        height: 600px;
+        position: absolute;
+        z-index: 10000;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    #loadingInformation {
+        background-color: rgb(210, 192, 158);
+        padding: 18px 20px;
+        margin: 0px 50px;
+        border-radius: 15px;
+        width: 100%;
+        text-align: center;
+        border: 5px solid #603000;
+        display: flex;
+        flex-direction: column;
+    }
+
+    #loadingContainer {
+        width: 100%;
+        background-color: #e0e0e0;
+        border-radius: 25px;
+        overflow: hidden;
+        margin: 20px 0;
+    }
+
+    #loadingBar {
+        height: 30px;
+        width: 0;
+        background-color: rgb(214, 179, 113);
+        border-radius: 25px;
+        transition: width 0.3s ease-in-out;
+    }
+
+    #divFangLaunches {
+        display: flex;
+        flex-wrap: wrap;
+        row-gap: 5px;
+        /*justify-content: space-between;*/
+    }
+
+    /* styles.css */
+    .flip-container {
+        perspective: 1000px;
+        height: 600px;
+        background-color: #e3d5b3;
+        border: 5px solid #603000;
+        border-radius: 10px;
+        z-index: 1000;
+        overflow-y: auto;
+    }
+
+    .flipper {
+        position: relative;
+        transform-style: preserve-3d;
+        transition: transform 0.6s;
+    }
+
+    .front,
+    .back {
+        backface-visibility: hidden;
+        position: absolute;
+        width: 100%;
+        height: 100%;
+    }
+
+    .flipped .flipper {
+        transform: rotateY(180deg);
+    }
+
+    .back {
+        transform: rotateY(180deg);
+        background-color: rgb(214, 179, 113);
+        margin-left: -10px;
+    }
+
+    #helpIcon {
+        border: solid 3.5px rgb(0 0 0);
+        border-radius: 50%;
+        width: 30px;
+        height: 30px;
+        text-align: center;
+        vertical-align: middle;
+        box-sizing: border-box;
+        display: inline-block;
+        font-size: 20px;
+        align-content: center;
+        cursor: pointer;
+        font-size: 16px;
+    }
+
+    #helpIcon:hover {
+        background-color: rgb(0, 128, 6);
+        border-width: 5px;
+    }
+</style>
+
+
+<div class="flip-container" id="flipContainer">
+
+
+    <div style="font-size: 24px; font-weight: bold; background-color: rgb(193, 162, 100); padding: 5px; border-radius: 5px 5px 0px 0px;"
+        onclick="let flipContainer = document.getElementById('flipContainer'); flipContainer.classList.toggle('flipped')">
+        Fang God
+        <span id='helpIcon'>?</span>
+    </div>
+    <div class="flipper">
+        <div class="front">
+            <!-- Front content -->
+            <div id="loadingScreen" class="hidden">
+                <div id="loadingInformation">
+                    <span id='loadingStatus'>Loading...</span>
+                    <div id='loadingContainer'>
+                        <div id='loadingBar'></div>
+                    </div>
+                </div>
+
+            </div>
+
+
+
+            <div id="settingsContainer" style="padding: 10px; ">
+
+                <fieldset>
+                    <legend id="lgdCoordinatesTitle">Coordinates (0)</legend>
+
+                    <textarea name="" id="coordsInput" style="width: 100%; height: 100px; resize: none;"
+                        onpaste="cleanInput(event)" onchange="updateCoordsTitle()"></textarea>
+
+                </fieldset>
+
+                <fieldset>
+                    <legend>Troops to send</legend>
+                    <div>
+                        <span>Group to send from</span>
+                        <select name="" id="selectGroupToSendFrom"></select>
+                    </div>
+
+                    <table>
+                        <thead>
+                            <tr id="trUnitIcons">
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr id="trUnitsSend">
+                                <td>Send</td>
+                            </tr>
+                        </tbody>
+
+                    </table>
+                    <div>
+                        <span>Keep fang as "green" <img
+                                src="https://dsen.innogamescdn.com/asset/35e971b9/graphic/command/attack_small.png"
+                                alt="">
+                            (recommended on watchtower worlds)</span>
+                        <input type="checkbox" name="" id="keepFangGreen">
+                    </div>
+                    <div id="maxFangsDiv">
+                        <span>Max fangs per nuke</span>
+                        <input type="number" name="" id="maxFangsPerNuke" value="2">
+                    </div>
+
+                </fieldset>
+
+                <fieldset>
+                    <legend>Timing Settings</legend>
+
+                    <div id="troopDefinitionDiv"></div>
+
+                    <div>
+                        <span>Time fangs also after medium <img
+                                src="https://dsen.innogamescdn.com/asset/35e971b9/graphic/command/attack_medium.png"
+                                alt="">
+                            attacks?</span>
+                        <input type="checkbox" name="" id="includeMediumAttacks" checked>
+                    </div>
+                    <div>
+                        <span>Send closest fang?</span>
+                        <input type="checkbox" name="" id="sendClosestFang">
+                    </div>
+                    <div>
+                        <span>Min hours after nuke</span>
+                        <input type="number" name="" id="minHoursAfterNuke" value=0>
+                    </div>
+                    <div>
+                        <span>Max hours after nuke</span>
+                        <input type="number" name="" id="maxHoursAfterNuke" value=4>
+                    </div>
+                    <div>
+                        <span>Send only after final nuke?</span>
+                        <input type="checkbox" name="" id="sendOnlyAfterFinalNuke" checked>
+                    </div>
+
+                    <div>
+                        <span>Number of launches per tab</span>
+                        <input type="number" name="" id="nLaunchesPerTab" value=20>
+                    </div>
+
+                    <div>
+                        <button id="btnCalculateFangs">Calculate</button>
+                    </div>
+                </fieldset>
+
+                <fieldset>
+                    <legend>Fang Launches</legend>
+                    <div id="divFangLaunches"></div>
+                </fieldset>
+            </div>
+        </div>
+        <div class="back">
+            <!-- Back content -->
+            <h3>About the script</h3>
+            <div>This script is aimed to help fanging enemies down .</div>
+        </div>
+    </div>
+
+</div>
