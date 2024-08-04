@@ -52,6 +52,7 @@
         border: 1px solid #000;
         color: #fff;
         white-space: nowrap;
+        min-width: 80px;
     }
 
     .settingSpan {
@@ -96,7 +97,7 @@
         width: 0;
         background-color: rgb(214, 179, 113);
         border-radius: 25px;
-        transition: width 0.3s ease-in-out;
+        transition: width 0.3s linear;
     }
 
     #divFangLaunches {
@@ -225,7 +226,7 @@
                     <legend>Troops to send</legend>
                     <div>
                         <span>Group to send from</span>
-                        <select name="" id="selectGroupToSendFrom"></select>
+                        <select name="" id="selectGroupToSendFrom" settingType="numeric"></select>
                     </div>
 
                     <table>
@@ -244,13 +245,13 @@
                     <div>
                         <span>Keep fang as "green" <img
                                 src="https://dsen.innogamescdn.com/asset/35e971b9/graphic/command/attack_small.png"
-                                width="20px" alt=""></span>
+                                width="14px" alt=""></span>
                         <span id="spanWTRecommendation" class="hidden"> (recommended on watchtower worlds)</span>
-                        <input type="checkbox" name="" id="keepFangGreen">
+                        <input type="checkbox" name="" id="keepFangGreen" settingType="checkbox">
                     </div>
                     <div id="maxFangsDiv">
                         <span>Max fangs per nuke</span>
-                        <input type="number" name="" id="maxFangsPerNuke" value="2">
+                        <input type="number" name="" id="maxFangsPerNuke" value="2" settingType="numeric">
                     </div>
 
                 </fieldset>
@@ -265,11 +266,11 @@
                                 src="https://dsen.innogamescdn.com/asset/35e971b9/graphic/command/attack_medium.png"
                                 alt="">
                             attacks?</span>
-                        <input type="checkbox" name="" id="includeMediumAttacks" checked>
+                        <input type="checkbox" name="" id="includeMediumAttacks" checked settingType="checkbox">
                     </div>
                     <div>
                         <span>Send closest fang?</span>
-                        <input type="checkbox" name="" id="sendClosestFang">
+                        <input type="checkbox" name="" id="sendClosestFang" settingType="checkbox">
                     </div>
                     <div>
                         <span>Min hours after nuke</span>
@@ -281,12 +282,12 @@
                     </div>
                     <div>
                         <span>Send only after final nuke?</span>
-                        <input type="checkbox" name="" id="sendOnlyAfterFinalNuke" checked>
+                        <input type="checkbox" name="" id="sendOnlyAfterFinalNuke" checked settingType="checkbox">
                     </div>
 
                     <div>
                         <span>Number of launches per tab</span>
-                        <input type="number" name="" id="nLaunchesPerTab" value=20>
+                        <input type="number" name="" id="nLaunchesPerTab" value=20 settingType="numeric">
                     </div>
 
                     <div>
@@ -304,10 +305,19 @@
             <!-- Back content -->
             <h3>About the script</h3>
             <div>This script is aimed to help fanging enemies down. It allows the user to send fangs in bulk at enemy
-                villages, timed after nukes in a window provided by the user. Timing fangs in this way ensures they do
-                more damage as likely the village is cleared by the nuke.</div>
+                villages, timed after nukes <img
+                    src="https://dsen.innogamescdn.com/asset/35e971b9/graphic/command/attack_large.png" alt=""> in a
+                window provided by the user. Timing fangs in this way ensures they do
+                more damage as likely the village is cleared by the nuke. The tool includes nukes found on shared
+                commands, not just your own nukes.</div>
 
             <h3>Settings</h3>
+
+            <fieldset>
+                <legend>Coordinates</legend>
+                <div>Note that "messy" text can be pasted in here, and the tool will strip all valid coordinates out of
+                    the text.</div>
+            </fieldset>
 
             <fieldset>
                 <legend>Troops to Send</legend>
@@ -331,6 +341,7 @@
                             <li>Send as many catapults as possible</li>
                             <li>The remaining troops are sent with as many possible in this priority order
                                 <ul>
+                                    <li><img src="/graphic/unit/unit_ram.png" alt=""></li>
                                     <li><img src="/graphic/unit/unit_light.png" alt=""></li>
                                     <li><img src="/graphic/unit/unit_heavy.png" alt=""></li>
                                     <li><img src="/graphic/unit/unit_marcher.png" alt=""></li>
@@ -344,9 +355,7 @@
 
                         </ul>
                     </span>
-
                 </div>
-
 
                 <span class="settingSpan">Max fangs per nuke</span><span> - simply limits the number of fangs to send
                     after a nuke. Sending too many may
@@ -413,11 +422,15 @@
             <ul>
                 <li>Avoid sending fangs in night bonus. Currently the script will plan fangs in night bonus (if
                     applicable to world settings).</li>
-                <li>Filter out tribemate co-ordinates automatically.</li>
+                <li>Option to filter out tribemate co-ordinates automatically.</li>
                 <li>Identify existing fangs after nukes to avoid "over-fanging" a village.</li>
                 <li>Support for running from mobile browser.</li>
                 <li>Option to include randomised fakes in the attacks -> i.e. if 50 fangs are found, can have the option
                     to add 100 fakes as part of the planned sends (to various coordinates in the coordinate list).</li>
+                <li>Option to include nukes as part of the attacks -> i.e. if there are villages with no nukes headed
+                    there, option to send nukes (and fangs) as part of the planned attacks.</li>
+                <li>User interface improvements.</li>
+                <li>Support for translation to other languages.</li>
             </ul>
 
             <h3>Disclaimer</h3>
@@ -435,6 +448,19 @@
             <div>
                 Thanks to <b>Red Alert</b> for allowing me to copy a section of code from the Single Village Snipe
                 script which collects the troops home in each village.
+                <br>
+                I have copied no code from <b>Costache</b>'s fake/fang/nuke script, however took inspiration from his
+                approach
+                and laid
+                out the batches of attacks in the same way.
+            </div>
+
+
+            <h3>Changelog</h3>
+            <div>
+                <ul>
+                    <li>v1.0.0 - Initial release</li>
+                </ul>
             </div>
         </div>
     </div>

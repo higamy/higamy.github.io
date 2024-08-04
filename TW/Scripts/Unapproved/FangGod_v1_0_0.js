@@ -1,46 +1,37 @@
+/*
+* Script Name: Fang God
+* Version: 1.0.0
+* Last Updated: 4th August 2024
+* Author: higamy
+* Author URL: 
+* Author Contact: higamy (Discord)
+* Approved: 
+* Approved Date: 
+* Mod: 
+
+
+/*--------------------------------------------------------------------------------------
+* This script can NOT be cloned and modified without permission from the script author.
+--------------------------------------------------------------------------------------*/
+
+
 /* 
 IMPROVEMENT IDEAS
 
 Find villages with existing fangs after the nuke and don't send to those
 Min village points
-Checkbox - send after the last nuke rather than any nuke
-Checkbox - option to have a random nuke in the time window rather than closest one to the nuke
-Maximum fangs to send after each nuke
-Optimise matching nukes to fangs 
-Validate if user ID is allowed to run the script against a list of validated users
-Checkbox - Feature to keep fang as green
-Update to work with the current group (currently uses All group)
-Option to include orange medium attacks
 Make the UI draggable
-Option to select group
-Delay the requests to get information from other villages
-
-Option to include some fakes - they could even be timed after the nukes?
-
 Deal with Captcha while loading requests - need to see what the return value from server is
 Show distribution of hours after the nuke how many launches would be possible?
 Summary of the coordinates given how many nukes were headed to each one.
 
-Cache in memory the incomings? So can change the number per tab?
-Pressing calculate twice (with updated settings) sometimes doesn't work
-
-
-All settings saved in memory    
-
-UI REQUIREMENTS
-Inputs
-- Coords
-- Max Fangs after each nuke
-- Troop definition - send and reserve
-- Checkbox - send only after last nuke
-- Checkbox - random nuke to be sent or the closest one
-- Checkbox - keep fang as green?
 */
 
 // CONSTANTS
 const VILLAGE_TIME = 'mapVillageTime_higamy'; // localStorage key name
 const VILLAGES_LIST = 'mapVillagesList_higamy'; // localStorage key name
 const TIME_INTERVAL = 60 * 60 * 1000; // fetch data every hour
+const FANG_GOD_VERSION = "1.0.0";
 
 let villages;
 
@@ -58,11 +49,11 @@ let includeMediumAttacks;
 let keepFangGreen;
 
 // Variables that will need to be user settings later
-let coords = "720|506 723|505 719|506 722|507 723|510 725|507 718|505 723|507 717|506 726|512 722|509 726|507 723|506 722|516 725|509 723|515 725|504 723|509 726|514 722|508 726|506 723|514 721|506 723|511 724|513 727|510 722|505 726|511 727|513 722|506 725|513 726|510 725|515 727|512 727|511 726|505"
-let minimum_units = {
+let coords;
+/*let minimum_units = {
     catapult: 50,
     light: 50
-}
+}*/
 let N_SENDS_PER_TAB = 20;
 let PAUSE_BETWEEN_REQUESTS = 250;
 let PAUSE_BETWEEN_OPEN_TABS = 200;
@@ -131,6 +122,8 @@ function updateCoordsTitle(inputVal = null) {
     }
 
 }
+
+// Extracts coordinates from pasted text
 function cleanInput(event) {
     // Prevent the default paste action
     event.preventDefault();
@@ -278,7 +271,36 @@ function fetchVillagesData() {
 
 
 function storeSettings() {
+    let settingsInputs = $('[settingType]');
+    let settings = { 'version': FANG_GOD_VERSION }
 
+    for (let settingsInput of settingsInputs) {
+        settings[settingsInput.getAttribute('id')] = settingsInput.value;
+    }
+    localStorage.setItem('FangGod_Settings', JSON.stringify(settings));
+    console.log(settings)
+}
+
+function loadSettings() {
+    let settingsInputs = JSON.parse(localStorage.getItem('FangGod_Settings')) || false;
+
+    if (settingsInputs) {
+        for (let settingName in settingsInputs) {
+            let el = document.getElementById(settingName);
+
+            if (el) {
+                if (el.getAttribute('settingType') == 'numeric') {
+                    el.value = settingsInputs[settingName];
+                }
+                else if (settingsInputs[settingName] == 'on') {
+                    el.checked = true;
+                }
+                else if (settingsInputs[settingName] == 'off') {
+                    el.checked = false;
+                }
+            }
+        }
+    }
 }
 
 // Get ram / catapult travel speed
@@ -350,6 +372,7 @@ $.get('interface.php?func=get_unit_info', function (data) {
         border: 1px solid #000;
         color: #fff;
         white-space: nowrap;
+        min-width: 80px;
     }
 
     .settingSpan {
@@ -394,7 +417,7 @@ $.get('interface.php?func=get_unit_info', function (data) {
         width: 0;
         background-color: rgb(214, 179, 113);
         border-radius: 25px;
-        transition: width 0.3s ease-in-out;
+        transition: width 0.3s linear;
     }
 
     #divFangLaunches {
@@ -523,7 +546,7 @@ $.get('interface.php?func=get_unit_info', function (data) {
                     <legend>Troops to send</legend>
                     <div>
                         <span>Group to send from</span>
-                        <select name="" id="selectGroupToSendFrom"></select>
+                        <select name="" id="selectGroupToSendFrom" settingType="numeric"></select>
                     </div>
 
                     <table>
@@ -542,13 +565,13 @@ $.get('interface.php?func=get_unit_info', function (data) {
                     <div>
                         <span>Keep fang as "green" <img
                                 src="https://dsen.innogamescdn.com/asset/35e971b9/graphic/command/attack_small.png"
-                                width="20px" alt=""></span>
+                                width="14px" alt=""></span>
                         <span id="spanWTRecommendation" class="hidden"> (recommended on watchtower worlds)</span>
-                        <input type="checkbox" name="" id="keepFangGreen">
+                        <input type="checkbox" name="" id="keepFangGreen" settingType="checkbox">
                     </div>
                     <div id="maxFangsDiv">
                         <span>Max fangs per nuke</span>
-                        <input type="number" name="" id="maxFangsPerNuke" value="2">
+                        <input type="number" name="" id="maxFangsPerNuke" value="2" settingType="numeric">
                     </div>
 
                 </fieldset>
@@ -563,11 +586,11 @@ $.get('interface.php?func=get_unit_info', function (data) {
                                 src="https://dsen.innogamescdn.com/asset/35e971b9/graphic/command/attack_medium.png"
                                 alt="">
                             attacks?</span>
-                        <input type="checkbox" name="" id="includeMediumAttacks" checked>
+                        <input type="checkbox" name="" id="includeMediumAttacks" checked settingType="checkbox">
                     </div>
                     <div>
                         <span>Send closest fang?</span>
-                        <input type="checkbox" name="" id="sendClosestFang">
+                        <input type="checkbox" name="" id="sendClosestFang" settingType="checkbox">
                     </div>
                     <div>
                         <span>Min hours after nuke</span>
@@ -579,12 +602,12 @@ $.get('interface.php?func=get_unit_info', function (data) {
                     </div>
                     <div>
                         <span>Send only after final nuke?</span>
-                        <input type="checkbox" name="" id="sendOnlyAfterFinalNuke" checked>
+                        <input type="checkbox" name="" id="sendOnlyAfterFinalNuke" checked settingType="checkbox">
                     </div>
 
                     <div>
                         <span>Number of launches per tab</span>
-                        <input type="number" name="" id="nLaunchesPerTab" value=20>
+                        <input type="number" name="" id="nLaunchesPerTab" value=20 settingType="numeric">
                     </div>
 
                     <div>
@@ -602,10 +625,19 @@ $.get('interface.php?func=get_unit_info', function (data) {
             <!-- Back content -->
             <h3>About the script</h3>
             <div>This script is aimed to help fanging enemies down. It allows the user to send fangs in bulk at enemy
-                villages, timed after nukes in a window provided by the user. Timing fangs in this way ensures they do
-                more damage as likely the village is cleared by the nuke.</div>
+                villages, timed after nukes <img
+                    src="https://dsen.innogamescdn.com/asset/35e971b9/graphic/command/attack_large.png" alt=""> in a
+                window provided by the user. Timing fangs in this way ensures they do
+                more damage as likely the village is cleared by the nuke. The tool includes nukes found on shared
+                commands, not just your own nukes.</div>
 
             <h3>Settings</h3>
+
+            <fieldset>
+                <legend>Coordinates</legend>
+                <div>Note that "messy" text can be pasted in here, and the tool will strip all valid coordinates out of
+                    the text.</div>
+            </fieldset>
 
             <fieldset>
                 <legend>Troops to Send</legend>
@@ -629,6 +661,7 @@ $.get('interface.php?func=get_unit_info', function (data) {
                             <li>Send as many catapults as possible</li>
                             <li>The remaining troops are sent with as many possible in this priority order
                                 <ul>
+                                    <li><img src="/graphic/unit/unit_ram.png" alt=""></li>
                                     <li><img src="/graphic/unit/unit_light.png" alt=""></li>
                                     <li><img src="/graphic/unit/unit_heavy.png" alt=""></li>
                                     <li><img src="/graphic/unit/unit_marcher.png" alt=""></li>
@@ -642,9 +675,7 @@ $.get('interface.php?func=get_unit_info', function (data) {
 
                         </ul>
                     </span>
-
                 </div>
-
 
                 <span class="settingSpan">Max fangs per nuke</span><span> - simply limits the number of fangs to send
                     after a nuke. Sending too many may
@@ -711,11 +742,15 @@ $.get('interface.php?func=get_unit_info', function (data) {
             <ul>
                 <li>Avoid sending fangs in night bonus. Currently the script will plan fangs in night bonus (if
                     applicable to world settings).</li>
-                <li>Filter out tribemate co-ordinates automatically.</li>
+                <li>Option to filter out tribemate co-ordinates automatically.</li>
                 <li>Identify existing fangs after nukes to avoid "over-fanging" a village.</li>
                 <li>Support for running from mobile browser.</li>
                 <li>Option to include randomised fakes in the attacks -> i.e. if 50 fangs are found, can have the option
                     to add 100 fakes as part of the planned sends (to various coordinates in the coordinate list).</li>
+                <li>Option to include nukes as part of the attacks -> i.e. if there are villages with no nukes headed
+                    there, option to send nukes (and fangs) as part of the planned attacks.</li>
+                <li>User interface improvements.</li>
+                <li>Support for translation to other languages.</li>
             </ul>
 
             <h3>Disclaimer</h3>
@@ -733,6 +768,19 @@ $.get('interface.php?func=get_unit_info', function (data) {
             <div>
                 Thanks to <b>Red Alert</b> for allowing me to copy a section of code from the Single Village Snipe
                 script which collects the troops home in each village.
+                <br>
+                I have copied no code from <b>Costache</b>'s fake/fang/nuke script, however took inspiration from his
+                approach
+                and laid
+                out the batches of attacks in the same way.
+            </div>
+
+
+            <h3>Changelog</h3>
+            <div>
+                <ul>
+                    <li>v1.0.0 - Initial release</li>
+                </ul>
             </div>
         </div>
     </div>
@@ -748,6 +796,8 @@ $.get('interface.php?func=get_unit_info', function (data) {
 
 
     document.body.append(fangFinderUI);
+
+
 
     // Get DOM elements
     divFangLaunches = document.getElementById('divFangLaunches');
@@ -766,7 +816,7 @@ $.get('interface.php?func=get_unit_info', function (data) {
     ramSpeed = parseFloat($(data).find("ram > speed").first().text());
 
     // Group to select
-    // This small section is copied from FarmGod code.
+
     $.get(TribalWars.buildURL('GET', 'groups', { 'ajax': 'load_group_menu' })).then((groups) => {
         id = 0;
         let options = ``;
@@ -780,80 +830,93 @@ $.get('interface.php?func=get_unit_info', function (data) {
         });
 
         selectGroupToSendFrom.innerHTML = options;
+
+        // Collect the list of all units in the game
+        let nameItems = data.children[0].children;
+
+        for (let unit of nameItems) {
+            if ((unit['tagName'] != 'snob') && (unit['tagName'] != 'militia'))
+                allUnits.push(unit['tagName'])
+        }
+        console.log(allUnits);
+
+
+        // Now add these to the table
+        let trUnitIcons = document.querySelector('#trUnitIcons');
+        let trUnitsSend = document.querySelector('#trUnitsSend');
+        for (let unit of allUnits) {
+
+            console.log(unit);
+            //  --- Add the unit icons ---
+            let thUnit = document.createElement('th');
+            thUnit.classList.add('thUnit');
+            let labelUnit = document.createElement('label');
+            let imgUnit = document.createElement('img');
+
+            imgUnit.setAttribute('src', `/graphic/unit/unit_${unit}.png`)
+
+
+            // Build the DOM
+            thUnit.appendChild(labelUnit);
+            labelUnit.appendChild(imgUnit);
+            trUnitIcons.appendChild(thUnit)
+
+            //  --- Add the send row ---
+            let tdUnitSend = document.createElement('td');
+            let inputUnitSend = document.createElement('input');
+
+            inputUnitSend.classList.add('inputUnits');
+            inputUnitSend.setAttribute('type', 'number');
+            inputUnitSend.setAttribute('value', 0);
+            inputUnitSend.setAttribute('unit', unit);
+            inputUnitSend.setAttribute('settingType', 'numeric');
+            inputUnitSend.setAttribute('id', `unit_${unit}`)
+
+            // Build the DOM
+            tdUnitSend.appendChild(inputUnitSend);
+            trUnitsSend.appendChild(tdUnitSend);
+        }
+
+        // Load the saved settings
+        loadSettings();
+
+        // Update to store settings when any value is changed
+        $('[settingType]').each((i, el) => {
+            el.addEventListener('change', () => { storeSettings(); })
+        });
+
+
+        // Coordinates section
+        const btnCalculateFangs = document.getElementById('btnCalculateFangs');
+        btnCalculateFangs.addEventListener('click', () => {
+            loadingScreen.classList.remove('hidden');
+
+            // Store settings
+            storeSettings();
+
+            // Auto-update localStorage villages list
+            if (localStorage.getItem(VILLAGE_TIME) != null) {
+                var mapVillageTime = parseInt(localStorage.getItem(VILLAGE_TIME));
+                if (Date.parse(new Date()) >= mapVillageTime + TIME_INTERVAL) {
+                    // hour has passed, refetch village.txt
+                    fetchVillagesData();
+                } else {
+                    // hour has not passed, work with village list from localStorage
+                    var data = localStorage.getItem(VILLAGES_LIST);
+                    villages = CSVToArray(data);
+                    init();
+                }
+            } else {
+                // Fetch village.txt
+                fetchVillagesData();
+            }
+        })
+
+        // Now the UI is constructed, show it
+        fangFinderUI.classList.remove('hidden');
     });
 
-    // Collect the list of all units in the game
-    let nameItems = data.children[0].children;
 
-    for (let unit of nameItems) {
-        if ((unit['tagName'] != 'snob') && (unit['tagName'] != 'militia'))
-            allUnits.push(unit['tagName'])
-    }
-    console.log(allUnits);
-
-
-    // Now add these to the table
-    let trUnitIcons = document.querySelector('#trUnitIcons');
-    let trUnitsSend = document.querySelector('#trUnitsSend');
-    for (let unit of allUnits) {
-
-        console.log(unit);
-        //  --- Add the unit icons ---
-        let thUnit = document.createElement('th');
-        thUnit.classList.add('thUnit');
-        let labelUnit = document.createElement('label');
-        let imgUnit = document.createElement('img');
-
-        imgUnit.setAttribute('src', `/graphic/unit/unit_${unit}.png`)
-
-
-        // Build the DOM
-        thUnit.appendChild(labelUnit);
-        labelUnit.appendChild(imgUnit);
-        trUnitIcons.appendChild(thUnit)
-
-        //  --- Add the send row ---
-        let tdUnitSend = document.createElement('td');
-        let inputUnitSend = document.createElement('input');
-
-        inputUnitSend.classList.add('inputUnits');
-        inputUnitSend.setAttribute('type', 'number');
-        inputUnitSend.setAttribute('value', 0);
-        inputUnitSend.setAttribute('unit', unit);
-
-        // Build the DOM
-        tdUnitSend.appendChild(inputUnitSend);
-        trUnitsSend.appendChild(tdUnitSend);
-    }
-
-
-
-
-    // Coordinates section
-    const btnCalculateFangs = document.getElementById('btnCalculateFangs');
-    btnCalculateFangs.addEventListener('click', () => {
-        loadingScreen.classList.remove('hidden');
-
-        // Auto-update localStorage villages list
-        if (localStorage.getItem(VILLAGE_TIME) != null) {
-            var mapVillageTime = parseInt(localStorage.getItem(VILLAGE_TIME));
-            if (Date.parse(new Date()) >= mapVillageTime + TIME_INTERVAL) {
-                // hour has passed, refetch village.txt
-                fetchVillagesData();
-            } else {
-                // hour has not passed, work with village list from localStorage
-                var data = localStorage.getItem(VILLAGES_LIST);
-                villages = CSVToArray(data);
-                init();
-            }
-        } else {
-            // Fetch village.txt
-            fetchVillagesData();
-        }
-    })
-
-    // Now the UI is constructed, show it
-    fangFinderUI.classList.remove('hidden');
 })
 
 function getRandomElements(arr, n) {
@@ -878,6 +941,45 @@ function getLatestDate(dates) {
 
 let confirmedSends;
 async function init() {
+
+    // Extract Settings
+    let maxHoursAfterNuke = document.getElementById('maxHoursAfterNuke').value;
+    let minHoursAfterNuke = document.getElementById('minHoursAfterNuke').value;
+
+    // Extract troops
+    let troopSettings = {}
+    let allTroopsZero = true;
+    for (let unitInput of $('input[unit]')) {
+        let unitName = unitInput.getAttribute('unit');
+        let unitValue = unitInput.value;
+
+        // If the field was deleted to be empty, then reinstate the zero
+        if (unitValue == '') {
+            unitInput.value = 0;
+            unitValue = 0;
+        }
+
+        if (isNaN(unitValue) | isNaN(parseFloat(unitValue))) {
+            alert(`Non numeric input of ${unitValue} in field ${unitName}!`);
+        }
+
+        troopSettings[unitName] = parseInt(unitValue);
+
+        if (parseInt(unitValue) != 0) allTroopsZero = false;
+    }
+
+    // Exit if all troops were set to zero
+    if (allTroopsZero) {
+        alert("All inputs were zero! Make sure to input some troop values in 'Troops to Send'.");
+
+        // Everything finished, remove the loading screen
+        loadingScreen.classList.add('hidden');
+
+        // Exit
+        return;
+    }
+
+
     // Now need to get troops home
     let sourceVillages = await fetchTroopsForCurrentGroup(selectGroupToSendFrom.value); // NEED TO BE DYNAMIC!
 
@@ -908,6 +1010,9 @@ async function init() {
     );
 
     console.log(filteredArray);
+
+
+    console.log("troopSettings", troopSettings);
 
     let promises = []
 
@@ -993,45 +1098,20 @@ async function init() {
             console.log("summaryResults", summaryResults);
 
             // Filter to only get vills that meet the minimum requirements
-            for (let key in minimum_units) {
-                sourceVillages = sourceVillages.filter(item => item[key] >= minimum_units[key]);
-            }
+            //for (let key in minimum_units) {
+            //    sourceVillages = sourceVillages.filter(item => item[key] >= minimum_units[key]);
+            //}
             console.log(sourceVillages);
 
             // Get the current date and time
             const now = new Date();
 
-            // Extract Settings
-            let maxHoursAfterNuke = document.getElementById('maxHoursAfterNuke').value;
-            let minHoursAfterNuke = document.getElementById('minHoursAfterNuke').value;
-
-            // Extract troops
-            let troopSettings = {}
-            for (let unitInput of $('input[unit]')) {
-                let unitName = unitInput.getAttribute('unit');
-                let unitValue = unitInput.value;
-
-                // If the field was deleted to be empty, then reinstate the zero
-                if (unitValue == '') {
-                    unitInput.value = 0;
-                    unitValue = 0;
-                }
-
-                if (isNaN(unitValue) | isNaN(parseFloat(unitValue))) {
-                    alert(`Non numeric input of ${unitValue} in field ${unitName}!`);
-                }
-
-                troopSettings[unitName] = unitValue;
-            }
-
-            console.log("troopSettings", troopSettings);
 
             // Now match up nukes to fangs
             confirmedSends = []
             for (let nukeVillage of summaryResults) {
                 console.log("Nuke village", nukeVillage)
                 for (let individualNukeTime of nukeVillage['times']) {
-
 
                     let earliestLandTime = new Date(individualNukeTime.getTime() + minHoursAfterNuke * 60 * 60 * 1000);
                     let latestLandTime = new Date(individualNukeTime.getTime() + maxHoursAfterNuke * 60 * 60 * 1000);
@@ -1052,7 +1132,7 @@ async function init() {
                             let troopsToSend = {}
                             let totalTroops = 0;
                             for (let troop in troopSettings) {
-                                let troopAmount = parseInt(troopSettings[troop]);
+                                let troopAmount = troopSettings[troop];
 
                                 // Interpret negative as all minus this amount
                                 if (troopAmount < 0) troopAmount = troopAmount + sourceVillage[troop];
@@ -1081,7 +1161,7 @@ async function init() {
 
                                 // When capping the fang to keep it green, prioritise these units in this order
                                 // I.e. send as many catapults as possible, then fill with LC, then with HC etc.
-                                let unitPriorities = ['catapult', 'light', 'heavy', 'marcher', 'axe', 'sword', 'archer', 'spear'];
+                                let unitPriorities = ['catapult', 'ram', 'light', 'heavy', 'marcher', 'axe', 'sword', 'archer', 'spear'];
 
                                 for (let unit of unitPriorities) {
                                     if (unit in troopsToSend) {
@@ -1108,7 +1188,6 @@ async function init() {
                     console.log(possibleSends);
 
                     // Extract just the ones that are allowed within constraints
-
                     console.log("sendClosestFang", sendClosestFang.checked);
                     if (sendClosestFang) {
                         possibleSends = possibleSends.splice(0, maxFangsPerNuke.value);
@@ -1183,6 +1262,4 @@ async function init() {
             // If any of the promises fail
             console.error('One or more requests failed', error);
         });
-
 }
-
