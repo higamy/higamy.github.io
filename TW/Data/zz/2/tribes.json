@@ -20,24 +20,31 @@
             "current_points": 53,
             "current_rank": 3,
             "dates": [
-                1724284800000
+                1724284800000,
+                1724371200000
             ],
             "Rank": [
+                3,
                 3
             ],
             "Points": [
+                53,
                 53
             ],
             "Villages": [
+                1,
                 1
             ],
             "OD": [
+                0,
                 0
             ],
             "ODA": [
+                0,
                 0
             ],
             "ODD": [
+                0,
                 0
             ],
             "current_od": 0,
@@ -50,26 +57,33 @@
             "tribe": 0,
             "current_villages": 1,
             "current_points": 32,
-            "current_rank": 4,
+            "current_rank": 5,
             "dates": [
-                1724284800000
+                1724284800000,
+                1724371200000
             ],
             "Rank": [
-                4
+                4,
+                5
             ],
             "Points": [
+                32,
                 32
             ],
             "Villages": [
+                1,
                 1
             ],
             "OD": [
+                0,
                 0
             ],
             "ODA": [
+                0,
                 0
             ],
             "ODD": [
+                0,
                 0
             ],
             "current_od": 0,
@@ -82,26 +96,33 @@
             "tribe": 0,
             "current_villages": 1,
             "current_points": 26,
-            "current_rank": 5,
+            "current_rank": 6,
             "dates": [
-                1724284800000
+                1724284800000,
+                1724371200000
             ],
             "Rank": [
-                5
+                5,
+                6
             ],
             "Points": [
+                26,
                 26
             ],
             "Villages": [
+                1,
                 1
             ],
             "OD": [
+                0,
                 0
             ],
             "ODA": [
+                0,
                 0
             ],
             "ODD": [
+                0,
                 0
             ],
             "current_od": 0,
@@ -113,44 +134,54 @@
             "id": 1489979,
             "tribe": 0,
             "current_villages": 1,
-            "current_points": 229,
+            "current_points": 239,
             "current_rank": 1,
             "dates": [
-                1724284800000
+                1724284800000,
+                1724371200000
             ],
             "Rank": [
+                1,
                 1
             ],
             "Points": [
-                188
+                188,
+                239
             ],
             "Villages": [
+                1,
                 1
             ],
             "OD": [
+                0,
                 0
             ],
             "ODA": [
+                0,
                 0
             ],
             "ODD": [
+                0,
                 0
             ],
             "current_od": 0,
             "current_oda": 0,
             "current_odd": 0,
             "Daily Loot Amount": [
-                1608
+                1608,
+                1830
             ],
-            "current_daily loot amount": 1608,
+            "current_daily loot amount": 1830,
             "Daily Loot Villages": [
+                4,
                 4
             ],
             "current_daily loot villages": 4,
             "Daily Scavenge": [
-                1100
+                1100,
+                2597
             ],
-            "current_daily scavenge": 1100
+            "current_daily scavenge": 2597
         },
         {
             "name": "Drowranged",
@@ -160,24 +191,31 @@
             "current_points": 80,
             "current_rank": 2,
             "dates": [
-                1724284800000
+                1724284800000,
+                1724371200000
             ],
             "Rank": [
+                2,
                 2
             ],
             "Points": [
+                80,
                 80
             ],
             "Villages": [
+                1,
                 1
             ],
             "OD": [
+                0,
                 0
             ],
             "ODA": [
+                0,
                 0
             ],
             "ODD": [
+                0,
                 0
             ],
             "current_od": 0,
@@ -190,12 +228,83 @@
             "tribe": 0,
             "current_villages": 1,
             "current_points": 26,
-            "current_rank": 6,
+            "current_rank": 7,
             "dates": [
-                1724284800000
+                1724284800000,
+                1724371200000
             ],
             "Rank": [
-                6
+                6,
+                7
+            ],
+            "Points": [
+                26,
+                26
+            ],
+            "Villages": [
+                1,
+                1
+            ],
+            "OD": [
+                0,
+                0
+            ],
+            "ODA": [
+                0,
+                0
+            ],
+            "ODD": [
+                0,
+                0
+            ],
+            "current_od": 0,
+            "current_oda": 0,
+            "current_odd": 0
+        },
+        {
+            "name": "stars",
+            "id": 1489984,
+            "tribe": 0,
+            "current_villages": 1,
+            "current_points": 52,
+            "current_rank": 4,
+            "dates": [
+                1724371200000
+            ],
+            "Rank": [
+                4
+            ],
+            "Points": [
+                52
+            ],
+            "Villages": [
+                1
+            ],
+            "OD": [
+                0
+            ],
+            "ODA": [
+                0
+            ],
+            "ODD": [
+                0
+            ],
+            "current_od": 0,
+            "current_oda": 0,
+            "current_odd": 0
+        },
+        {
+            "name": "tuay",
+            "id": 1489986,
+            "tribe": 0,
+            "current_villages": 1,
+            "current_points": 26,
+            "current_rank": 8,
+            "dates": [
+                1724371200000
+            ],
+            "Rank": [
+                8
             ],
             "Points": [
                 26
