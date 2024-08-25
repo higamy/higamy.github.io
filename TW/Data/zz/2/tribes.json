@@ -10,40 +10,57 @@
     ],
     "date_format": "%d.%m.%Y",
     "world": 2,
-    "tribes": [],
+    "tribes": [
+        {
+            "tribe": "Pancake Nation (PCN)",
+            "id": 1,
+            "code": "PCN",
+            "members": 2,
+            "villages": 2,
+            "points": 490,
+            "rank": 1
+        }
+    ],
     "players": [
         {
             "name": "gardenx",
             "id": 1489975,
             "tribe": 0,
             "current_villages": 1,
-            "current_points": 53,
+            "current_points": 90,
             "current_rank": 3,
             "dates": [
                 1724284800000,
-                1724371200000
+                1724371200000,
+                1724457600000
             ],
             "Rank": [
+                3,
                 3,
                 3
             ],
             "Points": [
                 53,
-                53
+                53,
+                90
             ],
             "Villages": [
+                1,
                 1,
                 1
             ],
             "OD": [
                 0,
+                0,
                 0
             ],
             "ODA": [
                 0,
+                0,
                 0
             ],
             "ODD": [
+                0,
                 0,
                 0
             ],
@@ -57,32 +74,39 @@
             "tribe": 0,
             "current_villages": 1,
             "current_points": 32,
-            "current_rank": 5,
+            "current_rank": 7,
             "dates": [
                 1724284800000,
-                1724371200000
+                1724371200000,
+                1724457600000
             ],
             "Rank": [
                 4,
-                5
+                5,
+                7
             ],
             "Points": [
+                32,
                 32,
                 32
             ],
             "Villages": [
                 1,
+                1,
                 1
             ],
             "OD": [
+                0,
                 0,
                 0
             ],
             "ODA": [
                 0,
+                0,
                 0
             ],
             "ODD": [
+                0,
                 0,
                 0
             ],
@@ -96,32 +120,39 @@
             "tribe": 0,
             "current_villages": 1,
             "current_points": 26,
-            "current_rank": 6,
+            "current_rank": 8,
             "dates": [
                 1724284800000,
-                1724371200000
+                1724371200000,
+                1724457600000
             ],
             "Rank": [
                 5,
-                6
+                6,
+                8
             ],
             "Points": [
+                26,
                 26,
                 26
             ],
             "Villages": [
                 1,
+                1,
                 1
             ],
             "OD": [
+                0,
                 0,
                 0
             ],
             "ODA": [
                 0,
+                0,
                 0
             ],
             "ODD": [
+                0,
                 0,
                 0
             ],
@@ -132,35 +163,42 @@
         {
             "name": "anahil8",
             "id": 1489979,
-            "tribe": 0,
+            "tribe": 1,
             "current_villages": 1,
-            "current_points": 263,
+            "current_points": 275,
             "current_rank": 1,
             "dates": [
                 1724284800000,
-                1724371200000
+                1724371200000,
+                1724457600000
             ],
             "Rank": [
+                1,
                 1,
                 1
             ],
             "Points": [
                 188,
-                239
+                239,
+                275
             ],
             "Villages": [
+                1,
                 1,
                 1
             ],
             "OD": [
                 0,
+                0,
                 0
             ],
             "ODA": [
                 0,
+                0,
                 0
             ],
             "ODD": [
+                0,
                 0,
                 0
             ],
@@ -169,19 +207,22 @@
             "current_odd": 0,
             "Daily Loot Amount": [
                 1608,
+                1830,
                 1830
             ],
             "current_daily loot amount": 1830,
             "Daily Loot Villages": [
+                4,
                 4,
                 4
             ],
             "current_daily loot villages": 4,
             "Daily Scavenge": [
                 1100,
-                2597
+                2597,
+                5327
             ],
-            "current_daily scavenge": 2597
+            "current_daily scavenge": 5327
         },
         {
             "name": "Drowranged",
@@ -189,71 +230,39 @@
             "tribe": 0,
             "current_villages": 1,
             "current_points": 80,
-            "current_rank": 2,
+            "current_rank": 5,
             "dates": [
                 1724284800000,
-                1724371200000
+                1724371200000,
+                1724457600000
             ],
             "Rank": [
                 2,
-                2
+                2,
+                4
             ],
             "Points": [
+                80,
                 80,
                 80
             ],
             "Villages": [
                 1,
-                1
-            ],
-            "OD": [
-                0,
-                0
-            ],
-            "ODA": [
-                0,
-                0
-            ],
-            "ODD": [
-                0,
-                0
-            ],
-            "current_od": 0,
-            "current_oda": 0,
-            "current_odd": 0
-        },
-        {
-            "name": "Eltikas",
-            "id": 1489982,
-            "tribe": 0,
-            "current_villages": 1,
-            "current_points": 26,
-            "current_rank": 7,
-            "dates": [
-                1724284800000,
-                1724371200000
-            ],
-            "Rank": [
-                6,
-                7
-            ],
-            "Points": [
-                26,
-                26
-            ],
-            "Villages": [
                 1,
                 1
             ],
             "OD": [
                 0,
+                0,
                 0
             ],
             "ODA": [
                 0,
+                0,
                 0
             ],
             "ODD": [
+                0,
                 0,
                 0
             ],
@@ -267,15 +276,93 @@
             "tribe": 0,
             "current_villages": 1,
             "current_points": 52,
-            "current_rank": 4,
+            "current_rank": 6,
             "dates": [
-                1724371200000
+                1724371200000,
+                1724457600000
             ],
             "Rank": [
-                4
+                4,
+                6
             ],
             "Points": [
+                52,
                 52
+            ],
+            "Villages": [
+                1,
+                1
+            ],
+            "OD": [
+                0,
+                0
+            ],
+            "ODA": [
+                0,
+                0
+            ],
+            "ODD": [
+                0,
+                0
+            ],
+            "current_od": 0,
+            "current_oda": 0,
+            "current_odd": 0
+        },
+        {
+            "name": "tuay",
+            "id": 1489986,
+            "tribe": 0,
+            "current_villages": 1,
+            "current_points": 26,
+            "current_rank": 9,
+            "dates": [
+                1724371200000,
+                1724457600000
+            ],
+            "Rank": [
+                8,
+                9
+            ],
+            "Points": [
+                26,
+                26
+            ],
+            "Villages": [
+                1,
+                1
+            ],
+            "OD": [
+                0,
+                0
+            ],
+            "ODA": [
+                0,
+                0
+            ],
+            "ODD": [
+                0,
+                0
+            ],
+            "current_od": 0,
+            "current_oda": 0,
+            "current_odd": 0
+        },
+        {
+            "name": "Jajooo",
+            "id": 1489987,
+            "tribe": 1,
+            "current_villages": 1,
+            "current_points": 215,
+            "current_rank": 2,
+            "dates": [
+                1724457600000
+            ],
+            "Rank": [
+                2
+            ],
+            "Points": [
+                204
             ],
             "Villages": [
                 1
@@ -294,20 +381,20 @@
             "current_odd": 0
         },
         {
-            "name": "tuay",
-            "id": 1489986,
+            "name": "Thiago",
+            "id": 1489989,
             "tribe": 0,
             "current_villages": 1,
-            "current_points": 26,
-            "current_rank": 8,
+            "current_points": 84,
+            "current_rank": 4,
             "dates": [
-                1724371200000
+                1724457600000
             ],
             "Rank": [
-                8
+                5
             ],
             "Points": [
-                26
+                84
             ],
             "Villages": [
                 1
