@@ -17,7 +17,7 @@
             "code": "PCN",
             "members": 2,
             "villages": 2,
-            "points": 490,
+            "points": 554,
             "rank": 1
         }
     ],
@@ -28,7 +28,7 @@
             "tribe": 0,
             "current_villages": 1,
             "current_points": 90,
-            "current_rank": 3,
+            "current_rank": 4,
             "dates": [
                 1724284800000,
                 1724371200000,
@@ -165,7 +165,7 @@
             "id": 1489979,
             "tribe": 1,
             "current_villages": 1,
-            "current_points": 275,
+            "current_points": 295,
             "current_rank": 1,
             "dates": [
                 1724284800000,
@@ -353,7 +353,7 @@
             "id": 1489987,
             "tribe": 1,
             "current_villages": 1,
-            "current_points": 215,
+            "current_points": 262,
             "current_rank": 2,
             "dates": [
                 1724457600000
@@ -385,8 +385,8 @@
             "id": 1489989,
             "tribe": 0,
             "current_villages": 1,
-            "current_points": 84,
-            "current_rank": 4,
+            "current_points": 209,
+            "current_rank": 3,
             "dates": [
                 1724457600000
             ],
