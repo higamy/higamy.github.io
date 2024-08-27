@@ -1,7 +1,7 @@
 /*
 * Script Name: Fang God
 * Version: 1.1.0
-* Last Updated: 4th August 2024
+* Last Updated: 27th August 2024
 * Author: higamy
 * Author URL: 
 * Author Contact: higamy (Discord)
@@ -30,8 +30,9 @@ Summary of the coordinates given how many nukes were headed to each one.
 // CONSTANTS
 const VILLAGE_TIME = 'mapVillageTime_higamy'; // localStorage key name
 const VILLAGES_LIST = 'mapVillagesList_higamy'; // localStorage key name
+const WORLD_SETTINGS = 'worldSettings_higamy'; // localStorage key name
 const TIME_INTERVAL = 60 * 60 * 1000; // fetch data every hour
-const FANG_GOD_VERSION = "1.0.0";
+const FANG_GOD_VERSION = "1.1.0";
 
 let villages;
 
@@ -307,7 +308,57 @@ function loadSettings() {
 let ramSpeed;
 let allUnits = [];
 let fangFinderUI;
-$.get('interface.php?func=get_unit_info', function (data) {
+
+// Load the world settings if they have already been stored
+if (localStorage.getItem(WORLD_SETTINGS) == null) {
+    $.get('interface.php?func=get_unit_info', function (unitData) {
+
+        $.get('interface.php?func=get_building_info', function (buildingData) {
+
+            console.log("unitData", unitData)
+
+            // Get the ram speed
+            let ramSpeed = parseFloat($(unitData).find("ram > speed").first().text());
+
+            // Identify if it is a watchtower world
+            let watchtowerWorld = false;
+            if ($(buildingData).find("watchtower").length == 1) {
+                watchtowerWorld = true;
+            }
+
+            let unitList = [];
+            let nameItems = unitData.children[0].children;
+            for (let unit of nameItems) {
+                if ((unit['tagName'] != 'snob') && (unit['tagName'] != 'militia'))
+                    unitList.push(unit['tagName'])
+            }
+
+            let settingsData = {
+                'scriptVersion': FANG_GOD_VERSION,
+                'ramSpeed': ramSpeed,
+                'unitList': unitList,
+                'watchtowerWorld': watchtowerWorld
+            }
+
+            console.log("world settings", settingsData)
+            // Store the settings
+            localStorage.setItem(WORLD_SETTINGS, JSON.stringify(settingsData));
+
+            // Create the UI
+            createFangGodUI(settingsData);
+        });
+
+
+
+    })
+}
+else {
+    let settingsData = JSON.parse(localStorage.getItem(WORLD_SETTINGS));
+    console.log("Loaded world settings!", settingsData)
+    createFangGodUI(settingsData);
+}
+
+function createFangGodUI(settingsData) {
 
     // Add the UI
     fangFinderUI = document.createElement('div');
@@ -780,6 +831,7 @@ $.get('interface.php?func=get_unit_info', function (data) {
             <div>
                 <ul>
                     <li>v1.0.0 - Initial release</li>
+                    <li>v1.1.0 - Added caching of world config data so it isn't queried every time the script is run</li>
                 </ul>
             </div>
         </div>
@@ -787,17 +839,9 @@ $.get('interface.php?func=get_unit_info', function (data) {
 
 </div>`
 
-    $.get('interface.php?func=get_building_info', function (data) {
-        if ($(data).find("watchtower").length == 1) {
-            keepFangGreen.setAttribute('checked', true);
-            document.getElementById('spanWTRecommendation').classList.remove('hidden');
-        }
-    });
 
 
     document.body.append(fangFinderUI);
-
-
 
     // Get DOM elements
     divFangLaunches = document.getElementById('divFangLaunches');
@@ -813,7 +857,13 @@ $.get('interface.php?func=get_unit_info', function (data) {
 
 
     // Collect the ram speed
-    ramSpeed = parseFloat($(data).find("ram > speed").first().text());
+    ramSpeed = settingsData['ramSpeed']; // Need parseFloat????
+
+
+    if (settingsData['watchtowerWorld']) {
+        keepFangGreen.setAttribute('checked', true);
+        document.getElementById('spanWTRecommendation').classList.remove('hidden');
+    };
 
     // Group to select
 
@@ -832,19 +882,14 @@ $.get('interface.php?func=get_unit_info', function (data) {
         selectGroupToSendFrom.innerHTML = options;
 
         // Collect the list of all units in the game
-        let nameItems = data.children[0].children;
-
-        for (let unit of nameItems) {
-            if ((unit['tagName'] != 'snob') && (unit['tagName'] != 'militia'))
-                allUnits.push(unit['tagName'])
-        }
-        console.log(allUnits);
+        let unitList = settingsData['unitList'];
+        console.log(unitList);
 
 
         // Now add these to the table
         let trUnitIcons = document.querySelector('#trUnitIcons');
         let trUnitsSend = document.querySelector('#trUnitsSend');
-        for (let unit of allUnits) {
+        for (let unit of unitList) {
 
             console.log(unit);
             //  --- Add the unit icons ---
@@ -917,7 +962,9 @@ $.get('interface.php?func=get_unit_info', function (data) {
     });
 
 
-})
+}
+
+
 
 function getRandomElements(arr, n) {
     // Make a shallow copy of the array
