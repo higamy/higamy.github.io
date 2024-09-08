@@ -23,9 +23,11 @@
                 1725321600000,
                 1725408000000,
                 1725494400000,
-                1725580800000
+                1725580800000,
+                1725667200000
             ],
             "Rank": [
+                1,
                 1,
                 1,
                 1,
@@ -35,9 +37,11 @@
                 26,
                 26,
                 26,
+                26,
                 26
             ],
             "Villages": [
+                1,
                 1,
                 1,
                 1,
@@ -47,15 +51,18 @@
                 0,
                 0,
                 0,
+                0,
                 0
             ],
             "ODA": [
                 0,
                 0,
                 0,
+                0,
                 0
             ],
             "ODD": [
+                0,
                 0,
                 0,
                 0,
@@ -75,14 +82,17 @@
             "dates": [
                 1725408000000,
                 1725494400000,
-                1725580800000
+                1725580800000,
+                1725667200000
             ],
             "Rank": [
                 3,
                 3,
-                3
+                3,
+                2
             ],
             "Points": [
+                26,
                 26,
                 26,
                 26
@@ -90,9 +100,11 @@
             "Villages": [
                 1,
                 1,
+                1,
                 1
             ],
             "OD": [
+                0,
                 0,
                 0,
                 0
@@ -100,9 +112,11 @@
             "ODA": [
                 0,
                 0,
+                0,
                 0
             ],
             "ODD": [
+                0,
                 0,
                 0,
                 0
@@ -119,24 +133,31 @@
             "current_points": 26,
             "current_rank": 3,
             "dates": [
-                1725580800000
+                1725580800000,
+                1725667200000
             ],
             "Rank": [
-                4
+                4,
+                3
             ],
             "Points": [
+                26,
                 26
             ],
             "Villages": [
+                1,
                 1
             ],
             "OD": [
+                0,
                 0
             ],
             "ODA": [
+                0,
                 0
             ],
             "ODD": [
+                0,
                 0
             ],
             "current_od": 0,
@@ -151,24 +172,31 @@
             "current_points": 26,
             "current_rank": 4,
             "dates": [
-                1725580800000
+                1725580800000,
+                1725667200000
             ],
             "Rank": [
-                5
+                5,
+                4
             ],
             "Points": [
+                26,
                 26
             ],
             "Villages": [
+                1,
                 1
             ],
             "OD": [
+                0,
                 0
             ],
             "ODA": [
+                0,
                 0
             ],
             "ODD": [
+                0,
                 0
             ],
             "current_od": 0,
@@ -183,24 +211,31 @@
             "current_points": 26,
             "current_rank": 5,
             "dates": [
-                1725580800000
+                1725580800000,
+                1725667200000
             ],
             "Rank": [
-                6
+                6,
+                5
             ],
             "Points": [
+                26,
                 26
             ],
             "Villages": [
+                1,
                 1
             ],
             "OD": [
+                0,
                 0
             ],
             "ODA": [
+                0,
                 0
             ],
             "ODD": [
+                0,
                 0
             ],
             "current_od": 0,
@@ -215,7 +250,46 @@
             "current_points": 26,
             "current_rank": 6,
             "dates": [
-                1725580800000
+                1725580800000,
+                1725667200000
+            ],
+            "Rank": [
+                7,
+                6
+            ],
+            "Points": [
+                26,
+                26
+            ],
+            "Villages": [
+                1,
+                1
+            ],
+            "OD": [
+                0,
+                0
+            ],
+            "ODA": [
+                0,
+                0
+            ],
+            "ODD": [
+                0,
+                0
+            ],
+            "current_od": 0,
+            "current_oda": 0,
+            "current_odd": 0
+        },
+        {
+            "name": "Asmm",
+            "id": 1490052,
+            "tribe": 0,
+            "current_villages": 1,
+            "current_points": 26,
+            "current_rank": 7,
+            "dates": [
+                1725667200000
             ],
             "Rank": [
                 7
@@ -240,37 +314,33 @@
             "current_odd": 0
         },
         {
-            "name": "Asmm",
-            "id": 1490052,
-            "tribe": 0,
-            "current_villages": 1,
-            "current_points": 26,
-            "current_rank": 7,
-            "dates": [],
-            "Rank": [],
-            "Points": [],
-            "Villages": [],
-            "OD": [],
-            "ODA": [],
-            "ODD": [],
-            "current_od": 0,
-            "current_oda": 0,
-            "current_odd": 0
-        },
-        {
             "name": "Asmh",
             "id": 1490053,
             "tribe": 0,
             "current_villages": 1,
             "current_points": 26,
             "current_rank": 8,
-            "dates": [],
-            "Rank": [],
-            "Points": [],
-            "Villages": [],
-            "OD": [],
-            "ODA": [],
-            "ODD": [],
+            "dates": [
+                1725667200000
+            ],
+            "Rank": [
+                8
+            ],
+            "Points": [
+                26
+            ],
+            "Villages": [
+                1
+            ],
+            "OD": [
+                0
+            ],
+            "ODA": [
+                0
+            ],
+            "ODD": [
+                0
+            ],
             "current_od": 0,
             "current_oda": 0,
             "current_odd": 0
@@ -282,13 +352,59 @@
             "current_villages": 1,
             "current_points": 26,
             "current_rank": 9,
-            "dates": [],
-            "Rank": [],
-            "Points": [],
-            "Villages": [],
-            "OD": [],
-            "ODA": [],
-            "ODD": [],
+            "dates": [
+                1725667200000
+            ],
+            "Rank": [
+                9
+            ],
+            "Points": [
+                26
+            ],
+            "Villages": [
+                1
+            ],
+            "OD": [
+                0
+            ],
+            "ODA": [
+                0
+            ],
+            "ODD": [
+                0
+            ],
+            "current_od": 0,
+            "current_oda": 0,
+            "current_odd": 0
+        },
+        {
+            "name": "SteamUser1725726740",
+            "id": 1490056,
+            "tribe": 0,
+            "current_villages": 1,
+            "current_points": 26,
+            "current_rank": 10,
+            "dates": [
+                1725667200000
+            ],
+            "Rank": [
+                10
+            ],
+            "Points": [
+                26
+            ],
+            "Villages": [
+                1
+            ],
+            "OD": [
+                0
+            ],
+            "ODA": [
+                0
+            ],
+            "ODD": [
+                0
+            ],
             "current_od": 0,
             "current_oda": 0,
             "current_odd": 0
