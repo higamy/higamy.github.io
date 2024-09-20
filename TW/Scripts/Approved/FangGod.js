@@ -56,7 +56,7 @@ let coords;
     light: 50
 }*/
 let N_SENDS_PER_TAB = 20;
-let PAUSE_BETWEEN_REQUESTS = 250;
+let PAUSE_BETWEEN_REQUESTS = 300;
 let PAUSE_BETWEEN_OPEN_TABS = 200;
 
 //Helper: Convert CSV data into Array
@@ -1285,7 +1285,7 @@ async function init() {
                     btnSendAttacks.classList.add('btn-confirm-no');
 
                     let sendsForThisLaunch = confirmedSends.slice(); // Make a copy so that splice doesn't affect the original array
-                    sendsForThisLaunch = sendsForThisLaunch.splice(event.target.getAttribute('firstSend'), n_sends_this_iteration);
+                    sendsForThisLaunch = sendsForThisLaunch.splice(event.target.getAttribute('firstSend'), N_SENDS_PER_TAB);
 
                     sendsForThisLaunch.forEach((url, index) => {
                         setTimeout(() => {
