@@ -6,24 +6,11 @@
             "start_url_stats": "www",
             "domain_stats": "com",
             "worlds": [
-                136,
                 138,
-                139,
                 140,
                 141,
-                142
-            ],
-            "date_format": "%d.%m.%Y"
-        },
-        {
-            "server": "zz",
-            "domain_game": "works",
-            "start_url_stats": "beta",
-            "domain_stats": "com",
-            "worlds": [
-                1,
-                2,
-                3
+                142,
+                143
             ],
             "date_format": "%d.%m.%Y"
         }
