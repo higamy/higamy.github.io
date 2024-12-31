@@ -11,16 +11,19 @@ async function runFunctionNTimes(func, n, delay) {
 
 let n_flags_upgraded = 0;
 let n_to_upgrade = 3474;
+let flag_type = 2
+let from_level = 2;
+
 
 // example usage
 runFunctionNTimes(() => {
-    fetch("https://en139.tribalwars.net/game.php?village=18188&screen=flags&ajaxaction=upgrade_flag&h=6288f0ae", {
+    fetch(`/game.php?screen=flags&ajaxaction=upgrade_flag&h=${window.csrf_token}`, {
         "headers": {
             "accept": "application/json, text/javascript, */*; q=0.01",
             "accept-language": "en-GB,en-US;q=0.9,en;q=0.8",
             "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
             "priority": "u=1, i",
-            "sec-ch-ua": "\"Not/A)Brand\";v=\"8\", \"Chromium\";v=\"126\", \"Opera\";v=\"112\"",
+            "sec-ch-ua": "\"Chromium\";v=\"130\", \"Google Chrome\";v=\"130\", \"Not?A_Brand\";v=\"99\"",
             "sec-ch-ua-mobile": "?0",
             "sec-ch-ua-platform": "\"Windows\"",
             "sec-fetch-dest": "empty",
@@ -28,9 +31,9 @@ runFunctionNTimes(() => {
             "sec-fetch-site": "same-origin",
             "x-requested-with": "XMLHttpRequest"
         },
-        "referrer": "https://en139.tribalwars.net/game.php?village=18188&screen=flags",
+        "referrer": "https://en141.tribalwars.net/game.php?village=936&screen=flags",
         "referrerPolicy": "strict-origin-when-cross-origin",
-        "body": "flag_type=3&from_level=1",
+        "body": `flag_type=${flag_type}&from_level=${from_level}`,
         "method": "POST",
         "mode": "cors",
         "credentials": "include"

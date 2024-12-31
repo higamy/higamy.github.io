@@ -1309,5 +1309,5 @@ async function init() {
         .catch(error => {
             // If any of the promises fail
             console.error('One or more requests failed', error);
-        });
+        }); 
 }
