@@ -8,6 +8,7 @@ let PAUSE_BETWEEN_REQUESTS = 300;
 
 let villages;
 let nobleSpeed;
+let maxNobleTravelTimeHours = 10;
 
 // variables that will need to be UI elements later
 sendOnlyAfterFinalNuke = false;
@@ -51,6 +52,40 @@ function CSVToArray(strData, strDelimiter) {
         arrData[arrData.length - 1].push(strMatchedValue);
     }
     return arrData;
+}
+
+
+function storeSettings() {
+    let settingsInputs = $('[settingType]');
+    let settings = { 'version': NOBLE_GOD_VERSION }
+
+    for (let settingsInput of settingsInputs) {
+        settings[settingsInput.getAttribute('id')] = settingsInput.value;
+    }
+    localStorage.setItem('NobleGod_Settings', JSON.stringify(settings));
+    console.log(settings)
+}
+
+function loadSettings() {
+    let settingsInputs = JSON.parse(localStorage.getItem('NobleGod_Settings')) || false;
+
+    if (settingsInputs) {
+        for (let settingName in settingsInputs) {
+            let el = document.getElementById(settingName);
+
+            if (el) {
+                if (el.getAttribute('settingType') == 'numeric') {
+                    el.value = settingsInputs[settingName];
+                }
+                else if (settingsInputs[settingName] == 'on') {
+                    el.checked = true;
+                }
+                else if (settingsInputs[settingName] == 'off') {
+                    el.checked = false;
+                }
+            }
+        }
+    }
 }
 
 
@@ -201,7 +236,7 @@ if (localStorage.getItem(WORLD_SETTINGS) == null) {
             let unitList = [];
             let nameItems = unitData.children[0].children;
             for (let unit of nameItems) {
-                if ((unit['tagName'] != 'snob') && (unit['tagName'] != 'militia'))
+                if (unit['tagName'] != 'militia')
                     unitList.push(unit['tagName'])
             }
 
@@ -232,30 +267,557 @@ function createNobleGodUI(settingsData) {
     console.log(settingsData)
 
 
-    // Collect the ram speed
-    nobleSpeed = settingsData['nobleSpeed']; // Need parseFloat????
 
-
-    // Get the village list
-
-    // Auto-update localStorage villages list
-    if (localStorage.getItem(VILLAGE_TIME) != null) {
-        var mapVillageTime = parseInt(localStorage.getItem(VILLAGE_TIME));
-        if (Date.parse(new Date()) >= mapVillageTime + TIME_INTERVAL) {
-            // hour has passed, refetch village.txt
-            fetchVillagesData();
-        } else {
-            // hour has not passed, work with village list from localStorage
-            var data = localStorage.getItem(VILLAGES_LIST);
-            villages = CSVToArray(data);
-            init();
-        }
-    } else {
-        // Fetch village.txt
-        fetchVillagesData();
+    // Add the UI
+    fangFinderUI = document.createElement('div');
+    fangFinderUI.style = `
+        position: absolute;
+        width: 810px;
+        top: 100px;
+        left: 10%;
+        z-index: 1000;`
+    fangFinderUI.classList.add('hidden');
+    fangFinderUI.innerHTML = `<style>
+    body {
+        font-family: Verdana, Arial;
     }
 
-}
+    legend {
+        font-weight: bold;
+        padding: 0px 10px;
+    }
+
+    fieldset {
+        margin: 2px 5px 5px 2px;
+        border-color: #c1a264;
+        border-width: 1px;
+    }
+
+    .inputUnits {
+        text-align: center;
+        width: 50px;
+        height: 20px;
+    }
+
+    .thUnit {
+        text-align: center;
+    }
+
+    .hidden {
+        display: none !important
+    }
+
+
+    input[type=number]::-webkit-inner-spin-button,
+    input[type=number]::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        margin: 0;
+    }
+
+    .nukeButton {
+        display: inline-block;
+        padding: 5px 10px;
+        margin: 0 2px;
+        text-align: center;
+        font-family: Verdana, Arial;
+        font-size: 12px !important;
+        font-weight: bold;
+        line-height: normal;
+        cursor: pointer;
+        -webkit-border-radius: 5px;
+        border-radius: 5px;
+        border: 1px solid #000;
+        color: #fff;
+        white-space: nowrap;
+        min-width: 80px;
+    }
+
+    .settingSpan {
+        font-style: italic;
+        font-weight: bold;
+    }
+
+    #loadingScreen {
+        background-color: rgba(100, 100, 100, 0.5);
+        width: 100%;
+        height: 600px;
+        position: absolute;
+        z-index: 10000;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    #loadingInformation {
+        background-color: rgb(210, 192, 158);
+        padding: 18px 20px;
+        margin: 0px 50px;
+        border-radius: 15px;
+        width: 100%;
+        text-align: center;
+        border: 5px solid #603000;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    #loadingContainer {
+        width: 100%;
+        background-color: #e0e0e0;
+        border-radius: 25px;
+        overflow: hidden;
+        margin: 20px 0;
+    }
+
+    #loadingBar {
+        height: 30px;
+        width: 0;
+        background-color: rgb(214, 179, 113);
+        border-radius: 25px;
+        transition: width 0.3s linear;
+    }
+
+    #divFangLaunches {
+        display: flex;
+        flex-wrap: wrap;
+        row-gap: 5px;
+        /*justify-content: space-between;*/
+    }
+
+    /* styles.css */
+    .flip-container {
+        perspective: 1000px;
+        height: 600px;
+        background-color: #e3d5b3;
+        border: 5px solid #603000;
+        border-radius: 10px;
+        z-index: 1000;
+        overflow-y: auto;
+    }
+
+    .flipper {
+        position: relative;
+        transform-style: preserve-3d;
+        transition: transform 0.6s;
+    }
+
+    .front,
+    .back {
+        backface-visibility: hidden;
+        position: absolute;
+        width: 100%;
+        height: 100%;
+    }
+
+    .flipped .flipper {
+        transform: rotateY(180deg);
+    }
+
+    .back {
+        transform: rotateY(180deg);
+        background-color: rgb(214, 179, 113);
+        margin-left: 5px;
+        width: 98% !important;
+    }
+
+    .settingsDiv {
+        margin-top: 10px;
+    }
+
+    #helpIcon {
+        border: solid 3.5px rgb(0 0 0);
+        border-radius: 50%;
+        width: 30px;
+        height: 30px;
+        text-align: center;
+        vertical-align: middle;
+        box-sizing: border-box;
+        display: inline-block;
+        font-size: 20px;
+        align-content: center;
+        cursor: pointer;
+        font-size: 16px;
+    }
+
+    #helpIcon:hover {
+        background-color: rgb(0, 128, 6);
+        border-width: 5px;
+    }
+
+    #btnCalculateFangs {
+        font-size: 18px;
+        border-radius: 5px;
+        background-color: green;
+        font-weight: bold;
+        padding: 5px 15px;
+        margin: 10px 0px;
+        cursor: pointer;
+        transition-duration: 0.2s;
+    }
+
+
+    #btnCalculateFangs:hover {
+        border-radius: 15px;
+        background-color: rgb(0, 104, 0);
+    }
+</style>
+
+
+<div class="flip-container" id="flipContainer">
+
+
+    <div style="font-size: 24px; font-weight: bold; background-color: rgb(193, 162, 100); padding: 5px; border-radius: 5px 5px 0px 0px;     top: 0px;
+    z-index: 10000; position: sticky;"
+        onclick="let flipContainer = document.getElementById('flipContainer'); flipContainer.classList.toggle('flipped')">
+        Noble God
+        <span id='helpIcon'>?</span>
+    </div>
+    <div class="flipper">
+        <div class="front">
+            <!-- Front content -->
+            <div id="loadingScreen" class="hidden">
+                <div id="loadingInformation">
+                    <img src="https://people.tamu.edu/~yasskin/SEE-Math/2017/CounselorMovies/mark-c.gif" alt=""
+                        style="width: 80px;">
+                    <span id='loadingStatus'>Loading...</span>
+                    <div id='loadingContainer'>
+                        <div id='loadingBar'></div>
+                    </div>
+                </div>
+
+            </div>
+
+
+
+            <div id="settingsContainer" style="padding: 10px; ">
+
+                <fieldset>
+                    <legend id="lgdCoordinatesTitle">Coordinates (0)</legend>
+
+                    <textarea name="" id="coordsInput" style="width: 100%; height: 100px; resize: none;"
+                        onpaste="cleanInput(event)" onchange="updateCoordsTitle()"></textarea>
+
+                </fieldset>
+
+                <fieldset>
+                    <legend>Troops to send</legend>
+                    <div>
+                        <span>Group to send from</span>
+                        <select name="" id="selectGroupToSendFrom" settingType="numeric"></select>
+                    </div>
+
+                    <table>
+                        <thead>
+                            <tr id="trUnitIcons">
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr id="trUnitsSend">
+                                <td>Send</td>
+                            </tr>
+                        </tbody>
+
+                    </table>
+
+                </fieldset>
+
+                <fieldset>
+                    <legend>Timing Settings</legend>
+
+                    <div id="troopDefinitionDiv"></div>
+
+                    <div>
+                        <span>Time nobles also after medium <img
+                                src="https://dsen.innogamescdn.com/asset/35e971b9/graphic/command/attack_medium.png"
+                                alt="">
+                            attacks?</span>
+                        <input type="checkbox" name="" id="includeMediumAttacks" checked settingType="checkbox">
+                    </div>
+                    <div>
+                        <span>Max hours after nuke</span>
+                        <input type="number" name="" id="maxHoursAfterNuke" value=10 settingType="numeric">
+                    </div>
+                    <div>
+                        <span>Send only after final nuke?</span>
+                        <input type="checkbox" name="" id="sendOnlyAfterFinalNuke" checked settingType="checkbox">
+                    </div>
+                    <div>
+                        <button id="btnCalculateFangs">Calculate</button>
+                    </div>
+                </fieldset>
+
+                <fieldset>
+                    <legend>Attack Plan</legend>
+                    <div id="divAttackPlan"></div>
+                </fieldset>
+            </div>
+        </div>
+        <div class="back">
+            <!-- Back content -->
+            <h3>About the script</h3>
+            <div>This script is aimed to help fanging enemies down. It allows the user to send fangs in bulk at enemy
+                villages, timed after nukes <img
+                    src="https://dsen.innogamescdn.com/asset/35e971b9/graphic/command/attack_large.png" alt=""> in a
+                window provided by the user. Timing fangs in this way ensures they do
+                more damage as likely the village is cleared by the nuke. The tool includes nukes found on shared
+                commands, not just your own nukes.</div>
+
+            <h3>Settings</h3>
+
+            <fieldset>
+                <legend>Coordinates</legend>
+                <div>Note that "messy" text can be pasted in here, and the tool will strip all valid coordinates out of
+                    the text.</div>
+            </fieldset>
+
+            <fieldset>
+                <legend>Troops to Send</legend>
+                <div>The values here are interpreted the same as troop templates. There is no "all" option, but typing
+                    in
+                    99999 will effectively mean all troops will be sent!<br>
+                    Typing in, for example, "-5" will send all troops apart from leaving 5 in reserve (as it does in a
+                    troop
+                    template).
+                    Fang God will always leave 1 scout home so you won't get scouted by fakes accidentally.
+
+                    <br><br>
+                    <span class="settingSpan">Keep fang as "green" <img
+                            src="https://dsen.innogamescdn.com/asset/35e971b9/graphic/command/attack_small.png"
+                            alt=""></span>
+                    <span>This will limit the troops to 1000 maximum so that a watchtower cannot detect it is a real
+                        attack.
+                        Fang God does this according to the following rules
+                        <ul>
+                            <li>Send 1 scout</li>
+                            <li>Send as many catapults as possible</li>
+                            <li>The remaining troops are sent with as many possible in this priority order
+                                <ul>
+                                    <li><img src="/graphic/unit/unit_ram.png" alt=""></li>
+                                    <li><img src="/graphic/unit/unit_light.png" alt=""></li>
+                                    <li><img src="/graphic/unit/unit_heavy.png" alt=""></li>
+                                    <li><img src="/graphic/unit/unit_marcher.png" alt=""></li>
+                                    <li><img src="/graphic/unit/unit_axe.png" alt=""></li>
+                                    <li><img src="/graphic/unit/unit_sword.png" alt=""></li>
+                                    <li><img src="/graphic/unit/unit_archer.png" alt=""></li>
+                                    <li><img src="/graphic/unit/unit_spear.png" alt=""></li>
+                                </ul>
+
+                            </li>
+
+                        </ul>
+                    </span>
+                </div>
+
+                <span class="settingSpan">Max fangs per nuke</span><span> - simply limits the number of fangs to send
+                    after a nuke. Sending too many may
+                    advertise real attacks to a village.</span>
+            </fieldset>
+
+
+
+            <fieldset>
+                <legend>Timing</legend>
+                <div class="settingsDiv">
+                    <span class="settingSpan">Time fangs also after medium <img
+                            src="https://dsen.innogamescdn.com/asset/35e971b9/graphic/command/attack_medium.png" alt="">
+                        attacks?</span>
+                    <span>Counts medium sized attacks as permissible to time fangs after, may not be appropriate in all
+                        situations.</span>
+                </div>
+                <div class="settingsDiv">
+                    <span class="settingSpan">Send closest fang?</span>
+                    <span>Whether to send the tightest possible fang to the nuke, or whether to pick a random fang in
+                        the timing window selected. A random fang is recommended as even if a window with a delay is
+                        chosen (e.g. 1-3 hours), consistently having attacks just over 1 hour after nukes creates a
+                        pattern of attacks that the defender may use to identify both nukes and fangs.</span>
+                </div>
+                <div class="settingsDiv">
+                    <span class="settingSpan">Min hours after nuke</span>
+                    <span>Only time fangs at least this many hours after a nuke. Fractions of hours are permissible
+                        (e.g. 1.5)</span>
+                </div>
+                <div class="settingsDiv">
+                    <span class="settingSpan">Max hours after nuke</span>
+                    <span>Only time fangs that are no later than this many hours after a nuke.</span>
+                </div>
+                <div class="settingsDiv">
+                    <span class="settingSpan">Send only after final nuke?</span>
+                    <span>If multiple nukes are hitting a village, should fangs be planned after any / every nuke, or
+                        only after the final nuke? Typically the final nuke is best to time after (since the village is
+                        most likely to be empty after multiple nukes), however with constant
+                        nuke spam there may be very long range nukes that you don't want to wait for and so you may be
+                        happy to time after earlier nukes.</span>
+                </div>
+
+                <div class="settingsDiv">
+                    <span class="settingSpan">Number of launches per tab</span>
+                    <span>The launches will be split over multiple browser tabs. To avoid overloading the browser in the
+                        case of hundreds of fangs, these are split into batches, very similar to the beloved Costache
+                        fake script. This setting controls how many to partition into.</span>
+                </div>
+
+            </fieldset>
+
+
+            <h3>Bugs?</h3>
+            <div>If there is a feature of the script not working, or a feature request, please contact higamy <img
+                    width="20px"
+                    src="https://cdn.discordapp.com/icons/1196758274767331348/0ada44812ebc04b4ee14048f47381f8b.webp"
+                    alt=""> on Discord
+                (username is simply "higamy") or in-game (.net server).</div>
+
+            <h3>Features in Development</h3>
+
+            Please contact higamy if you would like any other features or have feedback on which of these to prioritise.
+
+            <ul>
+                <li>Avoid sending fangs in night bonus. Currently the script will plan fangs in night bonus (if
+                    applicable to world settings).</li>
+                <li>Option to filter out tribemate co-ordinates automatically.</li>
+                <li>Identify existing fangs after nukes to avoid "over-fanging" a village.</li>
+                <li>Support for running from mobile browser.</li>
+                <li>Option to include randomised fakes in the attacks -> i.e. if 50 fangs are found, can have the option
+                    to add 100 fakes as part of the planned sends (to various coordinates in the coordinate list).</li>
+                <li>Option to include nukes as part of the attacks -> i.e. if there are villages with no nukes headed
+                    there, option to send nukes (and fangs) as part of the planned attacks.</li>
+                <li>User interface improvements.</li>
+                <li>Support for translation to other languages.</li>
+            </ul>
+
+            <h3>Disclaimer</h3>
+            <div>
+                <ul>
+                    <li>This script has only been recently developed and so may contain bugs!</li>
+                    <li>The script does not currently check what the troops in the orange / red attacks are. It would
+                        time fangs after a large scout attack for example, this could possibly be a future improvement
+                        though is not likely to occur frequently.</li>
+                </ul>
+
+            </div>
+
+            <h3>Credits</h3>
+            <div>
+                Thanks to <b>Red Alert</b> for allowing me to copy a section of code from the Single Village Snipe
+                script which collects the troops home in each village.
+                <br>
+                I have copied no code from <b>Costache</b>'s fake/fang/nuke script, however took inspiration from his
+                approach
+                and laid
+                out the batches of attacks in the same way.
+            </div>
+
+
+            <h3>Changelog</h3>
+            <div>
+                <ul>
+                    <li>v1.0.0 - Initial release</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+</div>`
+
+
+    document.body.append(fangFinderUI);
+    console.log("Added UI")
+
+    // Now the UI is constructed, show it
+    fangFinderUI.classList.remove('hidden');
+
+    // Collect the Noble speed
+    nobleSpeed = settingsData['nobleSpeed'];
+
+    // Group to select
+
+    $.get(TribalWars.buildURL('GET', 'groups', { 'ajax': 'load_group_menu' })).then((groups) => {
+        id = 0;
+        let options = ``;
+
+        groups.result.forEach((val) => {
+            if (val.type == 'separator') {
+                options += `<option disabled=""/>`;
+            } else {
+                options += `<option value="${val.group_id}" ${(val.group_id == id) ? 'selected' : ''}>${val.name}</option>`;
+            }
+        });
+
+        selectGroupToSendFrom.innerHTML = options;
+
+        // Collect the list of all units in the game
+        let unitList = settingsData['unitList'];
+        console.log(unitList);
+
+
+        // Now add these to the table
+        let trUnitIcons = document.querySelector('#trUnitIcons');
+        let trUnitsSend = document.querySelector('#trUnitsSend');
+        for (let unit of unitList) {
+
+            console.log(unit);
+            //  --- Add the unit icons ---
+            let thUnit = document.createElement('th');
+            thUnit.classList.add('thUnit');
+            let labelUnit = document.createElement('label');
+            let imgUnit = document.createElement('img');
+
+            imgUnit.setAttribute('src', `/graphic/unit/unit_${unit}.png`)
+
+
+            // Build the DOM
+            thUnit.appendChild(labelUnit);
+            labelUnit.appendChild(imgUnit);
+            trUnitIcons.appendChild(thUnit)
+
+            //  --- Add the send row ---
+            let tdUnitSend = document.createElement('td');
+            let inputUnitSend = document.createElement('input');
+
+            inputUnitSend.classList.add('inputUnits');
+            inputUnitSend.setAttribute('type', 'number');
+            inputUnitSend.setAttribute('value', 0);
+            inputUnitSend.setAttribute('unit', unit);
+            inputUnitSend.setAttribute('settingType', 'numeric');
+            inputUnitSend.setAttribute('id', `unit_${unit}`)
+
+            // Build the DOM
+            tdUnitSend.appendChild(inputUnitSend);
+            trUnitsSend.appendChild(tdUnitSend);
+        }
+
+        // Load the saved settings
+        loadSettings();
+
+        // Update to store settings when any value is changed
+        $('[settingType]').each((i, el) => {
+            el.addEventListener('change', () => { storeSettings(); })
+        });
+
+
+        // Get the village list
+
+        // Auto-update localStorage villages list
+        if (localStorage.getItem(VILLAGE_TIME) != null) {
+            var mapVillageTime = parseInt(localStorage.getItem(VILLAGE_TIME));
+            if (Date.parse(new Date()) >= mapVillageTime + TIME_INTERVAL) {
+                // hour has passed, refetch village.txt
+                fetchVillagesData();
+            } else {
+                // hour has not passed, work with village list from localStorage
+                var data = localStorage.getItem(VILLAGES_LIST);
+                villages = CSVToArray(data);
+                init();
+            }
+        } else {
+            // Fetch village.txt
+            fetchVillagesData();
+        }
+
+    })
+};
 
 function formatDate(date) {
     const pad = (num, size = 2) => String(num).padStart(size, '0');
@@ -398,16 +960,14 @@ async function init() {
             for (let nukeVillage of summaryResults) {
                 console.log("Nuke village", nukeVillage)
                 for (let individualNukeTime of nukeVillage['times']) {
-
-
                     for (let sourceVillage of sourceVillages) {
                         console.log("nobleSpeed".nobleSpeed)
                         let travelTime = Math.hypot(parseInt(nukeVillage['data'][2]) - sourceVillage['x'], parseInt(nukeVillage['data'][3]) - sourceVillage['y']) * nobleSpeed;
                         let landTime = new Date(now.getTime() + travelTime * 60 * 1000);
                         let launchTime = new Date(individualNukeTime - travelTime * 60 * 1000);
-                        console.log('Times', individualNukeTime, landTime)
+                        console.log('Times', individualNukeTime, landTime, travelTime, maxNobleTravelTimeHours * 60)
 
-                        if (landTime <= individualNukeTime) {
+                        if ((landTime <= individualNukeTime) && (travelTime <= maxNobleTravelTimeHours * 60)) {
                             console.log(landTime)
 
                             // Calculate what units would be sent
