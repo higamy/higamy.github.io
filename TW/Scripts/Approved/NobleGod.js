@@ -1,5 +1,5 @@
 // Constants
-const WORLD_SETTINGS = 'worldSettings_higamy'; // localStorage key name
+const WORLD_SETTINGS = 'worldSettings_higamy_NobleGod'; // localStorage key name
 const NOBLE_GOD_VERSION = "0.1"
 const VILLAGE_TIME = 'mapVillageTime_higamy'; // localStorage key name
 const VILLAGES_LIST = 'mapVillagesList_higamy'; // localStorage key name
@@ -8,11 +8,28 @@ let PAUSE_BETWEEN_REQUESTS = 300;
 
 let villages;
 let nobleSpeed;
-let maxNobleTravelTimeHours = 10;
+
+// DOM Elements
+let divFangLaunches;
+let maxFangsPerNuke;
+let loadingScreen;
+let loadingStatus;
+let loadingBar;
+let chboxIncludeMediumAttacks;
+let sendClosestFang;
+let sendOnlyAfterFinalNuke;
+let selectGroupToSendFrom;
+let includeMediumAttacks;
+let keepFangGreen;
+let maxNobleTravelTimeHours;
+let divAttackPlan;
+let copyAttackPlan;
+let attackPlanLegend;
+let sendOnlyClosestNoble;
 
 // variables that will need to be UI elements later
 sendOnlyAfterFinalNuke = false;
-selectGroupToSendFrom = '20623'
+
 
 // Get the coordinate list
 let targetCoords = '523|274 522|275 520|276'
@@ -55,6 +72,54 @@ function CSVToArray(strData, strDelimiter) {
 }
 
 
+
+function updateCoordsTitle(inputVal = null) {
+
+    console.log('Running update coords', inputVal)
+
+    if (inputVal) {
+        // Update the title for the number of coords
+        lgdCoordinatesTitle.innerHTML = 'Coordinates (' + inputVal.length + ')';
+    } else {
+        let coordsInput = document.getElementById('coordsInput');
+        let lgdCoordinatesTitle = document.getElementById('lgdCoordinatesTitle');
+
+        let cleanedCoordData = coordsInput.value.match(/\d{1,3}\|\d{1,3}/g);
+        console.log(cleanedCoordData);
+
+        if (cleanedCoordData) {
+            // Clean the coordinates
+            coordsInput.value = cleanedCoordData.join(' ');
+
+            // Update the title for the number of coords
+            lgdCoordinatesTitle.innerHTML = 'Coordinates (' + cleanedCoordData.length + ')';
+        }
+        // No coordinates input, tidy up    
+        else {
+            coordsInput.value = '';
+            lgdCoordinatesTitle.innerHTML = 'Coordinates (0)';
+        }
+    }
+}
+
+// Extracts coordinates from pasted text
+function cleanInput(event) {
+    // Prevent the default paste action
+    event.preventDefault();
+
+    // Get the text from the clipboard
+    let clipboardData = event.clipboardData || window.clipboardData;
+    let pastedData = clipboardData.getData('Text');
+
+    let match = pastedData.match(/\d{1,3}\|\d{1,3}/g);
+    if (match) {
+        console.log("Found match!")
+        document.getElementById('coordsInput').value = match.join(' ');
+        updateCoordsTitle(match);
+    }
+}
+
+
 function storeSettings() {
     let settingsInputs = $('[settingType]');
     let settings = { 'version': NOBLE_GOD_VERSION }
@@ -87,6 +152,13 @@ function loadSettings() {
         }
     }
 }
+
+function getLatestDate(dates) {
+    return dates.reduce((latest, current) => {
+        return [(new Date(current) > new Date(latest)) ? current : latest];
+    });
+}
+
 
 
 // Helper: Fetch home troop counts for current group
@@ -265,8 +337,6 @@ else {
 
 function createNobleGodUI(settingsData) {
     console.log(settingsData)
-
-
 
     // Add the UI
     fangFinderUI = document.createElement('div');
@@ -537,12 +607,16 @@ function createNobleGodUI(settingsData) {
                         <input type="checkbox" name="" id="includeMediumAttacks" checked settingType="checkbox">
                     </div>
                     <div>
-                        <span>Max hours after nuke</span>
-                        <input type="number" name="" id="maxHoursAfterNuke" value=10 settingType="numeric">
+                        <span>Max Noble travel time (hours)</span>
+                        <input type="number" name="" id="maxNobleTravelTimeHours" value=12 settingType="numeric">
                     </div>
                     <div>
                         <span>Send only after final nuke?</span>
                         <input type="checkbox" name="" id="sendOnlyAfterFinalNuke" checked settingType="checkbox">
+                    </div>
+                    <div>
+                        <span>Only send closest noble?</span>
+                        <input type="checkbox" name="" id="sendOnlyClosestNoble" checked settingType="checkbox">
                     </div>
                     <div>
                         <button id="btnCalculateFangs">Calculate</button>
@@ -550,8 +624,10 @@ function createNobleGodUI(settingsData) {
                 </fieldset>
 
                 <fieldset>
-                    <legend>Attack Plan</legend>
-                    <div id="divAttackPlan"></div>
+                    <legend id="attackPlanLegend">Attack Plan</legend>
+                    <button id="copyAttackPlan" class="hidden">Copy Attack Plan</button>
+                    <div id="divAttackPlan"
+                        style="max-height: 300px; overflow-y: scroll; font-style: italic; margin-top: 10px;"></div>
                 </fieldset>
             </div>
         </div>
@@ -725,8 +801,23 @@ function createNobleGodUI(settingsData) {
     document.body.append(fangFinderUI);
     console.log("Added UI")
 
-    // Now the UI is constructed, show it
-    fangFinderUI.classList.remove('hidden');
+    // Get DOM elements
+    divFangLaunches = document.getElementById('divFangLaunches');
+    maxFangsPerNuke = document.getElementById('maxFangsPerNuke');
+    loadingScreen = document.getElementById('loadingScreen');
+    loadingStatus = document.getElementById('loadingStatus');
+    loadingBar = document.getElementById('loadingBar');
+    sendClosestFang = document.getElementById('sendClosestFang');
+    sendOnlyAfterFinalNuke = document.getElementById('sendOnlyAfterFinalNuke');
+    selectGroupToSendFrom = document.getElementById('selectGroupToSendFrom');
+    includeMediumAttacks = document.getElementById('includeMediumAttacks');
+    keepFangGreen = document.getElementById('keepFangGreen');
+    divAttackPlan = document.getElementById('divAttackPlan');
+    copyAttackPlan = document.getElementById('copyAttackPlan');
+    maxNobleTravelTimeHours = document.getElementById('maxNobleTravelTimeHours');
+    attackPlanLegend = document.getElementById('attackPlanLegend');
+    sendOnlyClosestNoble = document.getElementById('sendOnlyClosestNoble');
+
 
     // Collect the Noble speed
     nobleSpeed = settingsData['nobleSpeed'];
@@ -798,23 +889,34 @@ function createNobleGodUI(settingsData) {
 
 
         // Get the village list
+        // Coordinates section
+        const btnCalculateFangs = document.getElementById('btnCalculateFangs');
+        btnCalculateFangs.addEventListener('click', () => {
+            //loadingScreen.classList.remove('hidden');
 
-        // Auto-update localStorage villages list
-        if (localStorage.getItem(VILLAGE_TIME) != null) {
-            var mapVillageTime = parseInt(localStorage.getItem(VILLAGE_TIME));
-            if (Date.parse(new Date()) >= mapVillageTime + TIME_INTERVAL) {
-                // hour has passed, refetch village.txt
-                fetchVillagesData();
+            // Store settings
+            storeSettings();
+
+            // Auto-update localStorage villages list
+            if (localStorage.getItem(VILLAGE_TIME) != null) {
+                var mapVillageTime = parseInt(localStorage.getItem(VILLAGE_TIME));
+                if (Date.parse(new Date()) >= mapVillageTime + TIME_INTERVAL) {
+                    // hour has passed, refetch village.txt
+                    fetchVillagesData();
+                } else {
+                    // hour has not passed, work with village list from localStorage
+                    var data = localStorage.getItem(VILLAGES_LIST);
+                    villages = CSVToArray(data);
+                    init();
+                }
             } else {
-                // hour has not passed, work with village list from localStorage
-                var data = localStorage.getItem(VILLAGES_LIST);
-                villages = CSVToArray(data);
-                init();
+                // Fetch village.txt
+                fetchVillagesData();
             }
-        } else {
-            // Fetch village.txt
-            fetchVillagesData();
-        }
+        })
+
+        // Now the UI is constructed, show it
+        fangFinderUI.classList.remove('hidden');
 
     })
 };
@@ -835,8 +937,33 @@ function formatDate(date) {
 
 async function init() {
 
+    // Tidy up the DOM for new loop
+    copyAttackPlan.classList.add('hidden');
+    divAttackPlan.innerHTML = '';
+    attackPlanLegend.innerHTML = 'Attack Plan';
+
+    let troopSettings = {}
+    for (let unitInput of $('input[unit]')) {
+        let unitName = unitInput.getAttribute('unit');
+        let unitValue = unitInput.value;
+
+        // If the field was deleted to be empty, then reinstate the zero
+        if (unitValue == '') {
+            unitInput.value = 0;
+            unitValue = 0;
+        }
+
+        if (isNaN(unitValue) | isNaN(parseFloat(unitValue))) {
+            alert(`Non numeric input of ${unitValue} in field ${unitName}!`);
+        }
+
+        troopSettings[unitName] = parseInt(unitValue);
+
+        if (parseInt(unitValue) != 0) allTroopsZero = false;
+    }
+
     // Process the SOURCES
-    let sourceVillages = await fetchTroopsForCurrentGroup(selectGroupToSendFrom); // NEED TO BE DYNAMIC!
+    let sourceVillages = await fetchTroopsForCurrentGroup(selectGroupToSendFrom.value); // NEED TO BE DYNAMIC!
 
     console.log(`Sending from ${sourceVillages.length} villages`);
     console.log(sourceVillages)
@@ -853,7 +980,7 @@ async function init() {
 
 
     // Process the TARGETS
-    coords = targetCoords;
+    coords = document.getElementById('coordsInput').value;
     coords = coords.split(' ');
     for (let i = 0; i < coords.length; i++) {
         coords[i] = coords[i].split('|');
@@ -902,13 +1029,14 @@ async function init() {
             //loadingStatus.innerHTML = 'Calculating fangs timings...'
             //loadingBar.style.width = "100%"
 
+
+
             // All promises have resolved
             console.log('All requests are complete');
             console.log('Results:', results);
             let summaryResults = []
 
             for (let result of results) {
-
                 let all_trs = $(result['response']).find('tr.command-row');
                 const largeAttackRows = all_trs.filter(function () {
 
@@ -943,7 +1071,8 @@ async function init() {
                 summaryResults.push({
                     data: result['coord'],
                     times: endTimes,
-                    lastNukeTime: lastNukeTime
+                    lastNukeTime: lastNukeTime,
+                    numberOfNukes: largeAttackRows.length
                 })
 
             }
@@ -957,23 +1086,53 @@ async function init() {
             let possibleSends = [];
             let resultString = "";
 
+
             for (let nukeVillage of summaryResults) {
+                let nukeNumber = 0;
                 console.log("Nuke village", nukeVillage)
                 for (let individualNukeTime of nukeVillage['times']) {
+                    nukeNumber++;
                     for (let sourceVillage of sourceVillages) {
-                        console.log("nobleSpeed".nobleSpeed)
                         let travelTime = Math.hypot(parseInt(nukeVillage['data'][2]) - sourceVillage['x'], parseInt(nukeVillage['data'][3]) - sourceVillage['y']) * nobleSpeed;
                         let landTime = new Date(now.getTime() + travelTime * 60 * 1000);
-                        let launchTime = new Date(individualNukeTime - travelTime * 60 * 1000);
-                        console.log('Times', individualNukeTime, landTime, travelTime, maxNobleTravelTimeHours * 60)
+                        let launchTime = new Date(individualNukeTime - Math.round(travelTime * 60) * 1000);
+                        console.log('Times', individualNukeTime, landTime, travelTime, parseFloat(maxNobleTravelTimeHours.value) * 60)
 
-                        if ((landTime <= individualNukeTime) && (travelTime <= maxNobleTravelTimeHours * 60)) {
-                            console.log(landTime)
+                        if ((landTime <= individualNukeTime) && (travelTime <= parseFloat(maxNobleTravelTimeHours.value) * 60)) {
+                            console.log(landTime);
 
                             // Calculate what units would be sent
 
                             // Build the URL
-                            url = `/game.php?village=${sourceVillage['villageId']}&screen=place&target=${nukeVillage['data'][0]}&snob=1`
+                            url = `game.php?village=${sourceVillage['villageId']}&screen=place&target=${nukeVillage['data'][0]}&snob=1`
+
+                            // Build up the troops string
+                            let troopsToSend = {}
+                            let totalTroops = 0;
+                            for (let troop in troopSettings) {
+                                let troopAmount = troopSettings[troop];
+
+                                // Interpret negative as all minus this amount
+                                if (troopAmount < 0) troopAmount = troopAmount + sourceVillage[troop];
+
+                                // Cap at maximum troops available in the village
+                                troopAmount = Math.min(troopAmount, sourceVillage[troop]);
+
+                                // Minimum of zero
+                                troopAmount = Math.max(troopAmount, 0);
+
+                                // Don't send the last scout out    
+                                if (troop == 'spy') { troopAmount = Math.min(troopAmount, sourceVillage[troop] - 1) };
+
+                                troopsToSend[troop] = troopAmount;
+                                totalTroops += troopAmount;
+                            }
+
+
+                            // Add troops to the the URL
+                            for (let troop in troopsToSend) {
+                                if (troopsToSend[troop] > 0) url = `${url}&${troop}=${troopsToSend[troop]}`;
+                            }
 
                             possibleSends.push({
                                 'Launch Time': launchTime,
@@ -984,6 +1143,8 @@ async function init() {
                                 'Land String': formatDate(individualNukeTime),
                                 'Land Coord': `${nukeVillage['data'][2]}|${nukeVillage['data'][3]}`,
                                 'Land Village ID': nukeVillage['data'][0],
+                                'Nuke Number': nukeNumber,
+                                'Number Of Nukes': nukeVillage['numberOfNukes'],
                                 'url': url
                             });
                         }
@@ -995,15 +1156,50 @@ async function init() {
 
             console.log(possibleSends);
 
-            // Build up the attack plan
+            // Loop again through the sends to figure out how many noble attempts per village
+            let nobleNumbers = {}
             for (let nukeSend of possibleSends) {
-                resultString = resultString + `\n[unit]snob[/unit]  | ${nukeSend['Launch String']} | ${nukeSend['Land String']} | ${nukeSend['Launch Coord']} ->  ${nukeSend['Land Coord']} | [url=game.php?village=${nukeSend['Launch Village ID']}&screen=place&target=${nukeSend['Land Village ID']}&snob=1&spy=1&light=1]Attack[/url]`
+                if (nukeSend['Land Village ID'] in nobleNumbers) {
+                    nobleNumbers[nukeSend['Land Village ID']]++;
+                }
+                else {
+                    nobleNumbers[nukeSend['Land Village ID']] = 1;
+                }
+                nukeSend['Noble Number'] = nobleNumbers[nukeSend['Land Village ID']];
+            }
+
+            // CALCULATE NUMBER OF NOBLES NEEDED PER VILLAGE VS CURRENT - AS A TABLE
+
+            // Build up the attack plan
+            numberOfSends = 0;
+            for (let nukeSend of possibleSends) {
+                // Skip the loop if this is not the last noble, but it is requested to only have the closest noble (the closest noble will be the last launch time)
+                if (sendOnlyClosestNoble.checked && (nukeSend['Noble Number'] != nobleNumbers[nukeSend['Land Village ID']])) continue
+
+                numberOfSends++;
+                resultString = resultString + `\n[unit]snob[/unit] #${nukeSend['Noble Number']} of ${nobleNumbers[nukeSend['Land Village ID']]}  | [unit]ram[/unit] ${nukeSend['Nuke Number']} of ${nukeSend['Number Of Nukes']}  | ${nukeSend['Launch String']} | ${nukeSend['Land String']} | ${nukeSend['Launch Coord']} ->  ${nukeSend['Land Coord']} | [url=${nukeSend['url']}]Attack[/url]`
             }
 
             // Copy to clipboard
-            navigator.clipboard.writeText(resultString)
+
             console.log("possibleSends", possibleSends);
             console.log("resultString", resultString);
             // Create the string
+            attackPlanLegend.innerHTML = `Attack Plan (${numberOfSends})`
+
+
+            if (possibleSends.length == 0) {
+                UI.ErrorMessage("No noble timings found!");
+                divAttackPlan.innerHTML = "No possible noble timings found within constraints set. Maybe increase max allowable noble travel time."
+            }
+            else {
+                divAttackPlan.innerHTML = resultString;
+                copyAttackPlan.classList.remove('hidden');
+                copyAttackPlan.onclick = () => {
+                    navigator.clipboard.writeText(resultString)
+                    UI.SuccessMessage("Attack plan copied to clipboard.")
+                }
+            }
+
         });
 }

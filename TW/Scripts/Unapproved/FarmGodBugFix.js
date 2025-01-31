@@ -1,6 +1,6 @@
 // Hungarian translation provided by =Krumpli=
 
-
+//{ "response": false, "bot_protect": "throttled" }
 ScriptAPI.register('FarmGod', true, 'Warre', 'nl.tribalwars@coma.innogames.de');
 
 window.FarmGod = {};
@@ -199,8 +199,7 @@ window.FarmGod.Library = (function () {
     return new Date(year, (month - 1), day, hour, min, sec).getTime();
   };
 
-  const timestampFromString = function (timestr, coord) {
-    console.log(timestr, coord);
+  const timestampFromString = function (timestr) {
     let d = $('#serverDate').text().split('/').map(x => +x);
     let todayPattern = new RegExp(window.lang['aea2b0aa9ae1534226518faaefffdaad'].replace('%s', '([\\d+|:]+)')).exec(timestr);
     let tomorrowPattern = new RegExp(window.lang['57d28d1b211fddbb7a499ead5bf23079'].replace('%s', '([\\d+|:]+)')).exec(timestr);
@@ -536,7 +535,7 @@ window.FarmGod.Main = (function (Library, Translation) {
 
         if (coord) {
           if (!data.commands.hasOwnProperty(coord)) data.commands[coord] = [];
-          return data.commands[coord].push(Math.round(lib.timestampFromString($el.find('td').eq(2).text().trim()) / 1000, coord));
+          return data.commands[coord].push(Math.round(lib.timestampFromString($el.find('td').eq(2).text().trim()) / 1000));
         }
       });
 
@@ -684,7 +683,8 @@ window.FarmGod.Main = (function (Library, Translation) {
         $pb.data('current', $pb.data('current') + 1);
         UI.updateProgressBar($pb, $pb.data('current'), $pb.data('max'));
         $this.closest('.farmRow').remove();
-        farmBusy = false;
+        alert('Solve bot protection!')
+        //farmBusy = false;
       });
     }
   };

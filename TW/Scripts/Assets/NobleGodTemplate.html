@@ -258,12 +258,16 @@
                         <input type="checkbox" name="" id="includeMediumAttacks" checked settingType="checkbox">
                     </div>
                     <div>
-                        <span>Max hours after nuke</span>
-                        <input type="number" name="" id="maxHoursAfterNuke" value=10 settingType="numeric">
+                        <span>Max Noble travel time (hours)</span>
+                        <input type="number" name="" id="maxNobleTravelTimeHours" value=12 settingType="numeric">
                     </div>
                     <div>
                         <span>Send only after final nuke?</span>
                         <input type="checkbox" name="" id="sendOnlyAfterFinalNuke" checked settingType="checkbox">
+                    </div>
+                    <div>
+                        <span>Only send closest noble?</span>
+                        <input type="checkbox" name="" id="sendOnlyClosestNoble" checked settingType="checkbox">
                     </div>
                     <div>
                         <button id="btnCalculateFangs">Calculate</button>
@@ -271,8 +275,10 @@
                 </fieldset>
 
                 <fieldset>
-                    <legend>Attack Plan</legend>
-                    <div id="divAttackPlan"></div>
+                    <legend id="attackPlanLegend">Attack Plan</legend>
+                    <button id="copyAttackPlan" class="hidden">Copy Attack Plan</button>
+                    <div id="divAttackPlan"
+                        style="max-height: 300px; overflow-y: scroll; font-style: italic; margin-top: 10px;"></div>
                 </fieldset>
             </div>
         </div>
