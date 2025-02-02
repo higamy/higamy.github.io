@@ -2,6 +2,8 @@
 
 //{ "response": false, "bot_protect": "throttled" }
 ScriptAPI.register('FarmGod', true, 'Warre', 'nl.tribalwars@coma.innogames.de');
+const MAX_ERRORS = 3;
+let n_errors = 0;
 
 window.FarmGod = {};
 window.FarmGod.Library = (function () {
@@ -679,12 +681,18 @@ window.FarmGod.Main = (function (Library, Translation) {
         $this.closest('.farmRow').remove();
         farmBusy = false;
       }, function (r) {
+        n_errors++;
         UI.ErrorMessage(r || t.messages.sendError);
         $pb.data('current', $pb.data('current') + 1);
         UI.updateProgressBar($pb, $pb.data('current'), $pb.data('max'));
         $this.closest('.farmRow').remove();
-        alert('Solve bot protection!')
-        //farmBusy = false;
+
+        if (n_errors >= MAX_ERRORS) {
+          alert('Solve bot protection!');
+        }
+        else {
+          farmBusy = false;
+        }
       });
     }
   };
