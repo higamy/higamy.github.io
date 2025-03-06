@@ -15,8 +15,9 @@ if ((modeParam != 'log') | (screenParam != 'premium')) {
 
 
 world_data = {}
-n_pages_to_load = 10;
-
+amountOfPages = parseInt($(".paged-nav-item")[$(".paged-nav-item").length - 1].href.match(/page=(\d+)/)[1]);
+n_pages_to_load = amountOfPages;
+PLOT_VS_DAYS_SINCE_START = true;
 
 function parseCustomDate(dateStr) {
     const months = {
@@ -63,140 +64,101 @@ function mergeDuplicates(dates, values) {
 }
 
 
+function reformatDataByWorld(data) {
+    const result = {};
+
+    for (const [world, details] of Object.entries(data)) {
+
+        if (PLOT_VS_DAYS_SINCE_START) {
+            result[world] = details['Days Since Start'].map((date, index) => ({
+                x: date,
+                value: details.cumsum[index]
+            }));
+        }
+        else {
+            result[world] = details.merged_dates.map((date, index) => ({
+                x: date, // Format date as 'YYYY-MM-DD'
+                value: details.cumsum[index]
+            }));
+        }
+    }
+
+    return result;
+}
+
+
 function createPlot() {
-    // Add styles
-    var style = document.createElement('style');
-    style.innerHTML = `
-    figure{
-        position: absolute; 
-        top: 50px;
-        left: 0; 
-        right: 0; 
-        margin-left: auto; 
-        margin-right: auto; 
-        width: 100px; /* Need a specific value to work */
-    }
 
-    .highcharts-figure,
-    .highcharts-data-table table {
-        min-width: 800px;
-        max-width: 1000px;
-        margin: 1em auto;
-    }
+    // Make the container
+    const container = document.createElement('div');
+    container.setAttribute('id', 'container');
 
-    .highcharts-data-table table {
-        font-family: Verdana, sans-serif;
-        border-collapse: collapse;
-        border: 1px solid #ebebeb;
-        margin: 10px auto;
-        text-align: center;
-        width: 100%;
-        max-width: 500px;
-    }
+    let start = new Date().getTime()
+    let script = document.createElement('script');
+    script.type = "text/javascript"
+    script.src = "https://cdn.anychart.com/releases/8.9.0/js/anychart-base.min.js"
+    script.onload = function () {
+        let stop = new Date().getTime()
+        console.log(`insert chart library in ${stop - start} ms`)
 
-    .highcharts-data-table caption {
-        padding: 1em 0;
-        font-size: 1.2em;
-        color: #555;
-    }
+        // 2. Create a container
+        const container = document.createElement('div');
+        container.id = 'anychartContainer';
+        container.style.width = '100%';
+        container.style.height = '400px';
+        document.body.appendChild(container);
 
-    .highcharts-data-table th {
-        font-weight: 600;
-        padding: 0.5em;
-    }
+        // Prepare the data
+        reformattedData = reformatDataByWorld(world_data);
+        all_data = []
+        for (let world in reformattedData) {
+            all_data = reformattedData[world];
+        }
 
-    .highcharts-data-table td,
-    .highcharts-data-table th,
-    .highcharts-data-table caption {
-        padding: 0.5em;
-    }
+        console.log("all_data", all_data)
 
-    .highcharts-data-table thead tr,
-    .highcharts-data-table tr:nth-child(even) {
-        background: #f8f8f8;
-    }
+        // 3. Create an AnyChart chart
+        anychart.onDocumentReady(() => {
+            var chart = anychart.scatter();
 
-    .highcharts-data-table tr:hover {
-        background: #f1f7ff;
-    }
 
-    `;
-    document.head.appendChild(style);
+            for (let world in reformattedData) {
+                all_data = reformattedData[world];
 
-    function loadHighchartsScript(callback) {
-        const script = document.createElement('script');
-        script.src = 'https://code.highcharts.com/highcharts.js';
-        script.onload = callback;
-        document.head.appendChild(script);
-    }
 
-    loadHighchartsScript(() => {
-        Highcharts.chart('container', {
-            chart: {
-                type: 'line',
-                zoomType: 'xy'
-            },
-            title: {
-                text: `Points Trend:`
-            },
-
-            subtitle: {
-                text: 'Created by higamy'
-            },
-
-            yAxis: {
-                title: {
-                    text: 'Points'
-                }
-            },
-
-            xAxis: {
-                type: 'datetime',
-                dateTimeLabelFormats: { // don't display the dummy year
-                    month: '%e. %b',
-                    year: '%b'
-                },
-                title: {
-                    text: 'Date'
-                }
-            },
-
-            legend: {
-                layout: 'vertical',
-                align: 'right',
-                verticalAlign: 'middle'
-            },
-
-            plotOptions: {
-                series: {
-                    marker: {
-                        enabled: true
-                    }
-                }
-            },
-            series: [],
-            responsive: {
-                rules: [{
-                    condition: {
-                        maxWidth: 500
-                    },
-                    chartOptions: {
-                        plotOptions: {
-                            series: {
-                                marker: {
-                                    radius: 2.5
-                                }
-                            }
-                        }
-                    }
-                }]
+                // Add line using the same data
+                const line = chart.line(all_data).markers(true).name(world);
+                //line.stroke({ color: '#2196F3', thickness: 2 });
             }
 
+
+            // Configure X-axis (DateTime)
+            // Configure X-axis for DateTime
+            if (PLOT_VS_DAYS_SINCE_START) {
+                chart.xAxis().title('Days Since Start')
+            }
+            else {
+                chart.xScale('linear');
+                chart.xAxis().title('Date').labels().format(function () {
+                    return anychart.format.dateTime(this.value, 'yyyy-MM-dd HH:mm');
+                });
+            }
+
+            // Enable and customize legend
+            chart.legend().enabled(true).position('bottom').itemsLayout('horizontal');
+
+            // Configure Y-axis
+            chart.yAxis().title('Premium Points');
+
+            // Add grid lines
+            //chart.grid().enabled(true);
+
+            chart.title('Premium Points Trend');
+            chart.container('anychartContainer');
+            chart.draw();
         });
-
-        $('#container').highcharts().redraw();
-    });
-
+    };
+    document.head.appendChild(script);
 }
 
 // Example usage:
@@ -244,9 +206,15 @@ function getPPLogData(pageNumber) {
 
                 let sum = 0;
                 world_data[world]['cumsum'] = world_data[world]['merged_values'].map(num => sum += num);
+
+                // Add an attribute for days since the start
+                firstDate = mergedDates[0];
+                const daysSinceFirst = mergedDates.map(date => {
+                    const diff = date - firstDate; // Difference in milliseconds
+                    return Math.floor(diff / (1000 * 60 * 60 * 24)); // Convert to days
+                });
+                world_data[world]['Days Since Start'] = daysSinceFirst;
             }
-
-
 
             console.log(world_data);
 

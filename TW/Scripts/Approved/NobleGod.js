@@ -1061,7 +1061,8 @@ async function init() {
                 console.log(endTimes);
 
                 // If only want to send after the last nuke, then just take that time
-                if (sendOnlyAfterFinalNuke && endTimes.length > 1) {
+                print("sendOnlyAfterFinalNuke.checked", sendOnlyAfterFinalNuke.checked)
+                if (sendOnlyAfterFinalNuke.checked && endTimes.length > 1) {
                     console.log('Reducing down to only the latest time', endTimes)
                     endTimes = getLatestDate(endTimes);
                     console.log('After filtering', endTimes);
@@ -1174,14 +1175,15 @@ async function init() {
             numberOfSends = 0;
             for (let nukeSend of possibleSends) {
                 // Skip the loop if this is not the last noble, but it is requested to only have the closest noble (the closest noble will be the last launch time)
-                if (sendOnlyClosestNoble.checked && (nukeSend['Noble Number'] != nobleNumbers[nukeSend['Land Village ID']])) continue
+                if (sendOnlyClosestNoble.checked && (nukeSend['Noble Number'] != nobleNumbers[nukeSend['Land Village ID']])) {
+                    console.log('Skipping a loop'); continue;
+                }
 
                 numberOfSends++;
                 resultString = resultString + `\n[unit]snob[/unit] #${nukeSend['Noble Number']} of ${nobleNumbers[nukeSend['Land Village ID']]}  | [unit]ram[/unit] ${nukeSend['Nuke Number']} of ${nukeSend['Number Of Nukes']}  | ${nukeSend['Launch String']} | ${nukeSend['Land String']} | ${nukeSend['Launch Coord']} ->  ${nukeSend['Land Coord']} | [url=${nukeSend['url']}]Attack[/url]`
             }
 
             // Copy to clipboard
-
             console.log("possibleSends", possibleSends);
             console.log("resultString", resultString);
             // Create the string
