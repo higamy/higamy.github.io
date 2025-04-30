@@ -163,9 +163,13 @@ function createPlot() {
 
 // Example usage:
 console.log(parseCustomDate("Feb 12, 21:35"));       // Assumes current year
-console.log(parseCustomDate("Feb 20,2022 12:23"));  // Uses 2022
+console.log(parseCustomDate("Feb 20,2022 12:23"));   // Uses 2022
 
-function getPPLogData(pageNumber) {
+function sleep(millis) {
+    return new Promise(resolve => setTimeout(resolve, millis));
+}
+
+async function getPPLogData(pageNumber) {
     $.get(`/game.php?screen=premium&mode=log&page=${pageNumber}`).then((data) => {
         console.log(`Getting page: ${pageNumber}`)
 
@@ -188,7 +192,11 @@ function getPPLogData(pageNumber) {
 
         pageNumber++;
         if (pageNumber < n_pages_to_load) {
-            getPPLogData(pageNumber);
+            // Add a smarter delay which factors in the time to get the previous request
+            sleep(500).then(() => {
+                getPPLogData(pageNumber);
+            });
+
         }
         else {
             // Got last page, all data is available

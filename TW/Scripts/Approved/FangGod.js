@@ -145,8 +145,9 @@ function cleanInput(event) {
 
 // Helper: Fetch home troop counts for current group
 // Copied from https://twscripts.dev/scripts/singleVillageSnipe.js on 15th July 2024, with permission from Red Alert
+// Helper: Fetch home troop counts for current group
 async function fetchTroopsForCurrentGroup(groupId) {
-    const mobileCheck = jQuery('#mobileHeader').length > 0;
+    const mobileCheck = $('#mobileHeader').length > 0;
     const troopsForGroup = await jQuery
         .get(
             game_data.link_base_pure +
@@ -157,34 +158,33 @@ async function fetchTroopsForCurrentGroup(groupId) {
             const homeTroops = [];
 
             if (mobileCheck) {
-                let table = jQuery(htmlDoc).find('#combined_table tr.nowrap');
-                for (let i = 0; i < table.length; i++) {
-                    let objTroops = {};
-                    let villageId = parseInt(
-                        table[i]
-                            .getElementsByClassName('quickedit-vn')[0]
-                            .getAttribute('data-id')
+                let table = jQuery(htmlDoc).find('.overview-container > div');
+                table.each((i, el) => {
+                    const villageId = jQuery(el)
+                        .find('.quickedit-vn')
+                        .data('id');
+                    const troopCounts = {};
+
+                    const unitsElements = jQuery(el).find(
+                        '.overview-units-row > div.unit-row-item'
                     );
-                    let listTroops = Array.from(
-                        table[i].getElementsByTagName('img')
-                    )
-                        .filter((e) => e.src.includes('unit'))
-                        .map((e) => ({
-                            name: e.src
+                    unitsElements.each((j, unitElement) => {
+                        const img = jQuery(unitElement).find('img');
+                        const span =
+                            jQuery(unitElement).find('span.unit-row-name');
+                        if (img.length && span.length) {
+                            let unitType = img
+                                .attr('src')
                                 .split('unit_')[1]
-                                .replace('@2x.png', ''),
-                            value: parseInt(
-                                e.parentElement.nextElementSibling.innerText
-                            ),
-                        }));
-                    listTroops.forEach((item) => {
-                        objTroops[item.name] = item.value;
+                                .replace('@2x.webp', '')
+                                .replace('.png', '');
+                            let value = parseInt(span.text()) || 0;
+                            troopCounts[unitType] = value;
+                        }
                     });
-
-                    objTroops.villageId = villageId;
-
-                    homeTroops.push(objTroops);
-                }
+                    troopCounts.villageId = villageId;
+                    homeTroops.push(troopCounts);
+                });
             } else {
                 const combinedTableRows = jQuery(htmlDoc).find(
                     '#combined_table tr.nowrap'
@@ -200,7 +200,7 @@ async function fetchTroopsForCurrentGroup(groupId) {
                     const thImage = jQuery(this).find('img').attr('src');
                     if (thImage) {
                         let thImageFilename = thImage.split('/').pop();
-                        thImageFilename = thImageFilename.replace('.png', '');
+                        thImageFilename = thImageFilename.replace('.webp', '');
                         combinedTableHeader.push(thImageFilename);
                     } else {
                         combinedTableHeader.push(null);
