@@ -1061,7 +1061,7 @@ async function init() {
                 console.log(endTimes);
 
                 // If only want to send after the last nuke, then just take that time
-                print("sendOnlyAfterFinalNuke.checked", sendOnlyAfterFinalNuke.checked)
+                console.log("sendOnlyAfterFinalNuke.checked", sendOnlyAfterFinalNuke.checked)
                 if (sendOnlyAfterFinalNuke.checked && endTimes.length > 1) {
                     console.log('Reducing down to only the latest time', endTimes)
                     endTimes = getLatestDate(endTimes);
