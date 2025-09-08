@@ -801,12 +801,13 @@ function updatePlayerList() {
         return b[current_metric_name] - a[current_metric_name];
     });
 
-
+    console.log("selectedPlayers", selectedPlayers)
     selectedData = []
     for (let player of selectedPlayers) {
         let player_data = []
 
         if (selectedMetric in player) {
+            console.log("Metric found", selectedMetric)
             for (let i = 0; i < player.dates.length; i++) {
                 player_data.push([player.dates[i], player[selectedMetric][i]])
             }
@@ -817,7 +818,7 @@ function updatePlayerList() {
         }
 
     }
-    console.log(selectedData)
+    console.log("selectedData", selectedData)
 
 }
 
