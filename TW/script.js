@@ -817,6 +817,7 @@ function updatePlayerList() {
         }
 
     }
+    console.log(selectedData)
 
 }
 
