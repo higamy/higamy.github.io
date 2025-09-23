@@ -60,7 +60,12 @@
         SESSION_RECOVERY_MIN_INTERVAL: parseInt(getCookie('bgmSessionRecoveryMinInterval')) || 1,
         SESSION_RECOVERY_MAX_INTERVAL: parseInt(getCookie('bgmSessionRecoveryMaxInterval')) || 10,
         BOT_PROTECTION_RECOVERY_MIN_INTERVAL: parseInt(getCookie('bgmBotProtectionRecoveryMinInterval')) || 10,
-        BOT_PROTECTION_RECOVERY_MAX_INTERVAL: parseInt(getCookie('bgmBotProtectionRecoveryMaxInterval')) || 60
+        BOT_PROTECTION_RECOVERY_MAX_INTERVAL: parseInt(getCookie('bgmBotProtectionRecoveryMaxInterval')) || 60,
+        // Dynamic threshold updates
+        ENABLE_DYNAMIC_THRESHOLDS: getCookie('bgmEnableDynamicThresholds') === 'true',
+        // Auto-threshold band width controls (0.05 = 5%, 0.20 = 20%)
+        AUTO_BUY_BAND_WIDTH: parseFloat(getCookie('bgmAutoBuyBandWidth')) || 0.15, // Default 15% safety margin for buy
+        AUTO_SELL_BAND_WIDTH: parseFloat(getCookie('bgmAutoSellBandWidth')) || 0.12 // Default 12% safety margin for sell
     };
 
     // Initialize session data (village-specific)
@@ -90,9 +95,14 @@
     let sessionExpired = false; // Track session expiry state
     let botProtectionActive = false; // Track bot protection state
     let recoveryActive = false; // Prevent multiple recovery attempts (for both session and bot protection)
+    let recoveryTimeout = null; // Track recovery timeout
+    let recoveryCountdownInterval = null; // Track recovery countdown interval
 
     // Price history tracking
     let priceHistory = getLocalStorage('backgroundMonitorPriceHistory') || {};
+
+    // Auto-threshold recommendations
+    let autoThresholdRecommendations = { buyThreshold: null, sellThreshold: null };
 
     // Graph state tracking
     let currentGraphResource = 'all';
@@ -261,6 +271,459 @@
         }
 
         setLocalStorage('backgroundMonitorPriceHistory', priceHistory);
+        
+        // Apply dynamic thresholds if enabled (only when price history is actually logged)
+        applyDynamicThresholdsIfEnabled();
+    }
+
+    // Adaptive Moving Average Algorithm
+    function calculateAutoThresholds() {
+        const { world, continent } = getCurrentWorldInfo();
+        const key = `${world}_${continent}`;
+        const data = priceHistory[key];
+        
+        if (!data || !data.prices.wood.length) {
+            autoThresholdRecommendations = { buyThreshold: null, sellThreshold: null };
+            return autoThresholdRecommendations;
+        }
+
+        // Combine all resource price data for analysis
+        const allPrices = [];
+        const resources = ['wood', 'stone', 'iron'];
+        const now = Date.now();
+        const oneWeek = 7 * 24 * 60 * 60 * 1000;
+        const cutoff = now - oneWeek;
+
+        resources.forEach(resource => {
+            const prices = data.prices[resource].filter(p => p.timestamp > cutoff);
+            prices.forEach(p => {
+                allPrices.push({
+                    timestamp: p.timestamp,
+                    resPerPP: p.resPerPP,
+                    resource: resource
+                });
+            });
+        });
+
+        if (allPrices.length < 10) {
+            autoThresholdRecommendations = { buyThreshold: null, sellThreshold: null };
+            return autoThresholdRecommendations;
+        }
+
+        // Sort by timestamp
+        allPrices.sort((a, b) => a.timestamp - b.timestamp);
+
+        // Calculate moving averages with different window sizes
+        const shortWindow = Math.min(20, Math.floor(allPrices.length * 0.2));
+        const longWindow = Math.min(50, Math.floor(allPrices.length * 0.5));
+        
+        // Get recent data for analysis
+        const recentPrices = allPrices.slice(-shortWindow).map(p => p.resPerPP);
+        const longerPrices = allPrices.slice(-longWindow).map(p => p.resPerPP);
+        
+        // Calculate statistics
+        const recentAvg = recentPrices.reduce((sum, p) => sum + p, 0) / recentPrices.length;
+        const longerAvg = longerPrices.reduce((sum, p) => sum + p, 0) / longerPrices.length;
+        
+        // Calculate standard deviation for recent prices
+        const variance = recentPrices.reduce((sum, p) => sum + Math.pow(p - recentAvg, 2), 0) / recentPrices.length;
+        const stdDev = Math.sqrt(variance);
+        
+        // Calculate trend (price direction)
+        const recentTimestamps = allPrices.slice(-shortWindow);
+        let trendSlope = 0;
+        if (recentTimestamps.length >= 2) {
+            const n = recentTimestamps.length;
+            const sumX = recentTimestamps.reduce((sum, _, i) => sum + i, 0);
+            const sumY = recentTimestamps.reduce((sum, p) => sum + p.resPerPP, 0);
+            const sumXY = recentTimestamps.reduce((sum, p, i) => sum + (i * p.resPerPP), 0);
+            const sumX2 = recentTimestamps.reduce((sum, _, i) => sum + (i * i), 0);
+            
+            trendSlope = (n * sumXY - sumX * sumY) / (n * sumX2 - sumX * sumX);
+        }
+        
+        // Adaptive safety margin based on volatility and user settings
+        const baseBuyMargin = settings.AUTO_BUY_BAND_WIDTH; // User-configurable buy margin
+        const baseSellMargin = settings.AUTO_SELL_BAND_WIDTH; // User-configurable sell margin
+        const volatilityMargin = Math.min(0.10, stdDev / recentAvg); // Cap volatility adjustment at 10%
+        const buyMargin = baseBuyMargin + volatilityMargin;
+        const sellMargin = baseSellMargin + (volatilityMargin * 0.8); // Slightly less volatility impact on sell
+        
+        // Trend adjustment
+        const trendAdjustment = trendSlope * 5; // Scale trend impact
+        
+        // Calculate thresholds
+        const avgPrice = (recentAvg * 0.7) + (longerAvg * 0.3); // Weight recent more heavily
+        
+        // Buy threshold: Be more conservative when prices are rising
+        const buyThreshold = Math.round(avgPrice * (1 + buyMargin) + Math.max(0, trendAdjustment));
+        
+        // Sell threshold: Be more aggressive when prices are falling
+        const sellThreshold = Math.round(avgPrice * (1 - sellMargin) + Math.min(0, trendAdjustment));
+        
+        // Ensure reasonable bounds
+        const minBuyThreshold = 50;
+        const maxBuyThreshold = 200;
+        const minSellThreshold = 30;
+        const maxSellThreshold = 150;
+        
+        autoThresholdRecommendations = {
+            buyThreshold: Math.max(minBuyThreshold, Math.min(maxBuyThreshold, buyThreshold)),
+            sellThreshold: Math.max(minSellThreshold, Math.min(maxSellThreshold, sellThreshold)),
+            confidence: Math.min(1.0, allPrices.length / 50), // Higher confidence with more data
+            dataPoints: allPrices.length,
+            avgPrice: Math.round(avgPrice),
+            volatility: Math.round(stdDev),
+            trend: trendSlope > 0.1 ? 'rising' : trendSlope < -0.1 ? 'falling' : 'stable'
+        };
+        
+        return autoThresholdRecommendations;
+    }
+
+    function updateAutoThresholds() {
+        const recommendations = calculateAutoThresholds();
+        
+        // Update header based on dynamic mode
+        const headerEl = document.getElementById('autoThresholdHeader');
+        if (headerEl) {
+            if (settings.ENABLE_DYNAMIC_THRESHOLDS) {
+                headerEl.innerHTML = '🤖 Dynamic Auto-Thresholds <span style="color: #4CAF50; font-size: 12px;">(ACTIVE)</span>';
+                headerEl.parentElement.style.background = '#f0fff0'; // Light green background
+                headerEl.parentElement.style.borderColor = '#4CAF50';
+            } else {
+                headerEl.innerHTML = '🤖 Auto-Threshold Recommendations';
+                headerEl.parentElement.style.background = '#f0f8ff'; // Light blue background
+                headerEl.parentElement.style.borderColor = '#ddd';
+            }
+        }
+        
+        // Update current thresholds display
+        document.getElementById('currentBuyThreshold').textContent = `${settings.MIN_RESOURCE_PER_PP} res/PP`;
+        document.getElementById('currentSellThreshold').textContent = settings.ENABLE_SELLING ? `${settings.MAX_SELL_RESOURCE_PER_PP} res/PP` : 'Disabled';
+        
+        if (recommendations.buyThreshold !== null && recommendations.sellThreshold !== null) {
+            // Update recommended thresholds display
+            document.getElementById('recommendedBuyThreshold').textContent = recommendations.buyThreshold;
+            document.getElementById('recommendedSellThreshold').textContent = recommendations.sellThreshold;
+            
+            // Update info text
+            const confidencePercent = Math.round(recommendations.confidence * 100);
+            let infoText;
+            if (settings.ENABLE_DYNAMIC_THRESHOLDS) {
+                infoText = `Dynamic mode: Auto-applies on price updates | ${recommendations.dataPoints} data points, ${confidencePercent}% confidence, trend: ${recommendations.trend}`;
+            } else {
+                infoText = `Analysis: ${recommendations.dataPoints} data points, ${confidencePercent}% confidence, trend: ${recommendations.trend}`;
+            }
+            document.getElementById('autoThresholdInfo').textContent = infoText;
+            
+            // Enable apply button if recommendations differ from current
+            const buyDifferent = recommendations.buyThreshold !== settings.MIN_RESOURCE_PER_PP;
+            const sellDifferent = recommendations.sellThreshold !== settings.MAX_SELL_RESOURCE_PER_PP;
+            const applyBtn = document.getElementById('applyAutoThresholds');
+            
+            if (buyDifferent || sellDifferent) {
+                applyBtn.disabled = false;
+                applyBtn.style.background = '#2196F3';
+                applyBtn.style.cursor = 'pointer';
+            } else {
+                applyBtn.disabled = true;
+                applyBtn.style.background = '#ccc';
+                applyBtn.style.cursor = 'not-allowed';
+            }
+            
+            // Highlight differences with colors
+            const buyEl = document.getElementById('recommendedBuyThreshold');
+            const sellEl = document.getElementById('recommendedSellThreshold');
+            
+            if (buyDifferent) {
+                buyEl.style.background = '#fff3cd';
+                buyEl.style.padding = '2px 4px';
+                buyEl.style.borderRadius = '2px';
+            } else {
+                buyEl.style.background = 'transparent';
+            }
+            
+            if (sellDifferent) {
+                sellEl.style.background = '#fff3cd';
+                sellEl.style.padding = '2px 4px';
+                sellEl.style.borderRadius = '2px';
+            } else {
+                sellEl.style.background = 'transparent';
+            }
+            
+        } else {
+            // No recommendations available
+            document.getElementById('recommendedBuyThreshold').textContent = 'N/A';
+            document.getElementById('recommendedSellThreshold').textContent = 'N/A';
+            
+            let noDataText;
+            if (settings.ENABLE_DYNAMIC_THRESHOLDS) {
+                noDataText = 'Dynamic mode enabled but insufficient price history data (need at least 10 data points)';
+            } else {
+                noDataText = 'Insufficient price history data (need at least 10 data points)';
+            }
+            document.getElementById('autoThresholdInfo').textContent = noDataText;
+            
+            const applyBtn = document.getElementById('applyAutoThresholds');
+            applyBtn.disabled = true;
+            applyBtn.style.background = '#ccc';
+            applyBtn.style.cursor = 'not-allowed';
+        }
+        
+        // Update the price chart to show current and recommended thresholds
+        updatePriceChart();
+    }
+
+    function applyAutoThresholds() {
+        if (autoThresholdRecommendations.buyThreshold === null || autoThresholdRecommendations.sellThreshold === null) {
+            return;
+        }
+        
+        // Apply the recommended thresholds
+        settings.MIN_RESOURCE_PER_PP = autoThresholdRecommendations.buyThreshold;
+        settings.MAX_SELL_RESOURCE_PER_PP = autoThresholdRecommendations.sellThreshold;
+        
+        // Update cookies
+        setCookie('bgmMinResourcePerPP', settings.MIN_RESOURCE_PER_PP);
+        setCookie('bgmMaxSellResourcePerPP', settings.MAX_SELL_RESOURCE_PER_PP);
+        
+        // Update settings panel if visible
+        const minResourceInput = document.getElementById('minResourcePerPP');
+        const maxSellInput = document.getElementById('maxSellResourcePerPP');
+        if (minResourceInput) minResourceInput.value = settings.MIN_RESOURCE_PER_PP;
+        if (maxSellInput) maxSellInput.value = settings.MAX_SELL_RESOURCE_PER_PP;
+        
+        // Refresh the auto-threshold display
+        updateAutoThresholds();
+        
+        // Show success message
+        updateStatus(`Applied auto-thresholds: Buy ≥${settings.MIN_RESOURCE_PER_PP}, Sell ≤${settings.MAX_SELL_RESOURCE_PER_PP} res/PP`, '#4CAF50');
+    }
+
+    function updateThresholdInputsState() {
+        const isDynamic = settings.ENABLE_DYNAMIC_THRESHOLDS;
+        const buyInput = document.getElementById('minResourcePerPP');
+        const sellInput = document.getElementById('maxSellResourcePerPP');
+        
+        if (buyInput && sellInput) {
+            buyInput.disabled = isDynamic;
+            sellInput.disabled = isDynamic;
+            
+            // Update visual appearance
+            const disabledStyle = isDynamic ? 'background: #f5f5f5; color: #999; cursor: not-allowed;' : '';
+            buyInput.style.cssText = `width: 100%; padding: 3px; border: 1px solid #ccc; border-radius: 2px; font-size: 10px; ${disabledStyle}`;
+            sellInput.style.cssText = `width: 100%; padding: 3px; border: 1px solid #ccc; border-radius: 2px; font-size: 10px; ${disabledStyle}`;
+        }
+        
+    }
+
+    function applyDynamicThresholdsIfEnabled() {
+        if (!settings.ENABLE_DYNAMIC_THRESHOLDS) {
+            return false; // Dynamic mode disabled
+        }
+        
+        const recommendations = calculateAutoThresholds();
+        if (recommendations.buyThreshold === null || recommendations.sellThreshold === null) {
+            return false; // No valid recommendations
+        }
+        
+        // Check if recommendations differ from current settings
+        const buyDifferent = recommendations.buyThreshold !== settings.MIN_RESOURCE_PER_PP;
+        const sellDifferent = recommendations.sellThreshold !== settings.MAX_SELL_RESOURCE_PER_PP;
+        
+        if (buyDifferent || sellDifferent) {
+            // Apply the recommended thresholds automatically
+            settings.MIN_RESOURCE_PER_PP = recommendations.buyThreshold;
+            settings.MAX_SELL_RESOURCE_PER_PP = recommendations.sellThreshold;
+            
+            // Update cookies
+            setCookie('bgmMinResourcePerPP', settings.MIN_RESOURCE_PER_PP);
+            setCookie('bgmMaxSellResourcePerPP', settings.MAX_SELL_RESOURCE_PER_PP);
+            
+            // Update settings panel inputs (even though they're disabled)
+            const minResourceInput = document.getElementById('minResourcePerPP');
+            const maxSellInput = document.getElementById('maxSellResourcePerPP');
+            if (minResourceInput) minResourceInput.value = settings.MIN_RESOURCE_PER_PP;
+            if (maxSellInput) maxSellInput.value = settings.MAX_SELL_RESOURCE_PER_PP;
+            
+            // Update the price chart to reflect new thresholds
+            updatePriceChart();
+            
+            // Show status message
+            updateStatus(`🤖 Dynamic thresholds applied: Buy ≥${settings.MIN_RESOURCE_PER_PP}, Sell ≤${settings.MAX_SELL_RESOURCE_PER_PP} res/PP`, '#2196F3');
+            
+            return true; // Thresholds were updated
+        }
+        
+        return false; // No changes needed
+    }
+
+    function updateGraphThresholds() {
+        const recommendations = calculateAutoThresholds();
+        
+        // Update current thresholds display
+        document.getElementById('currentBuyThresholdGraph').textContent = `${settings.MIN_RESOURCE_PER_PP}`;
+        document.getElementById('currentSellThresholdGraph').textContent = settings.ENABLE_SELLING ? `${settings.MAX_SELL_RESOURCE_PER_PP}` : 'Disabled';
+        
+        // Update dynamic mode indicator
+        const dynamicIndicator = document.getElementById('dynamicModeIndicator');
+        if (settings.ENABLE_DYNAMIC_THRESHOLDS) {
+            dynamicIndicator.textContent = '(AUTO)';
+            dynamicIndicator.style.color = '#4CAF50';
+        } else {
+            dynamicIndicator.textContent = '';
+        }
+        
+        if (recommendations.buyThreshold !== null && recommendations.sellThreshold !== null) {
+            // Update recommended thresholds display
+            document.getElementById('recommendedBuyThresholdGraph').textContent = recommendations.buyThreshold;
+            document.getElementById('recommendedSellThresholdGraph').textContent = recommendations.sellThreshold;
+            
+            // Update info text
+            const confidencePercent = Math.round(recommendations.confidence * 100);
+            let infoText;
+            if (settings.ENABLE_DYNAMIC_THRESHOLDS) {
+                infoText = `Dynamic mode: Auto-applies on price updates | ${recommendations.dataPoints} data points, ${confidencePercent}% confidence, trend: ${recommendations.trend}`;
+            } else {
+                infoText = `Analysis: ${recommendations.dataPoints} data points, ${confidencePercent}% confidence, trend: ${recommendations.trend}`;
+            }
+            document.getElementById('autoThresholdInfoGraph').textContent = infoText;
+            
+            // Enable apply button if recommendations differ from current and not in dynamic mode
+            const buyDifferent = recommendations.buyThreshold !== settings.MIN_RESOURCE_PER_PP;
+            const sellDifferent = recommendations.sellThreshold !== settings.MAX_SELL_RESOURCE_PER_PP;
+            const applyBtn = document.getElementById('applyAutoThresholdsGraph');
+            
+            if (!settings.ENABLE_DYNAMIC_THRESHOLDS && (buyDifferent || sellDifferent)) {
+                applyBtn.disabled = false;
+                applyBtn.style.background = '#2196F3';
+                applyBtn.style.cursor = 'pointer';
+            } else {
+                applyBtn.disabled = true;
+                applyBtn.style.background = '#ccc';
+                applyBtn.style.cursor = 'not-allowed';
+            }
+            
+            // Hide apply button in dynamic mode
+            if (settings.ENABLE_DYNAMIC_THRESHOLDS) {
+                applyBtn.style.display = 'none';
+            } else {
+                applyBtn.style.display = 'inline-block';
+            }
+            
+            // Highlight differences with colors
+            const buyEl = document.getElementById('recommendedBuyThresholdGraph');
+            const sellEl = document.getElementById('recommendedSellThresholdGraph');
+            
+            if (buyDifferent && !settings.ENABLE_DYNAMIC_THRESHOLDS) {
+                buyEl.style.background = '#fff3cd';
+                buyEl.style.padding = '2px 4px';
+                buyEl.style.borderRadius = '2px';
+            } else {
+                buyEl.style.background = 'transparent';
+            }
+            
+            if (sellDifferent && !settings.ENABLE_DYNAMIC_THRESHOLDS) {
+                sellEl.style.background = '#fff3cd';
+                sellEl.style.padding = '2px 4px';
+                sellEl.style.borderRadius = '2px';
+            } else {
+                sellEl.style.background = 'transparent';
+            }
+            
+        } else {
+            // No recommendations available
+            document.getElementById('recommendedBuyThresholdGraph').textContent = 'N/A';
+            document.getElementById('recommendedSellThresholdGraph').textContent = 'N/A';
+            
+            let noDataText;
+            if (settings.ENABLE_DYNAMIC_THRESHOLDS) {
+                noDataText = 'Dynamic mode enabled but insufficient price history data (need at least 10 data points)';
+            } else {
+                noDataText = 'Insufficient price history data (need at least 10 data points)';
+            }
+            document.getElementById('autoThresholdInfoGraph').textContent = noDataText;
+            
+            const applyBtn = document.getElementById('applyAutoThresholdsGraph');
+            applyBtn.disabled = true;
+            applyBtn.style.background = '#ccc';
+            applyBtn.style.cursor = 'not-allowed';
+        }
+    }
+
+    function applyAutoThresholdsFromGraph() {
+        if (autoThresholdRecommendations.buyThreshold === null || autoThresholdRecommendations.sellThreshold === null) {
+            return;
+        }
+        
+        // Apply the recommended thresholds
+        settings.MIN_RESOURCE_PER_PP = autoThresholdRecommendations.buyThreshold;
+        settings.MAX_SELL_RESOURCE_PER_PP = autoThresholdRecommendations.sellThreshold;
+        
+        // Update cookies
+        setCookie('bgmMinResourcePerPP', settings.MIN_RESOURCE_PER_PP);
+        setCookie('bgmMaxSellResourcePerPP', settings.MAX_SELL_RESOURCE_PER_PP);
+        
+        // Update settings panel if visible
+        const minResourceInput = document.getElementById('minResourcePerPP');
+        const maxSellInput = document.getElementById('maxSellResourcePerPP');
+        if (minResourceInput) minResourceInput.value = settings.MIN_RESOURCE_PER_PP;
+        if (maxSellInput) maxSellInput.value = settings.MAX_SELL_RESOURCE_PER_PP;
+        
+        // Refresh the graph threshold display
+        updateGraphThresholds();
+        
+        // Update the price chart to reflect new thresholds
+        updatePriceChart();
+        
+        // Show success message
+        updateStatus(`Applied auto-thresholds: Buy ≥${settings.MIN_RESOURCE_PER_PP}, Sell ≤${settings.MAX_SELL_RESOURCE_PER_PP} res/PP`, '#4CAF50');
+    }
+
+    function updateBuyBandWidth() {
+        const slider = document.getElementById('autoBuyBandWidth');
+        const valueDisplay = document.getElementById('autoBuyBandWidthValue');
+        const newValue = parseFloat(slider.value);
+        
+        settings.AUTO_BUY_BAND_WIDTH = newValue;
+        valueDisplay.textContent = Math.round(newValue * 100) + '%';
+        
+        // Save setting
+        setCookie('bgmAutoBuyBandWidth', settings.AUTO_BUY_BAND_WIDTH);
+        
+        // Update thresholds and refresh displays
+        updateGraphThresholds();
+        
+        // If dynamic mode is enabled, apply new thresholds immediately
+        if (settings.ENABLE_DYNAMIC_THRESHOLDS) {
+            applyDynamicThresholdsIfEnabled();
+        } else {
+            // Just update the historical chart with new threshold lines
+            drawGraph(currentGraphResource);
+        }
+    }
+
+    function updateSellBandWidth() {
+        const slider = document.getElementById('autoSellBandWidth');
+        const valueDisplay = document.getElementById('autoSellBandWidthValue');
+        const newValue = parseFloat(slider.value);
+        
+        settings.AUTO_SELL_BAND_WIDTH = newValue;
+        valueDisplay.textContent = Math.round(newValue * 100) + '%';
+        
+        // Save setting
+        setCookie('bgmAutoSellBandWidth', settings.AUTO_SELL_BAND_WIDTH);
+        
+        // Update thresholds and refresh displays
+        updateGraphThresholds();
+        
+        // If dynamic mode is enabled, apply new thresholds immediately
+        if (settings.ENABLE_DYNAMIC_THRESHOLDS) {
+            applyDynamicThresholdsIfEnabled();
+        } else {
+            // Just update the historical chart with new threshold lines
+            drawGraph(currentGraphResource);
+        }
     }
 
     // UI Elements
@@ -375,6 +838,15 @@
                 <!-- Trading Thresholds -->
                 <div style="margin-bottom: 15px; border: 1px solid #ddd; border-radius: 4px; padding: 8px;">
                     <h5 style="margin: 0 0 8px 0; color: #8B4513; font-size: 12px;">📈 Trading Thresholds</h5>
+                    <div style="margin-bottom: 8px;">
+                        <label style="display: flex; align-items: center; font-size: 10px; cursor: pointer;">
+                            <input type="checkbox" id="enableDynamicThresholds" style="margin-right: 6px;">
+                            <span style="font-weight: bold; color: #2196F3;">🤖 Enable Dynamic Auto-Thresholds</span>
+                        </label>
+                        <div style="font-size: 9px; color: #666; margin-left: 18px; margin-top: 2px;">
+                            Automatically applies recommended thresholds when price history is updated
+                        </div>
+                    </div>
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
                         <div>
                             <label style="display: block; margin-bottom: 2px; font-weight: bold; font-size: 10px;">Min Resources per PP (Buy Threshold):</label>
@@ -523,6 +995,64 @@
                         <button id="timeWeek" style="background: #ccc; color: #333; border: none; padding: 2px 6px; border-radius: 2px; cursor: pointer; font-size: 9px;">Week</button>
                         <button id="time24h" style="background: #ccc; color: #333; border: none; padding: 2px 6px; border-radius: 2px; cursor: pointer; font-size: 9px;">24h</button>
                     </div>
+                    <div id="thresholdInfo" style="margin-bottom: 10px; padding: 8px; background: #f8f8f8; border-radius: 4px; border: 1px solid #ddd;">
+                        <div style="font-weight: bold; margin-bottom: 8px; font-size: 12px; color: #8B4513; text-align: center;">📊 Trading Thresholds</div>
+                        <div style="display: flex; justify-content: space-around; margin-bottom: 8px;">
+                            <div style="text-align: center;">
+                                <div style="font-size: 10px; color: #666; margin-bottom: 2px;">Current</div>
+                                <div style="display: flex; gap: 15px;">
+                                    <div style="display: flex; align-items: center;">
+                                        <span style="color: #f44336; margin-right: 3px; font-size: 10px;">🔴</span>
+                                        <span style="font-size: 10px; color: #f44336; font-weight: bold;">Buy: <span id="currentBuyThresholdGraph">-</span></span>
+                                    </div>
+                                    <div style="display: flex; align-items: center;">
+                                        <span style="color: #4CAF50; margin-right: 3px; font-size: 10px;">🟢</span>
+                                        <span style="font-size: 10px; color: #4CAF50; font-weight: bold;">Sell: <span id="currentSellThresholdGraph">-</span></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="text-align: center;">
+                                <div style="font-size: 10px; color: #666; margin-bottom: 2px;">Recommended <span id="dynamicModeIndicator" style="color: #4CAF50; font-weight: bold;"></span></div>
+                                <div style="display: flex; gap: 15px;">
+                                    <div style="display: flex; align-items: center;">
+                                        <span style="color: #FF5722; margin-right: 3px; font-size: 10px;">🔶</span>
+                                        <span style="font-size: 10px; color: #FF5722; font-weight: bold;">Buy: <span id="recommendedBuyThresholdGraph">-</span></span>
+                                    </div>
+                                    <div style="display: flex; align-items: center;">
+                                        <span style="color: #8BC34A; margin-right: 3px; font-size: 10px;">🔶</span>
+                                        <span style="font-size: 10px; color: #8BC34A; font-weight: bold;">Sell: <span id="recommendedSellThresholdGraph">-</span></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="display: flex; justify-content: center; gap: 10px;">
+                            <button id="applyAutoThresholdsGraph" style="background: #2196F3; color: white; border: none; padding: 4px 8px; border-radius: 2px; cursor: pointer; font-size: 9px;" disabled>📝 Apply Recommendations</button>
+                        </div>
+                        <div id="autoThresholdInfoGraph" style="font-size: 9px; color: #666; text-align: center; margin-top: 5px;">
+                            Automatically updated when viewing graphs or when thresholds change
+                        </div>
+                        <div style="margin-top: 10px; padding-top: 8px; border-top: 1px solid #ddd;">
+                            <div style="font-weight: bold; margin-bottom: 6px; font-size: 10px; color: #8B4513; text-align: center;">🎛️ Auto-Threshold Band Width</div>
+                            <div style="display: flex; justify-content: space-between; gap: 15px;">
+                                <div style="flex: 1;">
+                                    <label style="display: block; font-size: 9px; color: #f44336; font-weight: bold; margin-bottom: 3px;">🔴 Buy Safety Margin:</label>
+                                    <div style="display: flex; align-items: center; gap: 5px;">
+                                        <input type="range" id="autoBuyBandWidth" min="0" max="0.30" step="0.01" style="flex: 1; height: 4px;">
+                                        <span id="autoBuyBandWidthValue" style="font-size: 9px; font-weight: bold; color: #f44336; min-width: 25px;">15%</span>
+                                    </div>
+                                    <div style="font-size: 8px; color: #666; margin-top: 2px;">Higher = more conservative buying</div>
+                                </div>
+                                <div style="flex: 1;">
+                                    <label style="display: block; font-size: 9px; color: #4CAF50; font-weight: bold; margin-bottom: 3px;">🟢 Sell Safety Margin:</label>
+                                    <div style="display: flex; align-items: center; gap: 5px;">
+                                        <input type="range" id="autoSellBandWidth" min="0" max="0.25" step="0.01" style="flex: 1; height: 4px;">
+                                        <span id="autoSellBandWidthValue" style="font-size: 9px; font-weight: bold; color: #4CAF50; min-width: 25px;">12%</span>
+                                    </div>
+                                    <div style="font-size: 8px; color: #666; margin-top: 2px;">Higher = more conservative selling</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <div id="graphInfo" style="text-align: center; font-size: 10px; color: #666; margin-bottom: 10px;"></div>
                     <div id="priceChartContainer" style="width: 100%; height: 300px; border: 1px solid #ccc; border-radius: 2px; background: white;"></div>
                     
@@ -588,10 +1118,24 @@
         document.getElementById('bgmGraphs').onclick = toggleGraphs;
         document.getElementById('bgmTransactions').onclick = toggleTransactions;
 
+        // Auto-threshold graph section event listeners
+        document.getElementById('applyAutoThresholdsGraph').onclick = applyAutoThresholdsFromGraph;
+        
+        // Band width slider event listeners
+        document.getElementById('autoBuyBandWidth').oninput = updateBuyBandWidth;
+        document.getElementById('autoSellBandWidth').oninput = updateSellBandWidth;
+
+
         // Initialize settings values
         initializeSettingsPanel();
 
         updateStatsDisplay();
+        
+        // Initialize threshold input states
+        updateThresholdInputsState();
+        
+        // Initialize graph threshold display
+        updateGraphThresholds();
     }
 
     function updateStatus(message, color = '#2196F3') {
@@ -812,15 +1356,15 @@
                 
                 <!-- Chart area -->
                 <div style="position: absolute; left: 45px; right: 40px; top: 10px; bottom: 10px;">
-                    <!-- Sell threshold line (only if selling enabled) -->
+                    <!-- Current sell threshold line (only if selling enabled) -->
                     ${settings.ENABLE_SELLING ? `
-                        <div style="position: absolute; bottom: ${sellLineHeight}%; left: 0; right: 0; height: 2px; background: #8E24AA; z-index: 2;"></div>
-                        <div style="position: absolute; bottom: ${sellLineHeight}%; right: -35px; font-size: 9px; color: #8E24AA; font-weight: bold; white-space: nowrap;">Sell (${sellThreshold.toFixed(1)})</div>
+                        <div style="position: absolute; bottom: ${sellLineHeight}%; left: 0; right: 0; height: 2px; background: #4CAF50; z-index: 2;"></div>
+                        <div style="position: absolute; bottom: ${sellLineHeight}%; right: -35px; font-size: 9px; color: #4CAF50; font-weight: bold; white-space: nowrap;">Sell (${sellThreshold.toFixed(1)})</div>
                     ` : ''}
                     
-                    <!-- Buy threshold line -->
-                    <div style="position: absolute; bottom: ${buyLineHeight}%; left: 0; right: 0; height: 2px; background: #1976D2; z-index: 2;"></div>
-                    <div style="position: absolute; bottom: ${buyLineHeight}%; right: -35px; font-size: 9px; color: #1976D2; font-weight: bold; white-space: nowrap;">Buy (${buyThreshold.toFixed(1)})</div>
+                    <!-- Current buy threshold line -->
+                    <div style="position: absolute; bottom: ${buyLineHeight}%; left: 0; right: 0; height: 2px; background: #f44336; z-index: 2;"></div>
+                    <div style="position: absolute; bottom: ${buyLineHeight}%; right: -35px; font-size: 9px; color: #f44336; font-weight: bold; white-space: nowrap;">Buy (${buyThreshold.toFixed(1)})</div>
         `;
 
         // Add resource markers
@@ -903,8 +1447,8 @@
             
             <!-- Legend -->
             <div style="display: flex; justify-content: center; align-items: center; font-size: 10px; color: #666; margin-top: 30px; flex-wrap: wrap; gap: 15px;">
-                ${settings.ENABLE_SELLING ? `<span style="color: #8E24AA; font-weight: bold;">— Sell: ${sellThreshold.toFixed(1)}</span>` : ''}
-                <span style="color: #1976D2; font-weight: bold;">— Buy: ${buyThreshold.toFixed(1)}</span>
+                ${settings.ENABLE_SELLING ? `<span style="color: #4CAF50; font-weight: bold;">— Sell: ${sellThreshold.toFixed(1)}</span>` : ''}
+                <span style="color: #f44336; font-weight: bold;">— Buy: ${buyThreshold.toFixed(1)}</span>
                 <span style="color: #666;">● Current Price</span>
                 <span style="color: #999; font-size: 9px;">Range: ${minValue.toFixed(1)} - ${maxValue.toFixed(1)} res/PP</span>
             </div>
@@ -1129,18 +1673,22 @@
         document.getElementById('graphWood').onclick = () => {
             currentGraphResource = 'wood';
             drawGraph('wood');
+            updateGraphThresholds();
         };
         document.getElementById('graphStone').onclick = () => {
             currentGraphResource = 'stone';
             drawGraph('stone');
+            updateGraphThresholds();
         };
         document.getElementById('graphIron').onclick = () => {
             currentGraphResource = 'iron';
             drawGraph('iron');
+            updateGraphThresholds();
         };
         document.getElementById('graphAll').onclick = () => {
             currentGraphResource = 'all';
             drawGraph('all');
+            updateGraphThresholds();
         };
 
         // Add time filter button event listeners
@@ -1148,16 +1696,19 @@
             currentTimeRange = 'all';
             updateTimeFilterButtons();
             drawGraph(currentGraphResource);
+            updateGraphThresholds();
         };
         document.getElementById('timeWeek').onclick = () => {
             currentTimeRange = 'week';
             updateTimeFilterButtons();
             drawGraph(currentGraphResource);
+            updateGraphThresholds();
         };
         document.getElementById('time24h').onclick = () => {
             currentTimeRange = '24h';
             updateTimeFilterButtons();
             drawGraph(currentGraphResource);
+            updateGraphThresholds();
         };
 
         // Add net trend time filter button event listeners
@@ -1270,6 +1821,9 @@
                 cutoffTime = now - (24 * 60 * 60 * 1000); // 24 hours ago
             }
 
+            // Store all filtered data for average calculation
+            const allFilteredData = {};
+            
             resources.forEach(res => {
                 const prices = data.prices[res];
                 if (!prices.length) return;
@@ -1280,6 +1834,9 @@
                     : prices.filter(point => point.timestamp >= cutoffTime);
 
                 if (!filteredPrices.length) return;
+
+                // Store filtered data for average calculation
+                allFilteredData[res] = filteredPrices;
 
                 // Format data for AnyChart: [{x: timestamp, value: resPerPP}, ...]
                 const chartData = filteredPrices.map(point => ({
@@ -1296,6 +1853,127 @@
                     .fill(colors[res])
                     .stroke(colors[res]);
             });
+
+            // Add average price line when showing all resources
+            if (resource === 'all' && Object.keys(allFilteredData).length === 3) {
+                // Calculate average prices for each timestamp where all three resources have data
+                const averageData = [];
+                const allTimestamps = new Set();
+                
+                // Collect all unique timestamps
+                Object.values(allFilteredData).forEach(priceArray => {
+                    priceArray.forEach(point => allTimestamps.add(point.timestamp));
+                });
+                
+                // For each timestamp, calculate average if all three resources have data
+                Array.from(allTimestamps).sort().forEach(timestamp => {
+                    const resourceValues = [];
+                    
+                    ['wood', 'stone', 'iron'].forEach(res => {
+                        const dataPoint = allFilteredData[res].find(p => p.timestamp === timestamp);
+                        if (dataPoint) {
+                            resourceValues.push(dataPoint.resPerPP);
+                        }
+                    });
+                    
+                    // Only add average if all three resources have data for this timestamp
+                    if (resourceValues.length === 3) {
+                        const average = resourceValues.reduce((sum, val) => sum + val, 0) / 3;
+                        averageData.push({
+                            x: timestamp,
+                            value: Math.round(average * 10) / 10 // Round to 1 decimal place
+                        });
+                    }
+                });
+                
+                // Add average line if we have data
+                if (averageData.length > 0) {
+                    const avgLine = chart.line(averageData).markers(true).name('Average (3 Resources)');
+                    avgLine.stroke({ color: '#2196F3', thickness: 3, dash: '5 5' }); // Blue dashed line
+                    avgLine.markers()
+                        .type('diamond')
+                        .size(6)
+                        .fill('#2196F3')
+                        .stroke('#2196F3');
+                }
+            }
+
+            // Add threshold lines
+            const buyThreshold = settings.MIN_RESOURCE_PER_PP;
+            const sellThreshold = settings.MAX_SELL_RESOURCE_PER_PP;
+            
+            // Calculate recommendations for threshold lines
+            const recommendations = calculateAutoThresholds();
+            const recBuyThreshold = recommendations.buyThreshold;
+            const recSellThreshold = recommendations.sellThreshold;
+
+            // Get time range for threshold lines
+            const currentTime = Date.now();
+            let startTime, endTime;
+            if (currentTimeRange === 'week') {
+                startTime = currentTime - (7 * 24 * 60 * 60 * 1000);
+                endTime = currentTime;
+            } else if (currentTimeRange === '24h') {
+                startTime = currentTime - (24 * 60 * 60 * 1000);
+                endTime = currentTime;
+            } else {
+                // For 'all', use the data range
+                const allTimestamps = [];
+                resources.forEach(res => {
+                    if (data.prices[res].length > 0) {
+                        data.prices[res].forEach(point => allTimestamps.push(point.timestamp));
+                    }
+                });
+                if (allTimestamps.length > 0) {
+                    startTime = Math.min(...allTimestamps);
+                    endTime = Math.max(...allTimestamps);
+                } else {
+                    startTime = currentTime - (7 * 24 * 60 * 60 * 1000); // Fallback to week
+                    endTime = currentTime;
+                }
+            }
+
+            // Current Buy Threshold Line
+            const buyThresholdData = [
+                { x: startTime, value: buyThreshold },
+                { x: endTime, value: buyThreshold }
+            ];
+            const buyThresholdLine = chart.line(buyThresholdData).name('Current Buy Threshold');
+            buyThresholdLine.stroke({ color: '#f44336', thickness: 2 });
+            buyThresholdLine.markers().enabled(false);
+
+            // Current Sell Threshold Line (if selling enabled)
+            if (settings.ENABLE_SELLING) {
+                const sellThresholdData = [
+                    { x: startTime, value: sellThreshold },
+                    { x: endTime, value: sellThreshold }
+                ];
+                const sellThresholdLine = chart.line(sellThresholdData).name('Current Sell Threshold');
+                sellThresholdLine.stroke({ color: '#4CAF50', thickness: 2 });
+                sellThresholdLine.markers().enabled(false);
+            }
+
+            // Recommended Buy Threshold Line (if different from current)
+            if (recBuyThreshold !== null && recBuyThreshold !== buyThreshold) {
+                const recBuyThresholdData = [
+                    { x: startTime, value: recBuyThreshold },
+                    { x: endTime, value: recBuyThreshold }
+                ];
+                const recBuyThresholdLine = chart.line(recBuyThresholdData).name('Recommended Buy Threshold');
+                recBuyThresholdLine.stroke({ color: '#FF5722', thickness: 2, dash: '5 5' });
+                recBuyThresholdLine.markers().enabled(false);
+            }
+
+            // Recommended Sell Threshold Line (if different from current and selling enabled)
+            if (recSellThreshold !== null && recSellThreshold !== sellThreshold && settings.ENABLE_SELLING) {
+                const recSellThresholdData = [
+                    { x: startTime, value: recSellThreshold },
+                    { x: endTime, value: recSellThreshold }
+                ];
+                const recSellThresholdLine = chart.line(recSellThresholdData).name('Recommended Sell Threshold');
+                recSellThresholdLine.stroke({ color: '#8BC34A', thickness: 2, dash: '5 5' });
+                recSellThresholdLine.markers().enabled(false);
+            }
 
             // Configure X-axis (DateTime)
             chart.xScale('date-time');
@@ -1316,7 +1994,10 @@
             // Configure tooltip to show formatted datetime
             chart.tooltip().format(function () {
                 const formattedDate = anychart.format.dateTime(this.x, 'MMM dd, yyyy HH:mm');
-                return `${this.seriesName}\nTime: ${formattedDate}\nPrice: ${this.value} res/PP`;
+                const valueText = this.seriesName.includes('Average') ? 
+                    `Average: ${this.value} res/PP` : 
+                    `Price: ${this.value} res/PP`;
+                return `${this.seriesName}\nTime: ${formattedDate}\n${valueText}`;
             });
 
             // Set chart title
@@ -1671,6 +2352,13 @@
         // Set initial values
         document.getElementById('minResourcePerPP').value = settings.MIN_RESOURCE_PER_PP;
         document.getElementById('maxSellResourcePerPP').value = settings.MAX_SELL_RESOURCE_PER_PP;
+        document.getElementById('enableDynamicThresholds').checked = settings.ENABLE_DYNAMIC_THRESHOLDS;
+        
+        // Initialize band width sliders
+        document.getElementById('autoBuyBandWidth').value = settings.AUTO_BUY_BAND_WIDTH;
+        document.getElementById('autoSellBandWidth').value = settings.AUTO_SELL_BAND_WIDTH;
+        document.getElementById('autoBuyBandWidthValue').textContent = Math.round(settings.AUTO_BUY_BAND_WIDTH * 100) + '%';
+        document.getElementById('autoSellBandWidthValue').textContent = Math.round(settings.AUTO_SELL_BAND_WIDTH * 100) + '%';
         document.getElementById('warehouseTolerance').value = settings.WAREHOUSE_TOLERANCE;
         document.getElementById('minResourceKeep').value = settings.MIN_RESOURCE_KEEP;
         document.getElementById('maxPurchaseAmount').value = settings.MAX_PURCHASE_AMOUNT;
@@ -1712,6 +2400,9 @@
             setCookie('bgmSessionRecoveryMaxInterval', settings.SESSION_RECOVERY_MAX_INTERVAL);
             setCookie('bgmBotProtectionRecoveryMinInterval', settings.BOT_PROTECTION_RECOVERY_MIN_INTERVAL);
             setCookie('bgmBotProtectionRecoveryMaxInterval', settings.BOT_PROTECTION_RECOVERY_MAX_INTERVAL);
+            setCookie('bgmEnableDynamicThresholds', settings.ENABLE_DYNAMIC_THRESHOLDS);
+            setCookie('bgmAutoBuyBandWidth', settings.AUTO_BUY_BAND_WIDTH);
+            setCookie('bgmAutoSellBandWidth', settings.AUTO_SELL_BAND_WIDTH);
 
             // Update UI display
             document.getElementById('maxSessionPP').textContent = settings.MAX_SESSION_PP_SPEND;
@@ -1724,11 +2415,32 @@
         document.getElementById('minResourcePerPP').oninput = () => {
             settings.MIN_RESOURCE_PER_PP = parseInt(document.getElementById('minResourcePerPP').value) || 80;
             saveSettings();
+            updateGraphThresholds();
         };
 
         document.getElementById('maxSellResourcePerPP').oninput = () => {
             settings.MAX_SELL_RESOURCE_PER_PP = parseInt(document.getElementById('maxSellResourcePerPP').value) || 60;
             saveSettings();
+            updateGraphThresholds();
+        };
+
+        document.getElementById('enableDynamicThresholds').onchange = () => {
+            settings.ENABLE_DYNAMIC_THRESHOLDS = document.getElementById('enableDynamicThresholds').checked;
+            saveSettings();
+            updateThresholdInputsState();
+            updateGraphThresholds();
+            
+            // If dynamic mode is turned ON, immediately apply recommended thresholds if available
+            if (settings.ENABLE_DYNAMIC_THRESHOLDS) {
+                const applied = applyDynamicThresholdsIfEnabled();
+                if (!applied) {
+                    // If no thresholds were applied (no recommendations available), still update the price chart
+                    updatePriceChart();
+                }
+            } else {
+                // If dynamic mode is turned OFF, update the price chart to reflect current manual thresholds
+                updatePriceChart();
+            }
         };
 
         document.getElementById('warehouseTolerance').oninput = () => {
@@ -2209,10 +2921,11 @@
 
             // Start countdown timer that updates tab title every second
             let remainingTime = recoveryDelay;
-            const countdownInterval = setInterval(() => {
+            recoveryCountdownInterval = setInterval(() => {
                 remainingTime -= 1000;
                 if (remainingTime <= 0) {
-                    clearInterval(countdownInterval);
+                    clearInterval(recoveryCountdownInterval);
+                    recoveryCountdownInterval = null;
                     return;
                 }
 
@@ -2224,8 +2937,11 @@
 
             updateCurrentTask(`${recoveryTypeName} recovery - retry in ${recoveryMinutes}:00`);
 
-            setTimeout(async () => {
-                clearInterval(countdownInterval);
+            recoveryTimeout = setTimeout(async () => {
+                if (recoveryCountdownInterval) {
+                    clearInterval(recoveryCountdownInterval);
+                    recoveryCountdownInterval = null;
+                }
                 console.log(`[BGM] Attempting to check if ${recoveryTypeName.toLowerCase()} is recovered...`);
                 updateCurrentTask(`Checking ${recoveryTypeName.toLowerCase()} status...`);
 
@@ -2238,6 +2954,7 @@
                         sessionExpired = false;
                         botProtectionActive = false;
                         recoveryActive = false;
+                        recoveryTimeout = null;
                         updateStatus(`${recoveryTypeName} recovered - resuming operation`, '#4CAF50');
                         updateCurrentTask(`${recoveryTypeName} recovered`);
 
@@ -2977,6 +3694,31 @@
         }
 
         console.log('[BGM] Starting monitor...');
+
+        // Check if we're in recovery mode and attempt immediate recovery
+        if (sessionExpired || botProtectionActive) {
+            const recoveryType = sessionExpired ? 'sessionExpired' : 'botProtection';
+            const recoveryTypeName = sessionExpired ? 'Session' : 'Bot protection';
+            console.log(`[BGM] Start button pressed during ${recoveryTypeName.toLowerCase()} recovery - attempting immediate recovery`);
+            
+            // Clear recovery flags to allow fresh attempt
+            sessionExpired = false;
+            botProtectionActive = false;
+            recoveryActive = false;
+            
+            // Clear any existing recovery intervals/timeouts
+            if (recoveryTimeout) {
+                clearTimeout(recoveryTimeout);
+                recoveryTimeout = null;
+            }
+            if (recoveryCountdownInterval) {
+                clearInterval(recoveryCountdownInterval);
+                recoveryCountdownInterval = null;
+            }
+            
+            updateStatus(`Manual restart - testing ${recoveryTypeName.toLowerCase()} recovery...`, '#2196F3');
+            updateCurrentTask(`Testing ${recoveryTypeName.toLowerCase()} recovery...`);
+        }
 
         // Stop and terminate any existing worker first
         if (worker) {
