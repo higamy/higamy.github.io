@@ -35,9 +35,12 @@
         localStorage.setItem(key, JSON.stringify(value));
     }
 
+    // Get continent info for continent-specific settings
+    const { world, continent } = getCurrentWorldInfo();
+
     // Initialize settings
     let settings = {
-        MIN_RESOURCE_PER_PP: parseInt(getCookie('bgmMinResourcePerPP')) || 80,
+        MIN_RESOURCE_PER_PP: parseInt(getCookie(`bgmMinResourcePerPP_${world}_${continent}`)) || 80,
         MIN_DELAY_BETWEEN_REQUESTS: parseFloat(getCookie('bgmMinDelay')) || 0.2,
         MAX_DELAY_BETWEEN_REQUESTS: parseFloat(getCookie('bgmMaxDelay')) || 0.8,
         // Price check intervals (in seconds)
@@ -49,10 +52,10 @@
         DRY_RUN: getCookie('bgmDryRun') === 'true' || false,
         MINIMAL_PURCHASE_MODE: getCookie('bgmMinimalPurchaseMode') === 'true' || false,
         WAREHOUSE_TOLERANCE: parseInt(getCookie('bgmWarehouseTolerance')) || 1000,
-        MAX_SESSION_PP_SPEND: getCookie('bgmMaxSessionPP') !== null ? parseInt(getCookie('bgmMaxSessionPP')) : 10000,
+        MAX_SESSION_PP_SPEND: getCookie(`bgmMaxSessionPP_${continent}`) !== null ? parseInt(getCookie(`bgmMaxSessionPP_${continent}`)) : 10000,
         // Selling settings
         ENABLE_SELLING: getCookie('bgmEnableSelling') === 'true' || false,
-        MAX_SELL_RESOURCE_PER_PP: parseInt(getCookie('bgmMaxSellResourcePerPP')) || 60,
+        MAX_SELL_RESOURCE_PER_PP: parseInt(getCookie(`bgmMaxSellResourcePerPP_${world}_${continent}`)) || 60,
         MIN_RESOURCE_KEEP: getCookie('bgmMinResourceKeep') !== null ? parseInt(getCookie('bgmMinResourceKeep')) : 5000,
         MAX_PURCHASE_AMOUNT: parseInt(getCookie('bgmMaxPurchaseAmount')) || 5000,
         MAX_SELL_AMOUNT: parseInt(getCookie('bgmMaxSellAmount')) || 3000,
@@ -271,7 +274,7 @@
         }
 
         setLocalStorage('backgroundMonitorPriceHistory', priceHistory);
-        
+
         // Apply dynamic thresholds if enabled (only when price history is actually logged)
         applyDynamicThresholdsIfEnabled();
     }
@@ -281,7 +284,7 @@
         const { world, continent } = getCurrentWorldInfo();
         const key = `${world}_${continent}`;
         const data = priceHistory[key];
-        
+
         if (!data || !data.prices.wood.length) {
             autoThresholdRecommendations = { buyThreshold: null, sellThreshold: null };
             return autoThresholdRecommendations;
@@ -316,19 +319,19 @@
         // Calculate moving averages with different window sizes
         const shortWindow = Math.min(20, Math.floor(allPrices.length * 0.2));
         const longWindow = Math.min(50, Math.floor(allPrices.length * 0.5));
-        
+
         // Get recent data for analysis
         const recentPrices = allPrices.slice(-shortWindow).map(p => p.resPerPP);
         const longerPrices = allPrices.slice(-longWindow).map(p => p.resPerPP);
-        
+
         // Calculate statistics
         const recentAvg = recentPrices.reduce((sum, p) => sum + p, 0) / recentPrices.length;
         const longerAvg = longerPrices.reduce((sum, p) => sum + p, 0) / longerPrices.length;
-        
+
         // Calculate standard deviation for recent prices
         const variance = recentPrices.reduce((sum, p) => sum + Math.pow(p - recentAvg, 2), 0) / recentPrices.length;
         const stdDev = Math.sqrt(variance);
-        
+
         // Calculate trend (price direction)
         const recentTimestamps = allPrices.slice(-shortWindow);
         let trendSlope = 0;
@@ -338,35 +341,35 @@
             const sumY = recentTimestamps.reduce((sum, p) => sum + p.resPerPP, 0);
             const sumXY = recentTimestamps.reduce((sum, p, i) => sum + (i * p.resPerPP), 0);
             const sumX2 = recentTimestamps.reduce((sum, _, i) => sum + (i * i), 0);
-            
+
             trendSlope = (n * sumXY - sumX * sumY) / (n * sumX2 - sumX * sumX);
         }
-        
+
         // Adaptive safety margin based on volatility and user settings
         const baseBuyMargin = settings.AUTO_BUY_BAND_WIDTH; // User-configurable buy margin
         const baseSellMargin = settings.AUTO_SELL_BAND_WIDTH; // User-configurable sell margin
         const volatilityMargin = Math.min(0.10, stdDev / recentAvg); // Cap volatility adjustment at 10%
         const buyMargin = baseBuyMargin + volatilityMargin;
         const sellMargin = baseSellMargin + (volatilityMargin * 0.8); // Slightly less volatility impact on sell
-        
+
         // Trend adjustment
         const trendAdjustment = trendSlope * 5; // Scale trend impact
-        
+
         // Calculate thresholds
         const avgPrice = (recentAvg * 0.7) + (longerAvg * 0.3); // Weight recent more heavily
-        
+
         // Buy threshold: Be more conservative when prices are rising
         const buyThreshold = Math.round(avgPrice * (1 + buyMargin) + Math.max(0, trendAdjustment));
-        
+
         // Sell threshold: Be more aggressive when prices are falling
         const sellThreshold = Math.round(avgPrice * (1 - sellMargin) + Math.min(0, trendAdjustment));
-        
+
         // Ensure reasonable bounds
         const minBuyThreshold = 50;
         const maxBuyThreshold = 200;
         const minSellThreshold = 30;
         const maxSellThreshold = 150;
-        
+
         autoThresholdRecommendations = {
             buyThreshold: Math.max(minBuyThreshold, Math.min(maxBuyThreshold, buyThreshold)),
             sellThreshold: Math.max(minSellThreshold, Math.min(maxSellThreshold, sellThreshold)),
@@ -376,13 +379,13 @@
             volatility: Math.round(stdDev),
             trend: trendSlope > 0.1 ? 'rising' : trendSlope < -0.1 ? 'falling' : 'stable'
         };
-        
+
         return autoThresholdRecommendations;
     }
 
     function updateAutoThresholds() {
         const recommendations = calculateAutoThresholds();
-        
+
         // Update header based on dynamic mode
         const headerEl = document.getElementById('autoThresholdHeader');
         if (headerEl) {
@@ -396,16 +399,16 @@
                 headerEl.parentElement.style.borderColor = '#ddd';
             }
         }
-        
+
         // Update current thresholds display
         document.getElementById('currentBuyThreshold').textContent = `${settings.MIN_RESOURCE_PER_PP} res/PP`;
         document.getElementById('currentSellThreshold').textContent = settings.ENABLE_SELLING ? `${settings.MAX_SELL_RESOURCE_PER_PP} res/PP` : 'Disabled';
-        
+
         if (recommendations.buyThreshold !== null && recommendations.sellThreshold !== null) {
             // Update recommended thresholds display
             document.getElementById('recommendedBuyThreshold').textContent = recommendations.buyThreshold;
             document.getElementById('recommendedSellThreshold').textContent = recommendations.sellThreshold;
-            
+
             // Update info text
             const confidencePercent = Math.round(recommendations.confidence * 100);
             let infoText;
@@ -415,12 +418,12 @@
                 infoText = `Analysis: ${recommendations.dataPoints} data points, ${confidencePercent}% confidence, trend: ${recommendations.trend}`;
             }
             document.getElementById('autoThresholdInfo').textContent = infoText;
-            
+
             // Enable apply button if recommendations differ from current
             const buyDifferent = recommendations.buyThreshold !== settings.MIN_RESOURCE_PER_PP;
             const sellDifferent = recommendations.sellThreshold !== settings.MAX_SELL_RESOURCE_PER_PP;
             const applyBtn = document.getElementById('applyAutoThresholds');
-            
+
             if (buyDifferent || sellDifferent) {
                 applyBtn.disabled = false;
                 applyBtn.style.background = '#2196F3';
@@ -430,11 +433,11 @@
                 applyBtn.style.background = '#ccc';
                 applyBtn.style.cursor = 'not-allowed';
             }
-            
+
             // Highlight differences with colors
             const buyEl = document.getElementById('recommendedBuyThreshold');
             const sellEl = document.getElementById('recommendedSellThreshold');
-            
+
             if (buyDifferent) {
                 buyEl.style.background = '#fff3cd';
                 buyEl.style.padding = '2px 4px';
@@ -442,7 +445,7 @@
             } else {
                 buyEl.style.background = 'transparent';
             }
-            
+
             if (sellDifferent) {
                 sellEl.style.background = '#fff3cd';
                 sellEl.style.padding = '2px 4px';
@@ -450,12 +453,12 @@
             } else {
                 sellEl.style.background = 'transparent';
             }
-            
+
         } else {
             // No recommendations available
             document.getElementById('recommendedBuyThreshold').textContent = 'N/A';
             document.getElementById('recommendedSellThreshold').textContent = 'N/A';
-            
+
             let noDataText;
             if (settings.ENABLE_DYNAMIC_THRESHOLDS) {
                 noDataText = 'Dynamic mode enabled but insufficient price history data (need at least 10 data points)';
@@ -463,13 +466,13 @@
                 noDataText = 'Insufficient price history data (need at least 10 data points)';
             }
             document.getElementById('autoThresholdInfo').textContent = noDataText;
-            
+
             const applyBtn = document.getElementById('applyAutoThresholds');
             applyBtn.disabled = true;
             applyBtn.style.background = '#ccc';
             applyBtn.style.cursor = 'not-allowed';
         }
-        
+
         // Update the price chart to show current and recommended thresholds
         updatePriceChart();
     }
@@ -478,24 +481,25 @@
         if (autoThresholdRecommendations.buyThreshold === null || autoThresholdRecommendations.sellThreshold === null) {
             return;
         }
-        
+
         // Apply the recommended thresholds
         settings.MIN_RESOURCE_PER_PP = autoThresholdRecommendations.buyThreshold;
         settings.MAX_SELL_RESOURCE_PER_PP = autoThresholdRecommendations.sellThreshold;
-        
+
         // Update cookies
-        setCookie('bgmMinResourcePerPP', settings.MIN_RESOURCE_PER_PP);
-        setCookie('bgmMaxSellResourcePerPP', settings.MAX_SELL_RESOURCE_PER_PP);
-        
+        const { world, continent } = getCurrentWorldInfo();
+        setCookie(`bgmMinResourcePerPP_${world}_${continent}`, settings.MIN_RESOURCE_PER_PP);
+        setCookie(`bgmMaxSellResourcePerPP_${world}_${continent}`, settings.MAX_SELL_RESOURCE_PER_PP);
+
         // Update settings panel if visible
         const minResourceInput = document.getElementById('minResourcePerPP');
         const maxSellInput = document.getElementById('maxSellResourcePerPP');
         if (minResourceInput) minResourceInput.value = settings.MIN_RESOURCE_PER_PP;
         if (maxSellInput) maxSellInput.value = settings.MAX_SELL_RESOURCE_PER_PP;
-        
+
         // Refresh the auto-threshold display
         updateAutoThresholds();
-        
+
         // Show success message
         updateStatus(`Applied auto-thresholds: Buy ≥${settings.MIN_RESOURCE_PER_PP}, Sell ≤${settings.MAX_SELL_RESOURCE_PER_PP} res/PP`, '#4CAF50');
     }
@@ -504,67 +508,68 @@
         const isDynamic = settings.ENABLE_DYNAMIC_THRESHOLDS;
         const buyInput = document.getElementById('minResourcePerPP');
         const sellInput = document.getElementById('maxSellResourcePerPP');
-        
+
         if (buyInput && sellInput) {
             buyInput.disabled = isDynamic;
             sellInput.disabled = isDynamic;
-            
+
             // Update visual appearance
             const disabledStyle = isDynamic ? 'background: #f5f5f5; color: #999; cursor: not-allowed;' : '';
             buyInput.style.cssText = `width: 100%; padding: 3px; border: 1px solid #ccc; border-radius: 2px; font-size: 10px; ${disabledStyle}`;
             sellInput.style.cssText = `width: 100%; padding: 3px; border: 1px solid #ccc; border-radius: 2px; font-size: 10px; ${disabledStyle}`;
         }
-        
+
     }
 
     function applyDynamicThresholdsIfEnabled() {
         if (!settings.ENABLE_DYNAMIC_THRESHOLDS) {
             return false; // Dynamic mode disabled
         }
-        
+
         const recommendations = calculateAutoThresholds();
         if (recommendations.buyThreshold === null || recommendations.sellThreshold === null) {
             return false; // No valid recommendations
         }
-        
+
         // Check if recommendations differ from current settings
         const buyDifferent = recommendations.buyThreshold !== settings.MIN_RESOURCE_PER_PP;
         const sellDifferent = recommendations.sellThreshold !== settings.MAX_SELL_RESOURCE_PER_PP;
-        
+
         if (buyDifferent || sellDifferent) {
             // Apply the recommended thresholds automatically
             settings.MIN_RESOURCE_PER_PP = recommendations.buyThreshold;
             settings.MAX_SELL_RESOURCE_PER_PP = recommendations.sellThreshold;
-            
+
             // Update cookies
-            setCookie('bgmMinResourcePerPP', settings.MIN_RESOURCE_PER_PP);
-            setCookie('bgmMaxSellResourcePerPP', settings.MAX_SELL_RESOURCE_PER_PP);
-            
+            const { world, continent } = getCurrentWorldInfo();
+            setCookie(`bgmMinResourcePerPP_${world}_${continent}`, settings.MIN_RESOURCE_PER_PP);
+            setCookie(`bgmMaxSellResourcePerPP_${world}_${continent}`, settings.MAX_SELL_RESOURCE_PER_PP);
+
             // Update settings panel inputs (even though they're disabled)
             const minResourceInput = document.getElementById('minResourcePerPP');
             const maxSellInput = document.getElementById('maxSellResourcePerPP');
             if (minResourceInput) minResourceInput.value = settings.MIN_RESOURCE_PER_PP;
             if (maxSellInput) maxSellInput.value = settings.MAX_SELL_RESOURCE_PER_PP;
-            
+
             // Update the price chart to reflect new thresholds
             updatePriceChart();
-            
+
             // Show status message
             updateStatus(`🤖 Dynamic thresholds applied: Buy ≥${settings.MIN_RESOURCE_PER_PP}, Sell ≤${settings.MAX_SELL_RESOURCE_PER_PP} res/PP`, '#2196F3');
-            
+
             return true; // Thresholds were updated
         }
-        
+
         return false; // No changes needed
     }
 
     function updateGraphThresholds() {
         const recommendations = calculateAutoThresholds();
-        
+
         // Update current thresholds display
         document.getElementById('currentBuyThresholdGraph').textContent = `${settings.MIN_RESOURCE_PER_PP}`;
         document.getElementById('currentSellThresholdGraph').textContent = settings.ENABLE_SELLING ? `${settings.MAX_SELL_RESOURCE_PER_PP}` : 'Disabled';
-        
+
         // Update dynamic mode indicator
         const dynamicIndicator = document.getElementById('dynamicModeIndicator');
         if (settings.ENABLE_DYNAMIC_THRESHOLDS) {
@@ -573,12 +578,12 @@
         } else {
             dynamicIndicator.textContent = '';
         }
-        
+
         if (recommendations.buyThreshold !== null && recommendations.sellThreshold !== null) {
             // Update recommended thresholds display
             document.getElementById('recommendedBuyThresholdGraph').textContent = recommendations.buyThreshold;
             document.getElementById('recommendedSellThresholdGraph').textContent = recommendations.sellThreshold;
-            
+
             // Update info text
             const confidencePercent = Math.round(recommendations.confidence * 100);
             let infoText;
@@ -588,12 +593,12 @@
                 infoText = `Analysis: ${recommendations.dataPoints} data points, ${confidencePercent}% confidence, trend: ${recommendations.trend}`;
             }
             document.getElementById('autoThresholdInfoGraph').textContent = infoText;
-            
+
             // Enable apply button if recommendations differ from current and not in dynamic mode
             const buyDifferent = recommendations.buyThreshold !== settings.MIN_RESOURCE_PER_PP;
             const sellDifferent = recommendations.sellThreshold !== settings.MAX_SELL_RESOURCE_PER_PP;
             const applyBtn = document.getElementById('applyAutoThresholdsGraph');
-            
+
             if (!settings.ENABLE_DYNAMIC_THRESHOLDS && (buyDifferent || sellDifferent)) {
                 applyBtn.disabled = false;
                 applyBtn.style.background = '#2196F3';
@@ -603,18 +608,18 @@
                 applyBtn.style.background = '#ccc';
                 applyBtn.style.cursor = 'not-allowed';
             }
-            
+
             // Hide apply button in dynamic mode
             if (settings.ENABLE_DYNAMIC_THRESHOLDS) {
                 applyBtn.style.display = 'none';
             } else {
                 applyBtn.style.display = 'inline-block';
             }
-            
+
             // Highlight differences with colors
             const buyEl = document.getElementById('recommendedBuyThresholdGraph');
             const sellEl = document.getElementById('recommendedSellThresholdGraph');
-            
+
             if (buyDifferent && !settings.ENABLE_DYNAMIC_THRESHOLDS) {
                 buyEl.style.background = '#fff3cd';
                 buyEl.style.padding = '2px 4px';
@@ -622,7 +627,7 @@
             } else {
                 buyEl.style.background = 'transparent';
             }
-            
+
             if (sellDifferent && !settings.ENABLE_DYNAMIC_THRESHOLDS) {
                 sellEl.style.background = '#fff3cd';
                 sellEl.style.padding = '2px 4px';
@@ -630,12 +635,12 @@
             } else {
                 sellEl.style.background = 'transparent';
             }
-            
+
         } else {
             // No recommendations available
             document.getElementById('recommendedBuyThresholdGraph').textContent = 'N/A';
             document.getElementById('recommendedSellThresholdGraph').textContent = 'N/A';
-            
+
             let noDataText;
             if (settings.ENABLE_DYNAMIC_THRESHOLDS) {
                 noDataText = 'Dynamic mode enabled but insufficient price history data (need at least 10 data points)';
@@ -643,7 +648,7 @@
                 noDataText = 'Insufficient price history data (need at least 10 data points)';
             }
             document.getElementById('autoThresholdInfoGraph').textContent = noDataText;
-            
+
             const applyBtn = document.getElementById('applyAutoThresholdsGraph');
             applyBtn.disabled = true;
             applyBtn.style.background = '#ccc';
@@ -655,27 +660,28 @@
         if (autoThresholdRecommendations.buyThreshold === null || autoThresholdRecommendations.sellThreshold === null) {
             return;
         }
-        
+
         // Apply the recommended thresholds
         settings.MIN_RESOURCE_PER_PP = autoThresholdRecommendations.buyThreshold;
         settings.MAX_SELL_RESOURCE_PER_PP = autoThresholdRecommendations.sellThreshold;
-        
+
         // Update cookies
-        setCookie('bgmMinResourcePerPP', settings.MIN_RESOURCE_PER_PP);
-        setCookie('bgmMaxSellResourcePerPP', settings.MAX_SELL_RESOURCE_PER_PP);
-        
+        const { world, continent } = getCurrentWorldInfo();
+        setCookie(`bgmMinResourcePerPP_${world}_${continent}`, settings.MIN_RESOURCE_PER_PP);
+        setCookie(`bgmMaxSellResourcePerPP_${world}_${continent}`, settings.MAX_SELL_RESOURCE_PER_PP);
+
         // Update settings panel if visible
         const minResourceInput = document.getElementById('minResourcePerPP');
         const maxSellInput = document.getElementById('maxSellResourcePerPP');
         if (minResourceInput) minResourceInput.value = settings.MIN_RESOURCE_PER_PP;
         if (maxSellInput) maxSellInput.value = settings.MAX_SELL_RESOURCE_PER_PP;
-        
+
         // Refresh the graph threshold display
         updateGraphThresholds();
-        
+
         // Update the price chart to reflect new thresholds
         updatePriceChart();
-        
+
         // Show success message
         updateStatus(`Applied auto-thresholds: Buy ≥${settings.MIN_RESOURCE_PER_PP}, Sell ≤${settings.MAX_SELL_RESOURCE_PER_PP} res/PP`, '#4CAF50');
     }
@@ -684,16 +690,16 @@
         const slider = document.getElementById('autoBuyBandWidth');
         const valueDisplay = document.getElementById('autoBuyBandWidthValue');
         const newValue = parseFloat(slider.value);
-        
+
         settings.AUTO_BUY_BAND_WIDTH = newValue;
         valueDisplay.textContent = Math.round(newValue * 100) + '%';
-        
+
         // Save setting
         setCookie('bgmAutoBuyBandWidth', settings.AUTO_BUY_BAND_WIDTH);
-        
+
         // Update thresholds and refresh displays
         updateGraphThresholds();
-        
+
         // If dynamic mode is enabled, apply new thresholds immediately
         if (settings.ENABLE_DYNAMIC_THRESHOLDS) {
             applyDynamicThresholdsIfEnabled();
@@ -707,16 +713,16 @@
         const slider = document.getElementById('autoSellBandWidth');
         const valueDisplay = document.getElementById('autoSellBandWidthValue');
         const newValue = parseFloat(slider.value);
-        
+
         settings.AUTO_SELL_BAND_WIDTH = newValue;
         valueDisplay.textContent = Math.round(newValue * 100) + '%';
-        
+
         // Save setting
         setCookie('bgmAutoSellBandWidth', settings.AUTO_SELL_BAND_WIDTH);
-        
+
         // Update thresholds and refresh displays
         updateGraphThresholds();
-        
+
         // If dynamic mode is enabled, apply new thresholds immediately
         if (settings.ENABLE_DYNAMIC_THRESHOLDS) {
             applyDynamicThresholdsIfEnabled();
@@ -1120,7 +1126,7 @@
 
         // Auto-threshold graph section event listeners
         document.getElementById('applyAutoThresholdsGraph').onclick = applyAutoThresholdsFromGraph;
-        
+
         // Band width slider event listeners
         document.getElementById('autoBuyBandWidth').oninput = updateBuyBandWidth;
         document.getElementById('autoSellBandWidth').oninput = updateSellBandWidth;
@@ -1130,10 +1136,10 @@
         initializeSettingsPanel();
 
         updateStatsDisplay();
-        
+
         // Initialize threshold input states
         updateThresholdInputsState();
-        
+
         // Initialize graph threshold display
         updateGraphThresholds();
     }
@@ -1823,7 +1829,7 @@
 
             // Store all filtered data for average calculation
             const allFilteredData = {};
-            
+
             resources.forEach(res => {
                 const prices = data.prices[res];
                 if (!prices.length) return;
@@ -1859,23 +1865,23 @@
                 // Calculate average prices for each timestamp where all three resources have data
                 const averageData = [];
                 const allTimestamps = new Set();
-                
+
                 // Collect all unique timestamps
                 Object.values(allFilteredData).forEach(priceArray => {
                     priceArray.forEach(point => allTimestamps.add(point.timestamp));
                 });
-                
+
                 // For each timestamp, calculate average if all three resources have data
                 Array.from(allTimestamps).sort().forEach(timestamp => {
                     const resourceValues = [];
-                    
+
                     ['wood', 'stone', 'iron'].forEach(res => {
                         const dataPoint = allFilteredData[res].find(p => p.timestamp === timestamp);
                         if (dataPoint) {
                             resourceValues.push(dataPoint.resPerPP);
                         }
                     });
-                    
+
                     // Only add average if all three resources have data for this timestamp
                     if (resourceValues.length === 3) {
                         const average = resourceValues.reduce((sum, val) => sum + val, 0) / 3;
@@ -1885,7 +1891,7 @@
                         });
                     }
                 });
-                
+
                 // Add average line if we have data
                 if (averageData.length > 0) {
                     const avgLine = chart.line(averageData).markers(true).name('Average (3 Resources)');
@@ -1901,7 +1907,7 @@
             // Add threshold lines
             const buyThreshold = settings.MIN_RESOURCE_PER_PP;
             const sellThreshold = settings.MAX_SELL_RESOURCE_PER_PP;
-            
+
             // Calculate recommendations for threshold lines
             const recommendations = calculateAutoThresholds();
             const recBuyThreshold = recommendations.buyThreshold;
@@ -1994,8 +2000,8 @@
             // Configure tooltip to show formatted datetime
             chart.tooltip().format(function () {
                 const formattedDate = anychart.format.dateTime(this.x, 'MMM dd, yyyy HH:mm');
-                const valueText = this.seriesName.includes('Average') ? 
-                    `Average: ${this.value} res/PP` : 
+                const valueText = this.seriesName.includes('Average') ?
+                    `Average: ${this.value} res/PP` :
                     `Price: ${this.value} res/PP`;
                 return `${this.seriesName}\nTime: ${formattedDate}\n${valueText}`;
             });
@@ -2349,11 +2355,13 @@
     }
 
     function initializeSettingsPanel() {
+        const { world, continent } = getCurrentWorldInfo();
+
         // Set initial values
         document.getElementById('minResourcePerPP').value = settings.MIN_RESOURCE_PER_PP;
         document.getElementById('maxSellResourcePerPP').value = settings.MAX_SELL_RESOURCE_PER_PP;
         document.getElementById('enableDynamicThresholds').checked = settings.ENABLE_DYNAMIC_THRESHOLDS;
-        
+
         // Initialize band width sliders
         document.getElementById('autoBuyBandWidth').value = settings.AUTO_BUY_BAND_WIDTH;
         document.getElementById('autoSellBandWidth').value = settings.AUTO_SELL_BAND_WIDTH;
@@ -2380,13 +2388,13 @@
 
         // Auto-save function for settings
         function saveSettings() {
-            setCookie('bgmMinResourcePerPP', settings.MIN_RESOURCE_PER_PP);
-            setCookie('bgmMaxSellResourcePerPP', settings.MAX_SELL_RESOURCE_PER_PP);
+            setCookie(`bgmMinResourcePerPP_${world}_${continent}`, settings.MIN_RESOURCE_PER_PP);
+            setCookie(`bgmMaxSellResourcePerPP_${world}_${continent}`, settings.MAX_SELL_RESOURCE_PER_PP);
             setCookie('bgmWarehouseTolerance', settings.WAREHOUSE_TOLERANCE);
             setCookie('bgmMinResourceKeep', settings.MIN_RESOURCE_KEEP);
             setCookie('bgmMaxPurchaseAmount', settings.MAX_PURCHASE_AMOUNT);
             setCookie('bgmMaxSellAmount', settings.MAX_SELL_AMOUNT);
-            setCookie('bgmMaxSessionPP', settings.MAX_SESSION_PP_SPEND);
+            setCookie(`bgmMaxSessionPP_${continent}`, settings.MAX_SESSION_PP_SPEND);
             setCookie('bgmMinDelay', settings.MIN_DELAY_BETWEEN_REQUESTS);
             setCookie('bgmMaxDelay', settings.MAX_DELAY_BETWEEN_REQUESTS);
             setCookie('bgmMinPriceCheckInterval', settings.MIN_PRICE_CHECK_INTERVAL);
@@ -2429,7 +2437,7 @@
             saveSettings();
             updateThresholdInputsState();
             updateGraphThresholds();
-            
+
             // If dynamic mode is turned ON, immediately apply recommended thresholds if available
             if (settings.ENABLE_DYNAMIC_THRESHOLDS) {
                 const applied = applyDynamicThresholdsIfEnabled();
@@ -2627,6 +2635,7 @@
     }
 
     function applyImportSettings() {
+        const { world, continent } = getCurrentWorldInfo();
         const textarea = document.getElementById('settingsTextArea');
         const jsonText = textarea.value.trim();
 
@@ -2646,7 +2655,8 @@
                 'MAX_SESSION_PP_SPEND', 'ENABLE_SELLING', 'MAX_SELL_RESOURCE_PER_PP', 'MIN_RESOURCE_KEEP',
                 'MAX_PURCHASE_AMOUNT', 'MAX_SELL_AMOUNT', 'SESSION_RECOVERY_MIN_INTERVAL',
                 'SESSION_RECOVERY_MAX_INTERVAL', 'BOT_PROTECTION_RECOVERY_MIN_INTERVAL',
-                'BOT_PROTECTION_RECOVERY_MAX_INTERVAL'
+                'BOT_PROTECTION_RECOVERY_MAX_INTERVAL', 'ENABLE_DYNAMIC_THRESHOLDS', 'AUTO_BUY_BAND_WIDTH',
+                'AUTO_SELL_BAND_WIDTH'
             ];
 
             for (const field of requiredFields) {
@@ -2659,13 +2669,13 @@
             Object.assign(settings, importedSettings);
 
             // Update all cookie values
-            setCookie('bgmMinResourcePerPP', settings.MIN_RESOURCE_PER_PP);
-            setCookie('bgmMaxSellResourcePerPP', settings.MAX_SELL_RESOURCE_PER_PP);
+            setCookie(`bgmMinResourcePerPP_${world}_${continent}`, settings.MIN_RESOURCE_PER_PP);
+            setCookie(`bgmMaxSellResourcePerPP_${world}_${continent}`, settings.MAX_SELL_RESOURCE_PER_PP);
             setCookie('bgmWarehouseTolerance', settings.WAREHOUSE_TOLERANCE);
             setCookie('bgmMinResourceKeep', settings.MIN_RESOURCE_KEEP);
             setCookie('bgmMaxPurchaseAmount', settings.MAX_PURCHASE_AMOUNT);
             setCookie('bgmMaxSellAmount', settings.MAX_SELL_AMOUNT);
-            setCookie('bgmMaxSessionPP', settings.MAX_SESSION_PP_SPEND);
+            setCookie(`bgmMaxSessionPP_${continent}`, settings.MAX_SESSION_PP_SPEND);
             setCookie('bgmMinDelay', settings.MIN_DELAY_BETWEEN_REQUESTS);
             setCookie('bgmMaxDelay', settings.MAX_DELAY_BETWEEN_REQUESTS);
             setCookie('bgmMinPriceCheckInterval', settings.MIN_PRICE_CHECK_INTERVAL);
@@ -2675,6 +2685,13 @@
             setCookie('bgmEnableSelling', settings.ENABLE_SELLING);
             setCookie('bgmDryRun', settings.DRY_RUN);
             setCookie('bgmMinimalPurchaseMode', settings.MINIMAL_PURCHASE_MODE);
+            setCookie('bgmSessionRecoveryMinInterval', settings.SESSION_RECOVERY_MIN_INTERVAL);
+            setCookie('bgmSessionRecoveryMaxInterval', settings.SESSION_RECOVERY_MAX_INTERVAL);
+            setCookie('bgmBotProtectionRecoveryMinInterval', settings.BOT_PROTECTION_RECOVERY_MIN_INTERVAL);
+            setCookie('bgmBotProtectionRecoveryMaxInterval', settings.BOT_PROTECTION_RECOVERY_MAX_INTERVAL);
+            setCookie('bgmEnableDynamicThresholds', settings.ENABLE_DYNAMIC_THRESHOLDS);
+            setCookie('bgmAutoBuyBandWidth', settings.AUTO_BUY_BAND_WIDTH);
+            setCookie('bgmAutoSellBandWidth', settings.AUTO_SELL_BAND_WIDTH);
 
             // Refresh UI with new values
             initializeSettingsPanel();
@@ -3059,7 +3076,7 @@
                         updateCurrentTask(`Executing sell: ${sellOpportunity.amount} ${sellOpportunity.resource}`);
                         transactionOccurred = true;
                         transactionStartTime = Date.now();
-                        await executeSell(sellOpportunity.resource, sellOpportunity.amount);
+                        await executeSell(sellOpportunity.resource, sellOpportunity.amount, allData.game_data.csrf);
                     }
                     worker.postMessage({ type: 'scheduleNext' });
                     return;
@@ -3194,7 +3211,7 @@
                 updateCurrentTask(`Executing buy: ${purchaseAmount} ${targetResource}`);
                 transactionOccurred = true;
                 transactionStartTime = Date.now();
-                await executePurchase(targetResource, purchaseAmount);
+                await executePurchase(targetResource, purchaseAmount, allData.game_data.csrf);
             }
 
         } finally {
@@ -3365,17 +3382,10 @@
         return null;
     }
 
-    async function executeSell(resource, amount) {
+    async function executeSell(resource, amount, csrfToken) {
         // Set transaction in progress flag
         transactionInProgress = true;
         console.log(`[BGM] Sell transaction flag set to IN PROGRESS`);
-
-        const csrfToken = game_data.csrf || window.csrf_token;
-        if (!csrfToken) {
-            updateStatus('No CSRF token found', '#f44336');
-            transactionInProgress = false; // Clear flag on error
-            return;
-        }
 
         updateStatus(`Selling ${amount} ${resource}...`, '#2196F3');
 
@@ -3509,21 +3519,13 @@
         }
     }
 
-    async function executePurchase(resource, amount) {
-        console.log(`[BGM] executePurchase called: ${amount} ${resource}`);
+    async function executePurchase(resource, amount, csrfToken) {
+        console.log(`[BGM] executePurchase called: ${amount} ${resource} ${csrfToken}`);
         updateCurrentTask(`Starting purchase: ${amount} ${resource}`);
 
         // Set transaction in progress flag
         transactionInProgress = true;
         console.log(`[BGM] Transaction flag set to IN PROGRESS`);
-
-        const csrfToken = game_data.csrf || window.csrf_token;
-        if (!csrfToken) {
-            updateStatus('No CSRF token found', '#f44336');
-            console.error('[BGM] No CSRF token found');
-            transactionInProgress = false; // Clear flag on error
-            return;
-        }
 
         updateStatus(`Buying ${amount} ${resource}...`, '#2196F3');
         console.log(`[BGM] Starting purchase with CSRF: ${csrfToken.substring(0, 8)}...`);
@@ -3700,12 +3702,12 @@
             const recoveryType = sessionExpired ? 'sessionExpired' : 'botProtection';
             const recoveryTypeName = sessionExpired ? 'Session' : 'Bot protection';
             console.log(`[BGM] Start button pressed during ${recoveryTypeName.toLowerCase()} recovery - attempting immediate recovery`);
-            
+
             // Clear recovery flags to allow fresh attempt
             sessionExpired = false;
             botProtectionActive = false;
             recoveryActive = false;
-            
+
             // Clear any existing recovery intervals/timeouts
             if (recoveryTimeout) {
                 clearTimeout(recoveryTimeout);
@@ -3715,7 +3717,7 @@
                 clearInterval(recoveryCountdownInterval);
                 recoveryCountdownInterval = null;
             }
-            
+
             updateStatus(`Manual restart - testing ${recoveryTypeName.toLowerCase()} recovery...`, '#2196F3');
             updateCurrentTask(`Testing ${recoveryTypeName.toLowerCase()} recovery...`);
         }
