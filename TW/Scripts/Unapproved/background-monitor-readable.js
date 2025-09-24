@@ -58,6 +58,7 @@
         MAX_SELL_RESOURCE_PER_PP: parseInt(getCookie(`bgmMaxSellResourcePerPP_${world}_${continent}`)) || 60,
         MIN_RESOURCE_KEEP: getCookie('bgmMinResourceKeep') !== null ? parseInt(getCookie('bgmMinResourceKeep')) : 5000,
         MAX_PURCHASE_AMOUNT: parseInt(getCookie('bgmMaxPurchaseAmount')) || 5000,
+        MIN_SELL_AMOUNT: parseInt(getCookie('bgmMinSellAmount')) || 500,
         MAX_SELL_AMOUNT: parseInt(getCookie('bgmMaxSellAmount')) || 3000,
         // Recovery intervals (in minutes)
         SESSION_RECOVERY_MIN_INTERVAL: parseInt(getCookie('bgmSessionRecoveryMinInterval')) || 1,
@@ -872,6 +873,10 @@
                         <div>
                             <label style="display: block; margin-bottom: 2px; font-weight: bold; font-size: 10px;">Max Purchase Amount (per transaction):</label>
                             <input type="number" id="maxPurchaseAmount" style="width: 100%; padding: 3px; border: 1px solid #ccc; border-radius: 2px; font-size: 10px;">
+                        </div>
+                        <div>
+                            <label style="display: block; margin-bottom: 2px; font-weight: bold; font-size: 10px;">Min Sell Amount (per transaction):</label>
+                            <input type="number" id="minSellAmount" style="width: 100%; padding: 3px; border: 1px solid #ccc; border-radius: 2px; font-size: 10px;">
                         </div>
                         <div>
                             <label style="display: block; margin-bottom: 2px; font-weight: bold; font-size: 10px;">Max Sell Amount (per transaction):</label>
@@ -2370,6 +2375,7 @@
         document.getElementById('warehouseTolerance').value = settings.WAREHOUSE_TOLERANCE;
         document.getElementById('minResourceKeep').value = settings.MIN_RESOURCE_KEEP;
         document.getElementById('maxPurchaseAmount').value = settings.MAX_PURCHASE_AMOUNT;
+        document.getElementById('minSellAmount').value = settings.MIN_SELL_AMOUNT;
         document.getElementById('maxSellAmount').value = settings.MAX_SELL_AMOUNT;
         document.getElementById('maxSessionPPInput').value = settings.MAX_SESSION_PP_SPEND;
         document.getElementById('minDelay').value = settings.MIN_DELAY_BETWEEN_REQUESTS;
@@ -2393,6 +2399,7 @@
             setCookie('bgmWarehouseTolerance', settings.WAREHOUSE_TOLERANCE);
             setCookie('bgmMinResourceKeep', settings.MIN_RESOURCE_KEEP);
             setCookie('bgmMaxPurchaseAmount', settings.MAX_PURCHASE_AMOUNT);
+            setCookie('bgmMinSellAmount', settings.MIN_SELL_AMOUNT);
             setCookie('bgmMaxSellAmount', settings.MAX_SELL_AMOUNT);
             setCookie(`bgmMaxSessionPP_${continent}`, settings.MAX_SESSION_PP_SPEND);
             setCookie('bgmMinDelay', settings.MIN_DELAY_BETWEEN_REQUESTS);
@@ -2464,6 +2471,11 @@
 
         document.getElementById('maxPurchaseAmount').oninput = () => {
             settings.MAX_PURCHASE_AMOUNT = parseInt(document.getElementById('maxPurchaseAmount').value) || 5000;
+            saveSettings();
+        };
+
+        document.getElementById('minSellAmount').oninput = () => {
+            settings.MIN_SELL_AMOUNT = parseInt(document.getElementById('minSellAmount').value) || 500;
             saveSettings();
         };
 
@@ -2653,7 +2665,7 @@
                 'MIN_PRICE_CHECK_INTERVAL', 'MAX_PRICE_CHECK_INTERVAL', 'MIN_PRE_TRANSACTION_DELAY',
                 'MAX_PRE_TRANSACTION_DELAY', 'DRY_RUN', 'MINIMAL_PURCHASE_MODE', 'WAREHOUSE_TOLERANCE',
                 'MAX_SESSION_PP_SPEND', 'ENABLE_SELLING', 'MAX_SELL_RESOURCE_PER_PP', 'MIN_RESOURCE_KEEP',
-                'MAX_PURCHASE_AMOUNT', 'MAX_SELL_AMOUNT', 'SESSION_RECOVERY_MIN_INTERVAL',
+                'MAX_PURCHASE_AMOUNT', 'MIN_SELL_AMOUNT', 'MAX_SELL_AMOUNT', 'SESSION_RECOVERY_MIN_INTERVAL',
                 'SESSION_RECOVERY_MAX_INTERVAL', 'BOT_PROTECTION_RECOVERY_MIN_INTERVAL',
                 'BOT_PROTECTION_RECOVERY_MAX_INTERVAL', 'ENABLE_DYNAMIC_THRESHOLDS', 'AUTO_BUY_BAND_WIDTH',
                 'AUTO_SELL_BAND_WIDTH'
@@ -2674,6 +2686,7 @@
             setCookie('bgmWarehouseTolerance', settings.WAREHOUSE_TOLERANCE);
             setCookie('bgmMinResourceKeep', settings.MIN_RESOURCE_KEEP);
             setCookie('bgmMaxPurchaseAmount', settings.MAX_PURCHASE_AMOUNT);
+            setCookie('bgmMinSellAmount', settings.MIN_SELL_AMOUNT);
             setCookie('bgmMaxSellAmount', settings.MAX_SELL_AMOUNT);
             setCookie(`bgmMaxSessionPP_${continent}`, settings.MAX_SESSION_PP_SPEND);
             setCookie('bgmMinDelay', settings.MIN_DELAY_BETWEEN_REQUESTS);
@@ -3323,6 +3336,14 @@
             // Ensure is a whole number
             sellAmount = Math.floor(sellAmount);
 
+            // Step 4: Apply minimum sell amount
+            if (sellAmount < settings.MIN_SELL_AMOUNT) {
+                console.log(`[BGM] [SELL DEBUG] Calculated amount ${sellAmount} is below minimum ${settings.MIN_SELL_AMOUNT}, skipping`);
+                updateStatus(`${best.resource}: ${sellAmount} < min ${settings.MIN_SELL_AMOUNT}`, '#f44336');
+                updateCurrentTask('Amount below minimum sell threshold');
+                return;
+            }
+
             console.log(`[BGM] [SELL DEBUG] Sell calculation: baseAfterLimits=${baseAmount}, fullMerchants=${fullMerchants}, lastMerchantLoad=${lastMerchantLoad}, final=${sellAmount}`);
 
             if (sellAmount > 0) {
@@ -3348,14 +3369,14 @@
 
                     console.log(`[BGM] [SELL DEBUG] Next resource calculation: baseAmount=${nextBaseAmount}, final=${nextSellAmount}`);
 
-                    if (nextSellAmount > 0) {
-                        console.log(`[BGM] [SELL DEBUG] Next resource ${nextBest.resource} has sellAmount ${nextSellAmount} > 0, using it`);
+                    if (nextSellAmount >= settings.MIN_SELL_AMOUNT) {
+                        console.log(`[BGM] [SELL DEBUG] Next resource ${nextBest.resource} has sellAmount ${nextSellAmount} >= ${settings.MIN_SELL_AMOUNT}, using it`);
                         bestSellResource = nextBest.resource;
                         bestSellRate = nextBest.rate;
                         bestSellAmount = nextSellAmount;
                         break;
                     } else {
-                        console.log(`[BGM] [SELL DEBUG] Next resource ${nextBest.resource} also has sellAmount ${nextSellAmount} <= 0, continuing...`);
+                        console.log(`[BGM] [SELL DEBUG] Next resource ${nextBest.resource} also has sellAmount ${nextSellAmount} < ${settings.MIN_SELL_AMOUNT}, continuing...`);
                     }
                 }
 
