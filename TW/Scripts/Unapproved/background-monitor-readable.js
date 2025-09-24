@@ -41,35 +41,35 @@
     // Initialize settings
     let settings = {
         MIN_RESOURCE_PER_PP: parseInt(getCookie(`bgmMinResourcePerPP_${world}_${continent}`)) || 80,
-        MIN_DELAY_BETWEEN_REQUESTS: parseFloat(getCookie('bgmMinDelay')) || 0.2,
-        MAX_DELAY_BETWEEN_REQUESTS: parseFloat(getCookie('bgmMaxDelay')) || 0.8,
+        MIN_DELAY_BETWEEN_REQUESTS: parseFloat(getCookie(`bgmMinDelay_${world}_${continent}`)) || 0.2,
+        MAX_DELAY_BETWEEN_REQUESTS: parseFloat(getCookie(`bgmMaxDelay_${world}_${continent}`)) || 0.8,
         // Price check intervals (in seconds)
-        MIN_PRICE_CHECK_INTERVAL: parseFloat(getCookie('bgmMinPriceCheckInterval')) || 1.0,
-        MAX_PRICE_CHECK_INTERVAL: parseFloat(getCookie('bgmMaxPriceCheckInterval')) || 2.5,
+        MIN_PRICE_CHECK_INTERVAL: parseFloat(getCookie(`bgmMinPriceCheckInterval_${world}_${continent}`)) || 1.0,
+        MAX_PRICE_CHECK_INTERVAL: parseFloat(getCookie(`bgmMaxPriceCheckInterval_${world}_${continent}`)) || 2.5,
         // Pre-transaction delay (in seconds)
-        MIN_PRE_TRANSACTION_DELAY: parseFloat(getCookie('bgmMinPreTransactionDelay')) || 0.5,
-        MAX_PRE_TRANSACTION_DELAY: parseFloat(getCookie('bgmMaxPreTransactionDelay')) || 1.5,
-        DRY_RUN: getCookie('bgmDryRun') === 'true' || false,
-        MINIMAL_PURCHASE_MODE: getCookie('bgmMinimalPurchaseMode') === 'true' || false,
-        WAREHOUSE_TOLERANCE: parseInt(getCookie('bgmWarehouseTolerance')) || 1000,
-        MAX_SESSION_PP_SPEND: getCookie(`bgmMaxSessionPP_${continent}`) !== null ? parseInt(getCookie(`bgmMaxSessionPP_${continent}`)) : 10000,
+        MIN_PRE_TRANSACTION_DELAY: parseFloat(getCookie(`bgmMinPreTransactionDelay_${world}_${continent}`)) || 0.5,
+        MAX_PRE_TRANSACTION_DELAY: parseFloat(getCookie(`bgmMaxPreTransactionDelay_${world}_${continent}`)) || 1.5,
+        DRY_RUN: getCookie(`bgmDryRun_${world}_${continent}`) === 'true' || false,
+        MINIMAL_PURCHASE_MODE: getCookie(`bgmMinimalPurchaseMode_${world}_${continent}`) === 'true' || false,
+        WAREHOUSE_TOLERANCE: parseInt(getCookie(`bgmWarehouseTolerance_${world}_${continent}`)) || 1000,
+        MAX_SESSION_PP_SPEND: getCookie(`bgmMaxSessionPP_${world}_${continent}`) !== null ? parseInt(getCookie(`bgmMaxSessionPP_${world}_${continent}`)) : 10000,
         // Selling settings
-        ENABLE_SELLING: getCookie('bgmEnableSelling') === 'true' || false,
+        ENABLE_SELLING: getCookie(`bgmEnableSelling_${world}_${continent}`) === 'true' || false,
         MAX_SELL_RESOURCE_PER_PP: parseInt(getCookie(`bgmMaxSellResourcePerPP_${world}_${continent}`)) || 60,
-        MIN_RESOURCE_KEEP: getCookie('bgmMinResourceKeep') !== null ? parseInt(getCookie('bgmMinResourceKeep')) : 5000,
-        MAX_PURCHASE_AMOUNT: parseInt(getCookie('bgmMaxPurchaseAmount')) || 5000,
-        MIN_SELL_AMOUNT: parseInt(getCookie('bgmMinSellAmount')) || 500,
-        MAX_SELL_AMOUNT: parseInt(getCookie('bgmMaxSellAmount')) || 3000,
+        MIN_RESOURCE_KEEP: getCookie(`bgmMinResourceKeep_${world}_${continent}`) !== null ? parseInt(getCookie(`bgmMinResourceKeep_${world}_${continent}`)) : 5000,
+        MAX_PURCHASE_AMOUNT: parseInt(getCookie(`bgmMaxPurchaseAmount_${world}_${continent}`)) || 5000,
+        MIN_SELL_AMOUNT: parseInt(getCookie(`bgmMinSellAmount_${world}_${continent}`)) || 500,
+        MAX_SELL_AMOUNT: parseInt(getCookie(`bgmMaxSellAmount_${world}_${continent}`)) || 3000,
         // Recovery intervals (in minutes)
-        SESSION_RECOVERY_MIN_INTERVAL: parseInt(getCookie('bgmSessionRecoveryMinInterval')) || 1,
-        SESSION_RECOVERY_MAX_INTERVAL: parseInt(getCookie('bgmSessionRecoveryMaxInterval')) || 10,
-        BOT_PROTECTION_RECOVERY_MIN_INTERVAL: parseInt(getCookie('bgmBotProtectionRecoveryMinInterval')) || 10,
-        BOT_PROTECTION_RECOVERY_MAX_INTERVAL: parseInt(getCookie('bgmBotProtectionRecoveryMaxInterval')) || 60,
+        SESSION_RECOVERY_MIN_INTERVAL: parseInt(getCookie(`bgmSessionRecoveryMinInterval_${world}_${continent}`)) || 1,
+        SESSION_RECOVERY_MAX_INTERVAL: parseInt(getCookie(`bgmSessionRecoveryMaxInterval_${world}_${continent}`)) || 10,
+        BOT_PROTECTION_RECOVERY_MIN_INTERVAL: parseInt(getCookie(`bgmBotProtectionRecoveryMinInterval_${world}_${continent}`)) || 10,
+        BOT_PROTECTION_RECOVERY_MAX_INTERVAL: parseInt(getCookie(`bgmBotProtectionRecoveryMaxInterval_${world}_${continent}`)) || 60,
         // Dynamic threshold updates
-        ENABLE_DYNAMIC_THRESHOLDS: getCookie('bgmEnableDynamicThresholds') === 'true',
+        ENABLE_DYNAMIC_THRESHOLDS: getCookie(`bgmEnableDynamicThresholds_${world}_${continent}`) === 'true',
         // Auto-threshold band width controls (0.05 = 5%, 0.20 = 20%)
-        AUTO_BUY_BAND_WIDTH: parseFloat(getCookie('bgmAutoBuyBandWidth')) || 0.15, // Default 15% safety margin for buy
-        AUTO_SELL_BAND_WIDTH: parseFloat(getCookie('bgmAutoSellBandWidth')) || 0.12 // Default 12% safety margin for sell
+        AUTO_BUY_BAND_WIDTH: parseFloat(getCookie(`bgmAutoBuyBandWidth_${world}_${continent}`)) || 0.15, // Default 15% safety margin for buy
+        AUTO_SELL_BAND_WIDTH: parseFloat(getCookie(`bgmAutoSellBandWidth_${world}_${continent}`)) || 0.12 // Default 12% safety margin for sell
     };
 
     // Initialize session data (village-specific)
@@ -696,7 +696,8 @@
         valueDisplay.textContent = Math.round(newValue * 100) + '%';
 
         // Save setting
-        setCookie('bgmAutoBuyBandWidth', settings.AUTO_BUY_BAND_WIDTH);
+        const { world, continent } = getCurrentWorldInfo();
+        setCookie(`bgmAutoBuyBandWidth_${world}_${continent}`, settings.AUTO_BUY_BAND_WIDTH);
 
         // Update thresholds and refresh displays
         updateGraphThresholds();
@@ -719,7 +720,8 @@
         valueDisplay.textContent = Math.round(newValue * 100) + '%';
 
         // Save setting
-        setCookie('bgmAutoSellBandWidth', settings.AUTO_SELL_BAND_WIDTH);
+        const { world, continent } = getCurrentWorldInfo();
+        setCookie(`bgmAutoSellBandWidth_${world}_${continent}`, settings.AUTO_SELL_BAND_WIDTH);
 
         // Update thresholds and refresh displays
         updateGraphThresholds();
@@ -2396,28 +2398,28 @@
         function saveSettings() {
             setCookie(`bgmMinResourcePerPP_${world}_${continent}`, settings.MIN_RESOURCE_PER_PP);
             setCookie(`bgmMaxSellResourcePerPP_${world}_${continent}`, settings.MAX_SELL_RESOURCE_PER_PP);
-            setCookie('bgmWarehouseTolerance', settings.WAREHOUSE_TOLERANCE);
-            setCookie('bgmMinResourceKeep', settings.MIN_RESOURCE_KEEP);
-            setCookie('bgmMaxPurchaseAmount', settings.MAX_PURCHASE_AMOUNT);
-            setCookie('bgmMinSellAmount', settings.MIN_SELL_AMOUNT);
-            setCookie('bgmMaxSellAmount', settings.MAX_SELL_AMOUNT);
-            setCookie(`bgmMaxSessionPP_${continent}`, settings.MAX_SESSION_PP_SPEND);
-            setCookie('bgmMinDelay', settings.MIN_DELAY_BETWEEN_REQUESTS);
-            setCookie('bgmMaxDelay', settings.MAX_DELAY_BETWEEN_REQUESTS);
-            setCookie('bgmMinPriceCheckInterval', settings.MIN_PRICE_CHECK_INTERVAL);
-            setCookie('bgmMaxPriceCheckInterval', settings.MAX_PRICE_CHECK_INTERVAL);
-            setCookie('bgmMinPreTransactionDelay', settings.MIN_PRE_TRANSACTION_DELAY);
-            setCookie('bgmMaxPreTransactionDelay', settings.MAX_PRE_TRANSACTION_DELAY);
-            setCookie('bgmEnableSelling', settings.ENABLE_SELLING);
-            setCookie('bgmDryRun', settings.DRY_RUN);
-            setCookie('bgmMinimalPurchaseMode', settings.MINIMAL_PURCHASE_MODE);
-            setCookie('bgmSessionRecoveryMinInterval', settings.SESSION_RECOVERY_MIN_INTERVAL);
-            setCookie('bgmSessionRecoveryMaxInterval', settings.SESSION_RECOVERY_MAX_INTERVAL);
-            setCookie('bgmBotProtectionRecoveryMinInterval', settings.BOT_PROTECTION_RECOVERY_MIN_INTERVAL);
-            setCookie('bgmBotProtectionRecoveryMaxInterval', settings.BOT_PROTECTION_RECOVERY_MAX_INTERVAL);
-            setCookie('bgmEnableDynamicThresholds', settings.ENABLE_DYNAMIC_THRESHOLDS);
-            setCookie('bgmAutoBuyBandWidth', settings.AUTO_BUY_BAND_WIDTH);
-            setCookie('bgmAutoSellBandWidth', settings.AUTO_SELL_BAND_WIDTH);
+            setCookie(`bgmWarehouseTolerance_${world}_${continent}`, settings.WAREHOUSE_TOLERANCE);
+            setCookie(`bgmMinResourceKeep_${world}_${continent}`, settings.MIN_RESOURCE_KEEP);
+            setCookie(`bgmMaxPurchaseAmount_${world}_${continent}`, settings.MAX_PURCHASE_AMOUNT);
+            setCookie(`bgmMinSellAmount_${world}_${continent}`, settings.MIN_SELL_AMOUNT);
+            setCookie(`bgmMaxSellAmount_${world}_${continent}`, settings.MAX_SELL_AMOUNT);
+            setCookie(`bgmMaxSessionPP_${world}_${continent}`, settings.MAX_SESSION_PP_SPEND);
+            setCookie(`bgmMinDelay_${world}_${continent}`, settings.MIN_DELAY_BETWEEN_REQUESTS);
+            setCookie(`bgmMaxDelay_${world}_${continent}`, settings.MAX_DELAY_BETWEEN_REQUESTS);
+            setCookie(`bgmMinPriceCheckInterval_${world}_${continent}`, settings.MIN_PRICE_CHECK_INTERVAL);
+            setCookie(`bgmMaxPriceCheckInterval_${world}_${continent}`, settings.MAX_PRICE_CHECK_INTERVAL);
+            setCookie(`bgmMinPreTransactionDelay_${world}_${continent}`, settings.MIN_PRE_TRANSACTION_DELAY);
+            setCookie(`bgmMaxPreTransactionDelay_${world}_${continent}`, settings.MAX_PRE_TRANSACTION_DELAY);
+            setCookie(`bgmEnableSelling_${world}_${continent}`, settings.ENABLE_SELLING);
+            setCookie(`bgmDryRun_${world}_${continent}`, settings.DRY_RUN);
+            setCookie(`bgmMinimalPurchaseMode_${world}_${continent}`, settings.MINIMAL_PURCHASE_MODE);
+            setCookie(`bgmSessionRecoveryMinInterval_${world}_${continent}`, settings.SESSION_RECOVERY_MIN_INTERVAL);
+            setCookie(`bgmSessionRecoveryMaxInterval_${world}_${continent}`, settings.SESSION_RECOVERY_MAX_INTERVAL);
+            setCookie(`bgmBotProtectionRecoveryMinInterval_${world}_${continent}`, settings.BOT_PROTECTION_RECOVERY_MIN_INTERVAL);
+            setCookie(`bgmBotProtectionRecoveryMaxInterval_${world}_${continent}`, settings.BOT_PROTECTION_RECOVERY_MAX_INTERVAL);
+            setCookie(`bgmEnableDynamicThresholds_${world}_${continent}`, settings.ENABLE_DYNAMIC_THRESHOLDS);
+            setCookie(`bgmAutoBuyBandWidth_${world}_${continent}`, settings.AUTO_BUY_BAND_WIDTH);
+            setCookie(`bgmAutoSellBandWidth_${world}_${continent}`, settings.AUTO_SELL_BAND_WIDTH);
 
             // Update UI display
             document.getElementById('maxSessionPP').textContent = settings.MAX_SESSION_PP_SPEND;
@@ -2683,28 +2685,28 @@
             // Update all cookie values
             setCookie(`bgmMinResourcePerPP_${world}_${continent}`, settings.MIN_RESOURCE_PER_PP);
             setCookie(`bgmMaxSellResourcePerPP_${world}_${continent}`, settings.MAX_SELL_RESOURCE_PER_PP);
-            setCookie('bgmWarehouseTolerance', settings.WAREHOUSE_TOLERANCE);
-            setCookie('bgmMinResourceKeep', settings.MIN_RESOURCE_KEEP);
-            setCookie('bgmMaxPurchaseAmount', settings.MAX_PURCHASE_AMOUNT);
-            setCookie('bgmMinSellAmount', settings.MIN_SELL_AMOUNT);
-            setCookie('bgmMaxSellAmount', settings.MAX_SELL_AMOUNT);
-            setCookie(`bgmMaxSessionPP_${continent}`, settings.MAX_SESSION_PP_SPEND);
-            setCookie('bgmMinDelay', settings.MIN_DELAY_BETWEEN_REQUESTS);
-            setCookie('bgmMaxDelay', settings.MAX_DELAY_BETWEEN_REQUESTS);
-            setCookie('bgmMinPriceCheckInterval', settings.MIN_PRICE_CHECK_INTERVAL);
-            setCookie('bgmMaxPriceCheckInterval', settings.MAX_PRICE_CHECK_INTERVAL);
-            setCookie('bgmMinPreTransactionDelay', settings.MIN_PRE_TRANSACTION_DELAY);
-            setCookie('bgmMaxPreTransactionDelay', settings.MAX_PRE_TRANSACTION_DELAY);
-            setCookie('bgmEnableSelling', settings.ENABLE_SELLING);
-            setCookie('bgmDryRun', settings.DRY_RUN);
-            setCookie('bgmMinimalPurchaseMode', settings.MINIMAL_PURCHASE_MODE);
-            setCookie('bgmSessionRecoveryMinInterval', settings.SESSION_RECOVERY_MIN_INTERVAL);
-            setCookie('bgmSessionRecoveryMaxInterval', settings.SESSION_RECOVERY_MAX_INTERVAL);
-            setCookie('bgmBotProtectionRecoveryMinInterval', settings.BOT_PROTECTION_RECOVERY_MIN_INTERVAL);
-            setCookie('bgmBotProtectionRecoveryMaxInterval', settings.BOT_PROTECTION_RECOVERY_MAX_INTERVAL);
-            setCookie('bgmEnableDynamicThresholds', settings.ENABLE_DYNAMIC_THRESHOLDS);
-            setCookie('bgmAutoBuyBandWidth', settings.AUTO_BUY_BAND_WIDTH);
-            setCookie('bgmAutoSellBandWidth', settings.AUTO_SELL_BAND_WIDTH);
+            setCookie(`bgmWarehouseTolerance_${world}_${continent}`, settings.WAREHOUSE_TOLERANCE);
+            setCookie(`bgmMinResourceKeep_${world}_${continent}`, settings.MIN_RESOURCE_KEEP);
+            setCookie(`bgmMaxPurchaseAmount_${world}_${continent}`, settings.MAX_PURCHASE_AMOUNT);
+            setCookie(`bgmMinSellAmount_${world}_${continent}`, settings.MIN_SELL_AMOUNT);
+            setCookie(`bgmMaxSellAmount_${world}_${continent}`, settings.MAX_SELL_AMOUNT);
+            setCookie(`bgmMaxSessionPP_${world}_${continent}`, settings.MAX_SESSION_PP_SPEND);
+            setCookie(`bgmMinDelay_${world}_${continent}`, settings.MIN_DELAY_BETWEEN_REQUESTS);
+            setCookie(`bgmMaxDelay_${world}_${continent}`, settings.MAX_DELAY_BETWEEN_REQUESTS);
+            setCookie(`bgmMinPriceCheckInterval_${world}_${continent}`, settings.MIN_PRICE_CHECK_INTERVAL);
+            setCookie(`bgmMaxPriceCheckInterval_${world}_${continent}`, settings.MAX_PRICE_CHECK_INTERVAL);
+            setCookie(`bgmMinPreTransactionDelay_${world}_${continent}`, settings.MIN_PRE_TRANSACTION_DELAY);
+            setCookie(`bgmMaxPreTransactionDelay_${world}_${continent}`, settings.MAX_PRE_TRANSACTION_DELAY);
+            setCookie(`bgmEnableSelling_${world}_${continent}`, settings.ENABLE_SELLING);
+            setCookie(`bgmDryRun_${world}_${continent}`, settings.DRY_RUN);
+            setCookie(`bgmMinimalPurchaseMode_${world}_${continent}`, settings.MINIMAL_PURCHASE_MODE);
+            setCookie(`bgmSessionRecoveryMinInterval_${world}_${continent}`, settings.SESSION_RECOVERY_MIN_INTERVAL);
+            setCookie(`bgmSessionRecoveryMaxInterval_${world}_${continent}`, settings.SESSION_RECOVERY_MAX_INTERVAL);
+            setCookie(`bgmBotProtectionRecoveryMinInterval_${world}_${continent}`, settings.BOT_PROTECTION_RECOVERY_MIN_INTERVAL);
+            setCookie(`bgmBotProtectionRecoveryMaxInterval_${world}_${continent}`, settings.BOT_PROTECTION_RECOVERY_MAX_INTERVAL);
+            setCookie(`bgmEnableDynamicThresholds_${world}_${continent}`, settings.ENABLE_DYNAMIC_THRESHOLDS);
+            setCookie(`bgmAutoBuyBandWidth_${world}_${continent}`, settings.AUTO_BUY_BAND_WIDTH);
+            setCookie(`bgmAutoSellBandWidth_${world}_${continent}`, settings.AUTO_SELL_BAND_WIDTH);
 
             // Refresh UI with new values
             initializeSettingsPanel();
