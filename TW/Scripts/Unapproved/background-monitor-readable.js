@@ -40,26 +40,27 @@
 
     // Initialize settings
     let settings = {
-        MIN_RESOURCE_PER_PP: parseInt(getCookie(`bgmMinResourcePerPP_${world}_${continent}`)) || 80,
-        MIN_DELAY_BETWEEN_REQUESTS: parseFloat(getCookie(`bgmMinDelay_${world}_${continent}`)) || 0.2,
-        MAX_DELAY_BETWEEN_REQUESTS: parseFloat(getCookie(`bgmMaxDelay_${world}_${continent}`)) || 0.8,
+        MIN_RESOURCE_PER_PP: parseInt(getCookie(`bgmMinResourcePerPP_${world}_${continent}`)) || 170,
+        MIN_DELAY_BETWEEN_REQUESTS: parseFloat(getCookie(`bgmMinDelay_${world}_${continent}`)) || 1,
+        MAX_DELAY_BETWEEN_REQUESTS: parseFloat(getCookie(`bgmMaxDelay_${world}_${continent}`)) || 3,
         // Price check intervals (in seconds)
-        MIN_PRICE_CHECK_INTERVAL: parseFloat(getCookie(`bgmMinPriceCheckInterval_${world}_${continent}`)) || 1.0,
-        MAX_PRICE_CHECK_INTERVAL: parseFloat(getCookie(`bgmMaxPriceCheckInterval_${world}_${continent}`)) || 2.5,
+        MIN_PRICE_CHECK_INTERVAL: parseFloat(getCookie(`bgmMinPriceCheckInterval_${world}_${continent}`)) || 5,
+        MAX_PRICE_CHECK_INTERVAL: parseFloat(getCookie(`bgmMaxPriceCheckInterval_${world}_${continent}`)) || 20,
         // Pre-transaction delay (in seconds)
-        MIN_PRE_TRANSACTION_DELAY: parseFloat(getCookie(`bgmMinPreTransactionDelay_${world}_${continent}`)) || 0.5,
-        MAX_PRE_TRANSACTION_DELAY: parseFloat(getCookie(`bgmMaxPreTransactionDelay_${world}_${continent}`)) || 1.5,
+        MIN_PRE_TRANSACTION_DELAY: parseFloat(getCookie(`bgmMinPreTransactionDelay_${world}_${continent}`)) || 1,
+        MAX_PRE_TRANSACTION_DELAY: parseFloat(getCookie(`bgmMaxPreTransactionDelay_${world}_${continent}`)) || 2,
         DRY_RUN: getCookie(`bgmDryRun_${world}_${continent}`) === 'true' || false,
-        MINIMAL_PURCHASE_MODE: getCookie(`bgmMinimalPurchaseMode_${world}_${continent}`) === 'true' || false,
+        MINIMAL_PURCHASE_MODE: getCookie(`bgmMinimalPurchaseMode_${world}_${continent}`) === 'true' || getCookie(`bgmMinimalPurchaseMode_${world}_${continent}`) === null ? true : false,
         WAREHOUSE_TOLERANCE: parseInt(getCookie(`bgmWarehouseTolerance_${world}_${continent}`)) || 1000,
-        MAX_SESSION_PP_SPEND: getCookie(`bgmMaxSessionPP_${world}_${continent}`) !== null ? parseInt(getCookie(`bgmMaxSessionPP_${world}_${continent}`)) : 10000,
+        MAX_SESSION_PP_SPEND: getCookie(`bgmMaxSessionPP_${world}_${continent}`) !== null ? parseInt(getCookie(`bgmMaxSessionPP_${world}_${continent}`)) : 20,
         // Selling settings
-        ENABLE_SELLING: getCookie(`bgmEnableSelling_${world}_${continent}`) === 'true' || false,
-        MAX_SELL_RESOURCE_PER_PP: parseInt(getCookie(`bgmMaxSellResourcePerPP_${world}_${continent}`)) || 60,
-        MIN_RESOURCE_KEEP: getCookie(`bgmMinResourceKeep_${world}_${continent}`) !== null ? parseInt(getCookie(`bgmMinResourceKeep_${world}_${continent}`)) : 5000,
-        MAX_PURCHASE_AMOUNT: parseInt(getCookie(`bgmMaxPurchaseAmount_${world}_${continent}`)) || 5000,
+        ENABLE_SELLING: getCookie(`bgmEnableSelling_${world}_${continent}`) === 'true' || getCookie(`bgmEnableSelling_${world}_${continent}`) === null ? true : false,
+        MAX_SELL_RESOURCE_PER_PP: parseInt(getCookie(`bgmMaxSellResourcePerPP_${world}_${continent}`)) || 100,
+        MIN_RESOURCE_KEEP: parseInt(getCookie(`bgmMinResourceKeep_${world}_${continent}`)) || 0,
+        MAX_PURCHASE_AMOUNT: parseInt(getCookie(`bgmMaxPurchaseAmount_${world}_${continent}`)) || 1000,
         MIN_SELL_AMOUNT: parseInt(getCookie(`bgmMinSellAmount_${world}_${continent}`)) || 500,
-        MAX_SELL_AMOUNT: parseInt(getCookie(`bgmMaxSellAmount_${world}_${continent}`)) || 3000,
+        MAX_SELL_AMOUNT: parseInt(getCookie(`bgmMaxSellAmount_${world}_${continent}`)) || 4000,
+        MAX_CONSECUTIVE_SELLS: parseInt(getCookie(`bgmMaxConsecutiveSells_${world}_${continent}`)) || 5,
         // Recovery intervals (in minutes)
         SESSION_RECOVERY_MIN_INTERVAL: parseInt(getCookie(`bgmSessionRecoveryMinInterval_${world}_${continent}`)) || 1,
         SESSION_RECOVERY_MAX_INTERVAL: parseInt(getCookie(`bgmSessionRecoveryMaxInterval_${world}_${continent}`)) || 10,
@@ -68,7 +69,7 @@
         // Dynamic threshold updates
         ENABLE_DYNAMIC_THRESHOLDS: getCookie(`bgmEnableDynamicThresholds_${world}_${continent}`) === 'true',
         // Auto-threshold band width controls (0.05 = 5%, 0.20 = 20%)
-        AUTO_BUY_BAND_WIDTH: parseFloat(getCookie(`bgmAutoBuyBandWidth_${world}_${continent}`)) || 0.15, // Default 15% safety margin for buy
+        AUTO_BUY_BAND_WIDTH: parseFloat(getCookie(`bgmAutoBuyBandWidth_${world}_${continent}`)) || 0.07, // Default 7% safety margin for buy
         AUTO_SELL_BAND_WIDTH: parseFloat(getCookie(`bgmAutoSellBandWidth_${world}_${continent}`)) || 0.12 // Default 12% safety margin for sell
     };
 
@@ -83,8 +84,14 @@
         soldWood: 0,
         soldStone: 0,
         soldIron: 0,
-        sessionStart: Date.now()
+        sessionStart: Date.now(),
+        consecutiveSells: 0
     };
+    
+    // Ensure consecutiveSells property exists for existing sessions
+    if (sessionData.consecutiveSells === undefined) {
+        sessionData.consecutiveSells = 0;
+    }
 
     let isRunning = false;
     let nextTimeout = null;
@@ -883,6 +890,10 @@
                         <div>
                             <label style="display: block; margin-bottom: 2px; font-weight: bold; font-size: 10px;">Max Sell Amount (per transaction):</label>
                             <input type="number" id="maxSellAmount" style="width: 100%; padding: 3px; border: 1px solid #ccc; border-radius: 2px; font-size: 10px;">
+                        </div>
+                        <div>
+                            <label style="display: block; margin-bottom: 2px; font-weight: bold; font-size: 10px;">Max Consecutive Sells:</label>
+                            <input type="number" id="maxConsecutiveSells" style="width: 100%; padding: 3px; border: 1px solid #ccc; border-radius: 2px; font-size: 10px;">
                         </div>
                         <div>
                             <label style="display: block; margin-bottom: 2px; font-weight: bold; font-size: 10px;">Max Session PP Spend:</label>
@@ -2379,6 +2390,7 @@
         document.getElementById('maxPurchaseAmount').value = settings.MAX_PURCHASE_AMOUNT;
         document.getElementById('minSellAmount').value = settings.MIN_SELL_AMOUNT;
         document.getElementById('maxSellAmount').value = settings.MAX_SELL_AMOUNT;
+        document.getElementById('maxConsecutiveSells').value = settings.MAX_CONSECUTIVE_SELLS;
         document.getElementById('maxSessionPPInput').value = settings.MAX_SESSION_PP_SPEND;
         document.getElementById('minDelay').value = settings.MIN_DELAY_BETWEEN_REQUESTS;
         document.getElementById('maxDelay').value = settings.MAX_DELAY_BETWEEN_REQUESTS;
@@ -2403,6 +2415,7 @@
             setCookie(`bgmMaxPurchaseAmount_${world}_${continent}`, settings.MAX_PURCHASE_AMOUNT);
             setCookie(`bgmMinSellAmount_${world}_${continent}`, settings.MIN_SELL_AMOUNT);
             setCookie(`bgmMaxSellAmount_${world}_${continent}`, settings.MAX_SELL_AMOUNT);
+            setCookie(`bgmMaxConsecutiveSells_${world}_${continent}`, settings.MAX_CONSECUTIVE_SELLS);
             setCookie(`bgmMaxSessionPP_${world}_${continent}`, settings.MAX_SESSION_PP_SPEND);
             setCookie(`bgmMinDelay_${world}_${continent}`, settings.MIN_DELAY_BETWEEN_REQUESTS);
             setCookie(`bgmMaxDelay_${world}_${continent}`, settings.MAX_DELAY_BETWEEN_REQUESTS);
@@ -2467,12 +2480,12 @@
 
         document.getElementById('minResourceKeep').oninput = () => {
             const value = document.getElementById('minResourceKeep').value;
-            settings.MIN_RESOURCE_KEEP = value !== '' ? parseInt(value) : 5000;
+            settings.MIN_RESOURCE_KEEP = value !== '' ? parseInt(value) : 0;
             saveSettings();
         };
 
         document.getElementById('maxPurchaseAmount').oninput = () => {
-            settings.MAX_PURCHASE_AMOUNT = parseInt(document.getElementById('maxPurchaseAmount').value) || 5000;
+            settings.MAX_PURCHASE_AMOUNT = parseInt(document.getElementById('maxPurchaseAmount').value) || 1000;
             saveSettings();
         };
 
@@ -2483,6 +2496,11 @@
 
         document.getElementById('maxSellAmount').oninput = () => {
             settings.MAX_SELL_AMOUNT = parseInt(document.getElementById('maxSellAmount').value) || 3000;
+            saveSettings();
+        };
+
+        document.getElementById('maxConsecutiveSells').oninput = () => {
+            settings.MAX_CONSECUTIVE_SELLS = parseInt(document.getElementById('maxConsecutiveSells').value) || 5;
             saveSettings();
         };
 
@@ -2667,7 +2685,7 @@
                 'MIN_PRICE_CHECK_INTERVAL', 'MAX_PRICE_CHECK_INTERVAL', 'MIN_PRE_TRANSACTION_DELAY',
                 'MAX_PRE_TRANSACTION_DELAY', 'DRY_RUN', 'MINIMAL_PURCHASE_MODE', 'WAREHOUSE_TOLERANCE',
                 'MAX_SESSION_PP_SPEND', 'ENABLE_SELLING', 'MAX_SELL_RESOURCE_PER_PP', 'MIN_RESOURCE_KEEP',
-                'MAX_PURCHASE_AMOUNT', 'MIN_SELL_AMOUNT', 'MAX_SELL_AMOUNT', 'SESSION_RECOVERY_MIN_INTERVAL',
+                'MAX_PURCHASE_AMOUNT', 'MIN_SELL_AMOUNT', 'MAX_SELL_AMOUNT', 'MAX_CONSECUTIVE_SELLS', 'SESSION_RECOVERY_MIN_INTERVAL',
                 'SESSION_RECOVERY_MAX_INTERVAL', 'BOT_PROTECTION_RECOVERY_MIN_INTERVAL',
                 'BOT_PROTECTION_RECOVERY_MAX_INTERVAL', 'ENABLE_DYNAMIC_THRESHOLDS', 'AUTO_BUY_BAND_WIDTH',
                 'AUTO_SELL_BAND_WIDTH'
@@ -2690,6 +2708,7 @@
             setCookie(`bgmMaxPurchaseAmount_${world}_${continent}`, settings.MAX_PURCHASE_AMOUNT);
             setCookie(`bgmMinSellAmount_${world}_${continent}`, settings.MIN_SELL_AMOUNT);
             setCookie(`bgmMaxSellAmount_${world}_${continent}`, settings.MAX_SELL_AMOUNT);
+            setCookie(`bgmMaxConsecutiveSells_${world}_${continent}`, settings.MAX_CONSECUTIVE_SELLS);
             setCookie(`bgmMaxSessionPP_${world}_${continent}`, settings.MAX_SESSION_PP_SPEND);
             setCookie(`bgmMinDelay_${world}_${continent}`, settings.MIN_DELAY_BETWEEN_REQUESTS);
             setCookie(`bgmMaxDelay_${world}_${continent}`, settings.MAX_DELAY_BETWEEN_REQUESTS);
@@ -3084,11 +3103,21 @@
                 const sellOpportunity = await checkSellingOpportunity(priceData, allData.game_data);
                 if (sellOpportunity) {
                     console.log(`[BGM] [SELL DEBUG] Found sell opportunity, proceeding with sale...`);
+                    
+                    // Check consecutive sell limit
+                    if (sessionData.consecutiveSells >= settings.MAX_CONSECUTIVE_SELLS) {
+                        console.log(`[BGM] [SELL DEBUG] Max consecutive sells limit reached (${settings.MAX_CONSECUTIVE_SELLS}), stopping monitoring`);
+                        updateStatus(`Max consecutive sells limit reached (${settings.MAX_CONSECUTIVE_SELLS}) - stopping monitoring`, '#f44336');
+                        updateCurrentTask('Consecutive sell limit reached - monitoring stopped');
+                        stopMonitoring();
+                        return;
+                    }
+                    
                     if (settings.DRY_RUN) {
                         updateStatus(`DRY RUN: Would sell ${sellOpportunity.amount} ${sellOpportunity.resource}`, '#9E9E9E');
                         updateCurrentTask('DRY RUN: Sell opportunity found');
                     } else {
-                        updateCurrentTask(`Executing sell: ${sellOpportunity.amount} ${sellOpportunity.resource}`);
+                        updateCurrentTask(`Executing sell: ${sellOpportunity.amount} ${sellOpportunity.resource} (${sessionData.consecutiveSells + 1}/${settings.MAX_CONSECUTIVE_SELLS})`);
                         transactionOccurred = true;
                         transactionStartTime = Date.now();
                         await executeSell(sellOpportunity.resource, sellOpportunity.amount, allData.game_data.csrf);
@@ -3338,25 +3367,21 @@
             // Ensure is a whole number
             sellAmount = Math.floor(sellAmount);
 
-            // Step 4: Apply minimum sell amount
-            if (sellAmount < settings.MIN_SELL_AMOUNT) {
-                console.log(`[BGM] [SELL DEBUG] Calculated amount ${sellAmount} is below minimum ${settings.MIN_SELL_AMOUNT}, skipping`);
-                updateStatus(`${best.resource}: ${sellAmount} < min ${settings.MIN_SELL_AMOUNT}`, '#f44336');
-                updateCurrentTask('Amount below minimum sell threshold');
-                return;
-            }
-
             console.log(`[BGM] [SELL DEBUG] Sell calculation: baseAfterLimits=${baseAmount}, fullMerchants=${fullMerchants}, lastMerchantLoad=${lastMerchantLoad}, final=${sellAmount}`);
 
-            if (sellAmount > 0) {
-                console.log(`[BGM] [SELL DEBUG] Final sellAmount ${sellAmount} > 0, setting as best sell opportunity`);
+            // Check if sellAmount meets minimum requirement and is positive
+            if (sellAmount >= settings.MIN_SELL_AMOUNT && sellAmount > 0) {
+                console.log(`[BGM] [SELL DEBUG] Final sellAmount ${sellAmount} >= ${settings.MIN_SELL_AMOUNT}, setting as best sell opportunity`);
                 bestSellResource = best.resource;
                 bestSellRate = best.rate;
                 bestSellAmount = sellAmount;
             } else {
-                console.log(`[BGM] [SELL DEBUG] Final sellAmount ${sellAmount} <= 0 for ${best.resource}, trying next best resource...`);
+                const reason = sellAmount < settings.MIN_SELL_AMOUNT ? 
+                    `below minimum ${settings.MIN_SELL_AMOUNT}` : 
+                    `<= 0`;
+                console.log(`[BGM] [SELL DEBUG] Final sellAmount ${sellAmount} ${reason} for ${best.resource}, trying next best resource...`);
 
-                // Try the next best resource if the current one has sellAmount <= 0
+                // Try the next best resource if the current one doesn't meet requirements
                 for (let i = 1; i < sellableResources.length; i++) {
                     const nextBest = sellableResources[i];
                     console.log(`[BGM] [SELL DEBUG] Trying next best: ${nextBest.resource} at ${nextBest.resourcesPerPP.toFixed(1)} res/PP`);
@@ -3383,7 +3408,7 @@
                 }
 
                 if (!bestSellResource) {
-                    console.log(`[BGM] [SELL DEBUG] No sellable resources found with positive sellAmount after trying all options`);
+                    console.log(`[BGM] [SELL DEBUG] No sellable resources found meeting minimum sell amount (${settings.MIN_SELL_AMOUNT}) after trying all options`);
                 }
             }
         } else {
@@ -3514,22 +3539,38 @@
                 const merchantsUsed = completedTransaction.merchants_required || Math.ceil(actualAmount / 1000);
                 merchantsHome = Math.max(0, merchantsHome - merchantsUsed);
 
+                // Increment consecutive sell counter
+                sessionData.consecutiveSells += 1;
+                console.log(`[BGM] [SELL DEBUG] Consecutive sells: ${sessionData.consecutiveSells}/${settings.MAX_CONSECUTIVE_SELLS}`);
+
                 setLocalStorage(getVillageStorageKey('backgroundMonitorSession'), sessionData);
                 updateStatsDisplay();
                 lastTransactionTime = Date.now();
 
                 const randomTransactionDelay = Math.floor(Math.random() * 2001) + 5000;
-                updateStatus(`✅ Sold ${actualAmount} ${resource} for ${earned} PP (cooldown: ${randomTransactionDelay / 1000}s)`, '#4CAF50');
+                updateStatus(`✅ Sold ${actualAmount} ${resource} for ${earned} PP (cooldown: ${randomTransactionDelay / 1000}s) [${sessionData.consecutiveSells}/${settings.MAX_CONSECUTIVE_SELLS}]`, '#4CAF50');
                 transactionInProgress = false; // Clear flag on success
                 console.log(`[BGM] Sell transaction flag CLEARED - success`);
 
             } else {
                 let errorMsg = 'Sell failed';
                 if (confirmData.response && confirmData.response.transactions) {
-                    confirmData.response.transactions.forEach(t => {
-                        if (t.error) errorMsg += ': ' + t.error;
+                    confirmData.response.transactions.forEach((t, index) => {
+                        if (t.error) {
+                            errorMsg += ': ' + t.error;
+                            console.log(`[BGM] [SELL ERROR] Transaction ${index} error: ${t.error}`);
+                        }
                     });
+                } else if (confirmData.response && confirmData.response.transactions && confirmData.response.transactions[0] && confirmData.response.transactions[0].error) {
+                    // Additional check for the specific case mentioned
+                    const transactionError = confirmData.response.transactions[0].error;
+                    errorMsg += ': ' + transactionError;
+                    console.log(`[BGM] [SELL ERROR] Transaction error: ${transactionError}`);
                 }
+                
+                // Print full response for debugging
+                console.log(`[BGM] [SELL ERROR] Full confirmData response:`, JSON.stringify(confirmData, null, 2));
+                
                 updateStatus(errorMsg, '#f44336');
                 transactionInProgress = false; // Clear flag on failure
                 console.log(`[BGM] Sell transaction flag CLEARED - failure`);
@@ -3653,6 +3694,12 @@
                 sessionData.totalSpent += cost;
                 sessionData[`total${resource.charAt(0).toUpperCase() + resource.slice(1)}`] += actualAmount;
 
+                // Reset consecutive sell counter on successful buy
+                if (sessionData.consecutiveSells > 0) {
+                    console.log(`[BGM] [BUY DEBUG] Resetting consecutive sells counter from ${sessionData.consecutiveSells} to 0`);
+                    sessionData.consecutiveSells = 0;
+                }
+
                 setLocalStorage(getVillageStorageKey('backgroundMonitorSession'), sessionData);
                 updateStatsDisplay();
 
@@ -3696,6 +3743,14 @@
         isRunning = false;
         transactionInProgress = false; // Clear any pending transaction flags
         priceCheckInProgress = false; // Clear any pending price check flags
+        
+        // Reset consecutive sells counter when manually stopping monitoring
+        if (sessionData.consecutiveSells > 0) {
+            console.log(`[BGM] Resetting consecutive sells counter from ${sessionData.consecutiveSells} to 0 (manual stop)`);
+            sessionData.consecutiveSells = 0;
+            setLocalStorage(getVillageStorageKey('backgroundMonitorSession'), sessionData);
+        }
+        
         updateStatus('Stopped', '#f44336');
         updatePageTitle(false); // Reset page title
         updateCurrentTask('Stopped');
@@ -3719,6 +3774,13 @@
         }
 
         console.log('[BGM] Starting monitor...');
+
+        // Reset consecutive sells counter when manually starting monitoring
+        if (sessionData.consecutiveSells > 0) {
+            console.log(`[BGM] Resetting consecutive sells counter from ${sessionData.consecutiveSells} to 0 (manual start)`);
+            sessionData.consecutiveSells = 0;
+            setLocalStorage(getVillageStorageKey('backgroundMonitorSession'), sessionData);
+        }
 
         // Check if we're in recovery mode and attempt immediate recovery
         if (sessionExpired || botProtectionActive) {
