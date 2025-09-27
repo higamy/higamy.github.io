@@ -85,12 +85,14 @@
         soldStone: 0,
         soldIron: 0,
         sessionStart: Date.now(),
-        consecutiveSells: 0
+        consecutiveFailedSells: 0
     };
     
-    // Ensure consecutiveSells property exists for existing sessions
-    if (sessionData.consecutiveSells === undefined) {
-        sessionData.consecutiveSells = 0;
+    // Migrate old consecutiveSells to consecutiveFailedSells and ensure property exists
+    if (sessionData.consecutiveFailedSells === undefined) {
+        sessionData.consecutiveFailedSells = sessionData.consecutiveSells || 0;
+        // Remove old property if it exists
+        delete sessionData.consecutiveSells;
     }
 
     let isRunning = false;
@@ -3104,12 +3106,12 @@
                 if (sellOpportunity) {
                     console.log(`[BGM] [SELL DEBUG] Found sell opportunity, proceeding with sale...`);
                     
-                    // Check consecutive sell limit
-                    if (sessionData.consecutiveSells >= settings.MAX_CONSECUTIVE_SELLS) {
-                        console.log(`[BGM] [SELL DEBUG] Max consecutive sells limit reached (${settings.MAX_CONSECUTIVE_SELLS}), stopping monitoring`);
-                        updateStatus(`Max consecutive sells limit reached (${settings.MAX_CONSECUTIVE_SELLS}) - stopping monitoring`, '#f44336');
-                        updateCurrentTask('Consecutive sell limit reached - monitoring stopped');
-                        stopMonitoring();
+                    // Check consecutive failed sell limit
+                    if (sessionData.consecutiveFailedSells >= settings.MAX_CONSECUTIVE_SELLS) {
+                        console.log(`[BGM] [SELL DEBUG] Max consecutive failed sells limit reached (${settings.MAX_CONSECUTIVE_SELLS}), stopping monitoring`);
+                        updateStatus(`Max consecutive failed sells limit reached (${settings.MAX_CONSECUTIVE_SELLS}) - stopping monitoring`, '#f44336');
+                        updateCurrentTask('Consecutive failed sell limit reached - monitoring stopped');
+                        stopMonitor();
                         return;
                     }
                     
@@ -3117,7 +3119,7 @@
                         updateStatus(`DRY RUN: Would sell ${sellOpportunity.amount} ${sellOpportunity.resource}`, '#9E9E9E');
                         updateCurrentTask('DRY RUN: Sell opportunity found');
                     } else {
-                        updateCurrentTask(`Executing sell: ${sellOpportunity.amount} ${sellOpportunity.resource} (${sessionData.consecutiveSells + 1}/${settings.MAX_CONSECUTIVE_SELLS})`);
+                        updateCurrentTask(`Executing sell: ${sellOpportunity.amount} ${sellOpportunity.resource} (failed: ${sessionData.consecutiveFailedSells}/${settings.MAX_CONSECUTIVE_SELLS})`);
                         transactionOccurred = true;
                         transactionStartTime = Date.now();
                         await executeSell(sellOpportunity.resource, sellOpportunity.amount, allData.game_data.csrf);
@@ -3539,16 +3541,18 @@
                 const merchantsUsed = completedTransaction.merchants_required || Math.ceil(actualAmount / 1000);
                 merchantsHome = Math.max(0, merchantsHome - merchantsUsed);
 
-                // Increment consecutive sell counter
-                sessionData.consecutiveSells += 1;
-                console.log(`[BGM] [SELL DEBUG] Consecutive sells: ${sessionData.consecutiveSells}/${settings.MAX_CONSECUTIVE_SELLS}`);
+                // Reset consecutive failed sell counter on successful sell
+                if (sessionData.consecutiveFailedSells > 0) {
+                    console.log(`[BGM] [SELL DEBUG] Successful sell - resetting consecutive failed sells from ${sessionData.consecutiveFailedSells} to 0`);
+                    sessionData.consecutiveFailedSells = 0;
+                }
 
                 setLocalStorage(getVillageStorageKey('backgroundMonitorSession'), sessionData);
                 updateStatsDisplay();
                 lastTransactionTime = Date.now();
 
                 const randomTransactionDelay = Math.floor(Math.random() * 2001) + 5000;
-                updateStatus(`✅ Sold ${actualAmount} ${resource} for ${earned} PP (cooldown: ${randomTransactionDelay / 1000}s) [${sessionData.consecutiveSells}/${settings.MAX_CONSECUTIVE_SELLS}]`, '#4CAF50');
+                updateStatus(`✅ Sold ${actualAmount} ${resource} for ${earned} PP (cooldown: ${randomTransactionDelay / 1000}s)`, '#4CAF50');
                 transactionInProgress = false; // Clear flag on success
                 console.log(`[BGM] Sell transaction flag CLEARED - success`);
 
@@ -3571,12 +3575,22 @@
                 // Print full response for debugging
                 console.log(`[BGM] [SELL ERROR] Full confirmData response:`, JSON.stringify(confirmData, null, 2));
                 
+                // Increment consecutive failed sell counter
+                sessionData.consecutiveFailedSells += 1;
+                console.log(`[BGM] [SELL DEBUG] Failed sell - consecutive failed sells: ${sessionData.consecutiveFailedSells}/${settings.MAX_CONSECUTIVE_SELLS}`);
+                setLocalStorage(getVillageStorageKey('backgroundMonitorSession'), sessionData);
+                
                 updateStatus(errorMsg, '#f44336');
                 transactionInProgress = false; // Clear flag on failure
                 console.log(`[BGM] Sell transaction flag CLEARED - failure`);
             }
 
         } catch (error) {
+            // Increment consecutive failed sell counter on exception
+            sessionData.consecutiveFailedSells += 1;
+            console.log(`[BGM] [SELL DEBUG] Exception during sell - consecutive failed sells: ${sessionData.consecutiveFailedSells}/${settings.MAX_CONSECUTIVE_SELLS}`);
+            setLocalStorage(getVillageStorageKey('backgroundMonitorSession'), sessionData);
+            
             updateStatus('Sell error: ' + error.message, '#f44336');
             transactionInProgress = false; // Clear flag on exception
             console.log(`[BGM] Sell transaction flag CLEARED - exception`);
@@ -3694,11 +3708,7 @@
                 sessionData.totalSpent += cost;
                 sessionData[`total${resource.charAt(0).toUpperCase() + resource.slice(1)}`] += actualAmount;
 
-                // Reset consecutive sell counter on successful buy
-                if (sessionData.consecutiveSells > 0) {
-                    console.log(`[BGM] [BUY DEBUG] Resetting consecutive sells counter from ${sessionData.consecutiveSells} to 0`);
-                    sessionData.consecutiveSells = 0;
-                }
+                // Note: Buy transactions don't affect consecutive failed sell counter
 
                 setLocalStorage(getVillageStorageKey('backgroundMonitorSession'), sessionData);
                 updateStatsDisplay();
@@ -3744,10 +3754,10 @@
         transactionInProgress = false; // Clear any pending transaction flags
         priceCheckInProgress = false; // Clear any pending price check flags
         
-        // Reset consecutive sells counter when manually stopping monitoring
-        if (sessionData.consecutiveSells > 0) {
-            console.log(`[BGM] Resetting consecutive sells counter from ${sessionData.consecutiveSells} to 0 (manual stop)`);
-            sessionData.consecutiveSells = 0;
+        // Reset consecutive failed sells counter when manually stopping monitoring
+        if (sessionData.consecutiveFailedSells > 0) {
+            console.log(`[BGM] Resetting consecutive failed sells counter from ${sessionData.consecutiveFailedSells} to 0 (manual stop)`);
+            sessionData.consecutiveFailedSells = 0;
             setLocalStorage(getVillageStorageKey('backgroundMonitorSession'), sessionData);
         }
         
@@ -3775,10 +3785,10 @@
 
         console.log('[BGM] Starting monitor...');
 
-        // Reset consecutive sells counter when manually starting monitoring
-        if (sessionData.consecutiveSells > 0) {
-            console.log(`[BGM] Resetting consecutive sells counter from ${sessionData.consecutiveSells} to 0 (manual start)`);
-            sessionData.consecutiveSells = 0;
+        // Reset consecutive failed sells counter when manually starting monitoring
+        if (sessionData.consecutiveFailedSells > 0) {
+            console.log(`[BGM] Resetting consecutive failed sells counter from ${sessionData.consecutiveFailedSells} to 0 (manual start)`);
+            sessionData.consecutiveFailedSells = 0;
             setLocalStorage(getVillageStorageKey('backgroundMonitorSession'), sessionData);
         }
 
