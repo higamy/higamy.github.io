@@ -3,7 +3,9 @@ const urlParams = new URLSearchParams(window.location.search);
 const screenParam = urlParams.get('screen');
 const modeParam = urlParams.get('mode');
 
-serverLocation = serverLocation || 'https://higamy.com';
+if (typeof serverLocation === 'undefined') {
+    serverLocation = 'https://higamy.com';
+}
 
 if ((modeParam != 'exchange') | (screenParam != 'market')) {
     UI.SuccessMessage("Redirecting to PP Exchange...", 1000)
