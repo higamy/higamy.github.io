@@ -7,21 +7,7 @@
             "start_url_stats": "www",
             "domain_stats": "com",
             "worlds": [
-                146,
-                147,
-                148,
-                149
-            ],
-            "date_format": "%d.%m.%Y"
-        },
-        {
-            "base_url": "plemiona",
-            "server": "pl",
-            "domain_game": "pl",
-            "start_url_stats": "pl",
-            "domain_stats": "com",
-            "worlds": [
-                215
+                152
             ],
             "date_format": "%d.%m.%Y"
         }
