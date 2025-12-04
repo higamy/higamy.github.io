@@ -73,6 +73,10 @@ input[type="checkbox"] {
     background: url(https://dsen.innogamescdn.com/asset/c1748d3c/graphic/bbcodes/bbcodes.png) no-repeat -100px 0px;
 }
 
+.topPlayersIcon {
+    background: url(https://dsen.innogamescdn.com/asset/c1748d3c/graphic/bbcodes/bbcodes.png) no-repeat -120px 0px;
+}
+
 .dropdown {
     margin: 10px 00px;
     display: flex;
@@ -115,6 +119,15 @@ input[type="checkbox"] {
 
 .playerContainer {
     background-color: var(--popup-colour-player);
+}
+
+.topPlayersContainer {
+    background-color: #ffd9a8;
+    border-color: #ff8800;
+}
+
+.group-popup-top {
+    background-color: #ffd9a8;
 }
 
 .removeGroupButton {
@@ -227,4 +240,22 @@ input[type="checkbox"] {
     flex-direction: row;
     justify-content: space-between;
     padding: 0px 10px;
+}
+
+#topPlayersSection {
+    margin: 20px 10px;
+    padding: 10px;
+    background-color: rgba(255, 255, 255, 0.7);
+    border-radius: 10px;
+}
+
+#topPlayersSection h5 {
+    margin-bottom: 10px;
+    font-size: 0.9rem;
+}
+
+#topPlayersButtonContainer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
 }

@@ -61,6 +61,9 @@ const groupTribeCheckbox = document.getElementById("groupTribeCheckbox");
 const groupTypeCheckbox = document.getElementById("groupTypeCheckbox");
 const groupTypeDiv = document.getElementById("groupTypeDiv");
 
+const topPlayersSection = document.getElementById("topPlayersSection");
+const topPlayersButtonContainer = document.getElementById("topPlayersButtonContainer");
+
 
 let serverSelectors = [];
 let selectedPlayers = [];
@@ -134,15 +137,47 @@ function getDistinctColors(n, seed) {
 
 
 function getTopNPlayers(n = 10, metric = "current_points") {
+    // Filter out players that don't have the metric
+    let playersWithMetric = current_data['players'].filter(player => player[metric] != null && player[metric] !== undefined);
 
-    let topPlayers = current_data['players'].sort(function (a, b) {
+    // Sort by the metric (descending)
+    let topPlayers = playersWithMetric.sort(function (a, b) {
         return b[metric] - a[metric];
     });
 
-    //new GroupSelector(`Top ${n}`,  topPlayers.slice(0,n), Group.PLAYER).selectGroup(); 
-
     console.log("result: ", metric, topPlayers.slice(0, n))
     return topPlayers.slice(0, n)
+}
+
+function createTopPlayersButtons() {
+    // Clear existing buttons
+    topPlayersButtonContainer.innerHTML = "";
+
+    // Show the section
+    topPlayersSection.classList.remove("hidden");
+
+    // Create a button for each metric
+    for (let statistic of availableStatistics) {
+        const button = document.createElement('button');
+        button.classList.add('btn', 'btn-outline-primary', 'btn-sm', 'm-1');
+        button.innerHTML = `Top 10 ${statistic}`;
+
+        button.addEventListener('click', () => {
+            // Get the top 10 players for this metric
+            let metricKey = `current_${statistic.toLowerCase()}`;
+            let topPlayers = getTopNPlayers(10, metricKey);
+
+            if (topPlayers.length > 0) {
+                // Create a group selector with the top players
+                let groupName = `Top 10 ${statistic}`;
+                new GroupSelector(groupName, topPlayers, Group.TOP_PLAYERS).selectGroup();
+            } else {
+                console.warn(`No players found with metric: ${statistic}`);
+            }
+        });
+
+        topPlayersButtonContainer.appendChild(button);
+    }
 }
 
 
@@ -257,6 +292,8 @@ class ServerSelector {
                         graphAdder.placeholder = "Start typing a player or tribe name..."
                         graphAdder.disabled = false;
 
+                        // Create the top players buttons
+                        createTopPlayersButtons();
 
                         resolve(data);
                     })
@@ -344,6 +381,26 @@ class ServerSelector {
                         return x.id == player;
                     })
                     new GroupSelector(matchingPlayerData[0].name, matchingPlayerData[0], Group.PLAYER).selectGroup();
+                });
+            }
+
+            // Load top groups from query string
+            let queryParamTopGroups = getQueryParam('topGroups');
+            if (queryParamTopGroups) {
+                queryParamTopGroups = queryParamTopGroups.split("_");
+
+                queryParamTopGroups.forEach((statistic, i) => {
+                    // Get the top 10 players for this metric
+                    let metricKey = `current_${statistic.toLowerCase()}`;
+                    let topPlayers = getTopNPlayers(10, metricKey);
+
+                    if (topPlayers.length > 0) {
+                        // Create a group selector with the top players
+                        let groupName = `Top 10 ${statistic}`;
+                        new GroupSelector(groupName, topPlayers, Group.TOP_PLAYERS).selectGroup();
+                    } else {
+                        console.warn(`No players found with metric: ${statistic}`);
+                    }
                 });
             }
         })
@@ -502,7 +559,11 @@ class SelectedGroupContainer {
         groupText.classList.add('groupText');
         groupText.innerHTML = inputGroup.Name;
 
-        if (inputGroup.Type == Group.PLAYER) { groupContainer.classList.add("playerContainer") }
+        if (inputGroup.Type == Group.PLAYER) {
+            groupContainer.classList.add("playerContainer")
+        } else if (inputGroup.Type == Group.TOP_PLAYERS) {
+            groupContainer.classList.add("topPlayersContainer")
+        }
 
         const removeGroupButton = document.createElement('span');
         removeGroupButton.classList.add('removeGroupButton');
@@ -655,7 +716,12 @@ class GroupSelector {
     // Is this group already selected?
     get Selected() {
         for (let group of selectedGroups) {
-            if (group.Data == this.Data) return true;
+            // For TOP_PLAYERS, compare by name since Data is an array
+            if (this.Type == Group.TOP_PLAYERS && group.Type == Group.TOP_PLAYERS) {
+                if (group.Name == this.Name) return true;
+            } else {
+                if (group.Data == this.Data) return true;
+            }
         }
         return false
     }
@@ -676,7 +742,8 @@ class GroupSelector {
             this.PlayerData = [Data];
         }
         else if (Type == Group.TOP_PLAYERS) {
-            this.PlayerData = Data.Data;
+            // Data is already an array of player objects
+            this.PlayerData = Data;
         }
 
         const tribePopup = document.createElement("div");
@@ -692,6 +759,10 @@ class GroupSelector {
                 break;
             case Group.TRIBE:
                 groupIcon.classList.add("tribeIcon");
+                break;
+            case Group.TOP_PLAYERS:
+                groupIcon.classList.add("topPlayersIcon");
+                tribePopup.classList.add("group-popup-top");
                 break;
         }
 
@@ -847,13 +918,23 @@ function updateGroupsInQueryString() {
 
     let players = [];
     let tribes = [];
+    let topGroups = [];
 
     for (let group of selectedGroups) {
-        if (group.Type == Group.TRIBE) tribes.push(group.Data.id); else players.push(group.Data.id);
+        if (group.Type == Group.TRIBE) {
+            tribes.push(group.Data.id);
+        } else if (group.Type == Group.PLAYER) {
+            players.push(group.Data.id);
+        } else if (group.Type == Group.TOP_PLAYERS) {
+            // Extract the statistic from the group name (e.g., "Top 10 Points" -> "Points")
+            let statistic = group.Name.replace("Top 10 ", "");
+            topGroups.push(statistic);
+        }
     }
 
     updateQueryParams("players", players.join("_"));
     updateQueryParams("tribes", tribes.join("_"));
+    updateQueryParams("topGroups", topGroups.join("_"));
 }
 
 let layoutVal;
