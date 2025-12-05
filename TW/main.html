@@ -24,6 +24,12 @@
     <main>
         <div id="mainContainer">
             <div id="plotSelector">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                    <h3 class="text-muted" style="margin: 0;">Tribal Wars Stats Viewer</h3>
+                    <button id="helpButton" class="btn btn-info btn-sm" type="button">
+                        ❓ Help
+                    </button>
+                </div>
                 <div id="dropdownHolder">
                     <div class="dropdown">
                         <label for="serverSelector" class="buttonLabel text-muted">Server</label>
@@ -83,6 +89,64 @@
         </div>
 
     </main>
+
+    <!-- Help Modal -->
+    <div class="modal fade" id="helpModal" tabindex="-1" aria-labelledby="helpModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="helpModalLabel">Tribal Wars Stats Viewer - Help Guide</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <h6>🎯 Basic Features</h6>
+                    <ul>
+                        <li><strong>Server/World Selection:</strong> Use the dropdowns at the top to select which Tribal Wars server and world you want to view statistics for.</li>
+                        <li><strong>Metric Selection:</strong> Choose which statistic to track (Points, Rank, Villages, OD, ODA, ODD, Daily stats, etc.).</li>
+                        <li><strong>Search:</strong> Type in the search box to find players or tribes. Click on a result to add them to your chart.</li>
+                    </ul>
+
+                    <h6>📊 Chart Legend</h6>
+                    <ul>
+                        <li><strong>Player Rankings:</strong> Each player's name in the legend shows their current global rank for the selected metric in brackets. For example, "PlayerName (#5)" means they're ranked 5th globally for that metric.</li>
+                        <li><strong>Click Legend Items:</strong> Click on any name in the legend to show/hide that player or tribe on the chart.</li>
+                        <li><strong>Zoom:</strong> Click and drag on the chart to zoom in. Double-click to reset zoom.</li>
+                    </ul>
+
+                    <h6>🏆 Top 10 Players</h6>
+                    <ul>
+                        <li>Once a world is loaded, you'll see buttons for "Top 10 [Metric]" below the search box.</li>
+                        <li>Click any button to add the top 10 players for that specific metric to your chart.</li>
+                        <li>This is great for comparing yourself to the leaders!</li>
+                    </ul>
+
+                    <h6>👥 Tribe Grouping</h6>
+                    <ul>
+                        <li><strong>Group Tribe:</strong> When you have tribes selected, check this option to combine all tribe members into a single line showing tribe totals.</li>
+                        <li><strong>Use Average:</strong> When grouping tribes, check this to show the average per player instead of the total.</li>
+                    </ul>
+
+                    <h6>🔗 Sharing & URLs</h6>
+                    <ul>
+                        <li>The URL automatically updates as you make selections.</li>
+                        <li>You can share your URL with others, and they'll see the same chart!</li>
+                        <li>Bookmark URLs to quickly return to your favorite views.</li>
+                        <li>URL includes: server, world, metric, selected players/tribes, and top 10 groups.</li>
+                    </ul>
+
+                    <h6>💡 Tips</h6>
+                    <ul>
+                        <li>Remove players/tribes by clicking the ❌ next to their name in the selected groups section.</li>
+                        <li>Mix and match: you can combine individual players, tribes, and top 10 groups on the same chart.</li>
+                        <li>The data updates daily based on the latest Tribal Wars statistics.</li>
+                    </ul>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/seedrandom/3.0.5/seedrandom.min.js"></script>
     <script src="script.js"></script>

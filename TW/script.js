@@ -882,8 +882,26 @@ function updatePlayerList() {
             for (let i = 0; i < player.dates.length; i++) {
                 player_data.push([player.dates[i], player[selectedMetric][i]])
             }
+
+            // Calculate global rank for this player and metric
+            let playerName = player.name;
+            let currentMetricName = `current_${selectedMetric.toLowerCase()}`;
+            if (currentMetricName in player && player[currentMetricName] !== null && player[currentMetricName] !== undefined) {
+                // Get all players sorted by this metric
+                let allPlayersSorted = current_data.players
+                    .filter(p => p[currentMetricName] !== null && p[currentMetricName] !== undefined)
+                    .sort((a, b) => b[currentMetricName] - a[currentMetricName]);
+
+                // Find this player's rank (1-indexed)
+                let rank = allPlayersSorted.findIndex(p => p.name === player.name) + 1;
+
+                if (rank > 0) {
+                    playerName = `${player.name} (#${rank})`;
+                }
+            }
+
             selectedData.push({
-                name: player.name,
+                name: playerName,
                 data: player_data
             });
         }
@@ -1095,4 +1113,13 @@ for (let statistic of availableStatistics) {
     })
 
     if (selectedMetric == statistic) { dropDownOption.activate() };
+}
+
+// Set up the help button to show the help modal
+const helpButton = document.getElementById("helpButton");
+if (helpButton) {
+    helpButton.addEventListener("click", () => {
+        const helpModal = new bootstrap.Modal(document.getElementById('helpModal'));
+        helpModal.show();
+    });
 }
