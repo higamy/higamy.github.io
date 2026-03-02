@@ -981,10 +981,12 @@ function getRandomElements(arr, n) {
     return shuffled.slice(0, n);
 }
 
+// After (fixed)
 function getLatestDate(dates) {
-    return dates.reduce((latest, current) => {
-        return [(new Date(current) > new Date(latest)) ? current : latest];
+    const latest = dates.reduce((latest, current) => {
+        return (new Date(current) > new Date(latest)) ? current : latest;
     });
+    return [latest];
 }
 
 let confirmedSends;
