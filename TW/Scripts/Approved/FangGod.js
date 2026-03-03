@@ -1,7 +1,7 @@
 /*
 * Script Name: Fang God
-* Version: 1.2.0
-* Last Updated: 27th August 2024
+* Version: 1.2.1
+* Last Updated: 2nd March 2026
 * Author: higamy
 * Author URL: 
 * Author Contact: higamy (Discord)
@@ -32,7 +32,7 @@ const VILLAGE_TIME = 'mapVillageTime_higamy'; // localStorage key name
 const VILLAGES_LIST = 'mapVillagesList_higamy'; // localStorage key name
 const WORLD_SETTINGS = 'worldSettings_higamy'; // localStorage key name
 const TIME_INTERVAL = 60 * 60 * 1000; // fetch data every hour
-const FANG_GOD_VERSION = "1.2.0";
+const FANG_GOD_VERSION = "1.2.1";
 
 let villages;
 
@@ -48,6 +48,7 @@ let sendOnlyAfterFinalNuke;
 let selectGroupToSendFrom;
 let includeMediumAttacks;
 let keepFangGreen;
+let avoidNightBonus;
 
 // Variables that will need to be user settings later
 let coords;
@@ -276,7 +277,11 @@ function storeSettings() {
     let settings = { 'version': FANG_GOD_VERSION }
 
     for (let settingsInput of settingsInputs) {
-        settings[settingsInput.getAttribute('id')] = settingsInput.value;
+        if (settingsInput.getAttribute('settingType') == 'checkbox') {
+            settings[settingsInput.getAttribute('id')] = settingsInput.checked ? 'on' : 'off';
+        } else {
+            settings[settingsInput.getAttribute('id')] = settingsInput.value;
+        }
     }
     localStorage.setItem('FangGod_Settings', JSON.stringify(settings));
     console.log(settings)
@@ -310,42 +315,55 @@ let allUnits = [];
 let fangFinderUI;
 
 // Load the world settings if they have already been stored
-if (localStorage.getItem(WORLD_SETTINGS) == null) {
+// Re-fetch if settings are missing or from an older version
+let _existingSettings = localStorage.getItem(WORLD_SETTINGS) ? JSON.parse(localStorage.getItem(WORLD_SETTINGS)) : null;
+if (_existingSettings == null || _existingSettings['scriptVersion'] != FANG_GOD_VERSION) {
     $.get('interface.php?func=get_unit_info', function (unitData) {
 
         $.get('interface.php?func=get_building_info', function (buildingData) {
 
-            console.log("unitData", unitData)
+            $.get('interface.php?func=get_config', function (configData) {
 
-            // Get the ram speed
-            let ramSpeed = parseFloat($(unitData).find("ram > speed").first().text());
+                console.log("unitData", unitData)
 
-            // Identify if it is a watchtower world
-            let watchtowerWorld = false;
-            if ($(buildingData).find("watchtower").length == 1) {
-                watchtowerWorld = true;
-            }
+                // Get the ram speed
+                let ramSpeed = parseFloat($(unitData).find("ram > speed").first().text());
 
-            let unitList = [];
-            let nameItems = unitData.children[0].children;
-            for (let unit of nameItems) {
-                if ((unit['tagName'] != 'snob') && (unit['tagName'] != 'militia'))
-                    unitList.push(unit['tagName'])
-            }
+                // Identify if it is a watchtower world
+                let watchtowerWorld = false;
+                if ($(buildingData).find("watchtower").length == 1) {
+                    watchtowerWorld = true;
+                }
 
-            let settingsData = {
-                'scriptVersion': FANG_GOD_VERSION,
-                'ramSpeed': ramSpeed,
-                'unitList': unitList,
-                'watchtowerWorld': watchtowerWorld
-            }
+                let unitList = [];
+                let nameItems = unitData.children[0].children;
+                for (let unit of nameItems) {
+                    if ((unit['tagName'] != 'snob') && (unit['tagName'] != 'militia'))
+                        unitList.push(unit['tagName'])
+                }
 
-            console.log("world settings", settingsData)
-            // Store the settings
-            localStorage.setItem(WORLD_SETTINGS, JSON.stringify(settingsData));
+                // Get night bonus settings
+                let nightBonusActive = parseInt($(configData).find("night > active").first().text()) || 0;
+                let nightBonusStartHour = parseInt($(configData).find("night > start_hour").first().text()) || 0;
+                let nightBonusEndHour = parseInt($(configData).find("night > end_hour").first().text()) || 0;
 
-            // Create the UI
-            createFangGodUI(settingsData);
+                let settingsData = {
+                    'scriptVersion': FANG_GOD_VERSION,
+                    'ramSpeed': ramSpeed,
+                    'unitList': unitList,
+                    'watchtowerWorld': watchtowerWorld,
+                    'nightBonusActive': nightBonusActive,
+                    'nightBonusStartHour': nightBonusStartHour,
+                    'nightBonusEndHour': nightBonusEndHour
+                }
+
+                console.log("world settings", settingsData)
+                // Store the settings
+                localStorage.setItem(WORLD_SETTINGS, JSON.stringify(settingsData));
+
+                // Create the UI
+                createFangGodUI(settingsData);
+            });
         });
 
 
@@ -655,6 +673,10 @@ function createFangGodUI(settingsData) {
                         <span>Send only after final nuke?</span>
                         <input type="checkbox" name="" id="sendOnlyAfterFinalNuke" checked settingType="checkbox">
                     </div>
+                    <div id="avoidNightBonusDiv" class="hidden">
+                        <span>Avoid night bonus?</span>
+                        <input type="checkbox" name="" id="avoidNightBonus" checked settingType="checkbox">
+                    </div>
 
                     <div>
                         <span>Number of launches per tab</span>
@@ -770,6 +792,15 @@ function createFangGodUI(settingsData) {
                 </div>
 
                 <div class="settingsDiv">
+                    <span class="settingSpan">Avoid night bonus?</span>
+                    <span>If the world has night bonus enabled, this will ensure fangs do not land during the
+                        defender's night bonus window (when they have 2x defence). For worlds with dynamic night bonus
+                        (player-configurable), the script will look up each target player's individual night bonus
+                        window. A 20 minute buffer is added before the night bonus starts to account for timing
+                        uncertainty.</span>
+                </div>
+
+                <div class="settingsDiv">
                     <span class="settingSpan">Number of launches per tab</span>
                     <span>The launches will be split over multiple browser tabs. To avoid overloading the browser in the
                         case of hundreds of fangs, these are split into batches, very similar to the beloved Costache
@@ -791,8 +822,6 @@ function createFangGodUI(settingsData) {
             Please contact higamy if you would like any other features or have feedback on which of these to prioritise.
 
             <ul>
-                <li>Avoid sending fangs in night bonus. Currently the script will plan fangs in night bonus (if
-                    applicable to world settings).</li>
                 <li>Option to filter out tribemate co-ordinates automatically.</li>
                 <li>Identify existing fangs after nukes to avoid "over-fanging" a village.</li>
                 <li>Support for running from mobile browser.</li>
@@ -833,6 +862,7 @@ function createFangGodUI(settingsData) {
                     <li>v1.0.0 - Initial release</li>
                     <li>v1.1.0 - Added caching of world config data so it isn't queried every time the script is run</li>
                     <li>v1.2.0 - Fixed bug in how many tabs to open</li>
+                    <li>v1.2.1 - Fixed crash with 3+ nukes on same village, fixed checkbox settings not saving, added night bonus avoidance</li>
                 </ul>
             </div>
         </div>
@@ -855,6 +885,7 @@ function createFangGodUI(settingsData) {
     selectGroupToSendFrom = document.getElementById('selectGroupToSendFrom');
     includeMediumAttacks = document.getElementById('includeMediumAttacks');
     keepFangGreen = document.getElementById('keepFangGreen');
+    avoidNightBonus = document.getElementById('avoidNightBonus');
 
 
     // Collect the ram speed
@@ -865,6 +896,11 @@ function createFangGodUI(settingsData) {
         keepFangGreen.setAttribute('checked', true);
         document.getElementById('spanWTRecommendation').classList.remove('hidden');
     };
+
+    // Show the night bonus checkbox if the world has night bonus
+    if (settingsData['nightBonusActive'] && settingsData['nightBonusActive'] > 0) {
+        document.getElementById('avoidNightBonusDiv').classList.remove('hidden');
+    }
 
     // Group to select
 
@@ -981,12 +1017,78 @@ function getRandomElements(arr, n) {
     return shuffled.slice(0, n);
 }
 
-// After (fixed)
 function getLatestDate(dates) {
     const latest = dates.reduce((latest, current) => {
         return (new Date(current) > new Date(latest)) ? current : latest;
     });
     return [latest];
+}
+
+// Check if a time-of-day (in ms since midnight) falls within the night bonus window
+// Returns true if in the bonus window (attack should be avoided), false otherwise
+// Adds a 20 minute buffer before the bonus starts
+function isInNightBonus(startHourStr, endHourStr, landTime) {
+    let time_start = parseInt(startHourStr.split(":")[0]) * 3600 * 1000 + parseInt(startHourStr.split(":")[1]) * 60000;
+    let time_end = parseInt(endHourStr.split(":")[0]) * 3600 * 1000 + parseInt(endHourStr.split(":")[1]) * 60000;
+    let time_target = landTime.getHours() * 3600 * 1000 + landTime.getMinutes() * 60000 + landTime.getSeconds() * 1000;
+
+    // Add 20 minute buffer before start
+    if (time_start == 0)
+        time_start = 23 * 3600 * 1000 + 40 * 60000;
+    else
+        time_start -= 20 * 60000;
+
+    if (time_start < time_end) {
+        return (time_target > time_start && time_target < time_end);
+    }
+    else {
+        // Window spans midnight
+        return !(time_target > time_end && time_target < time_start);
+    }
+}
+
+// Fetch per-player night bonus windows for dynamic night bonus (active=2)
+// Takes an array of {playerId, villageId} objects (one village per unique player)
+// Returns a Map of playerId -> {start_hour, end_hour}
+function fetchNightBonusForPlayers(playerVillages) {
+    return new Promise((resolve, reject) => {
+        let nightBonusMap = new Map();
+        let queue = [...playerVillages];
+
+        function fetchNext() {
+            if (queue.length === 0) {
+                resolve(nightBonusMap);
+                return;
+            }
+
+            let item = queue.pop();
+            let startTime = new Date().getTime();
+
+            $.ajax({
+                url: game_data.link_base_pure + `map&ajax=map_info&source=${item.villageId}&target=${item.villageId}&`,
+                method: 'get',
+                success: (data) => {
+                    let interval = data.night_bonus.current_interval.match(/[0-9]{2}:[0-9]{2}/g);
+                    nightBonusMap.set(item.playerId, {
+                        start_hour: interval[0],
+                        end_hour: interval[1]
+                    });
+
+                    let elapsed = new Date().getTime() - startTime;
+                    setTimeout(() => {
+                        UI.SuccessMessage(`Fetching night bonus: ${queue.length} remaining`);
+                        fetchNext();
+                    }, Math.max(0, 200 - elapsed));
+                },
+                error: (err) => {
+                    console.error('Failed to fetch night bonus for player', item.playerId, err);
+                    fetchNext();
+                }
+            });
+        }
+
+        fetchNext();
+    });
 }
 
 let confirmedSends;
@@ -1061,6 +1163,24 @@ async function init() {
 
     console.log(filteredArray);
 
+    // Fetch night bonus data if needed
+    let settingsData = JSON.parse(localStorage.getItem(WORLD_SETTINGS));
+    let nightBonusMap = new Map(); // playerId -> {start_hour, end_hour}
+    let nightBonusEnabled = avoidNightBonus.checked && settingsData['nightBonusActive'] > 0;
+
+    if (nightBonusEnabled) {
+        // Fetch per-player night bonus via map info endpoint (works for both static and dynamic worlds)
+        let uniquePlayers = new Map();
+        for (let village of filteredArray) {
+            let playerId = village[4];
+            if (!uniquePlayers.has(playerId)) {
+                uniquePlayers.set(playerId, { playerId: playerId, villageId: village[0] });
+            }
+        }
+        loadingStatus.innerHTML = `Fetching night bonus for ${uniquePlayers.size} players...`;
+        nightBonusMap = await fetchNightBonusForPlayers(Array.from(uniquePlayers.values()));
+        console.log("Night bonus map", nightBonusMap);
+    }
 
     console.log("troopSettings", troopSettings);
 
@@ -1172,7 +1292,17 @@ async function init() {
                         let travelTime = Math.hypot(parseInt(nukeVillage['data'][2]) - sourceVillage['x'], parseInt(nukeVillage['data'][3]) - sourceVillage['y']) * ramSpeed;
                         let landTime = new Date(now.getTime() + travelTime * 60 * 1000);
 
-                        if ((landTime >= earliestLandTime) && (landTime <= latestLandTime)) {
+                        // Check if landing time falls in the defender's night bonus
+                        let inNightBonus = false;
+                        if (nightBonusEnabled) {
+                            let targetPlayerId = nukeVillage['data'][4];
+                            let playerBonus = nightBonusMap.get(targetPlayerId);
+                            if (playerBonus) {
+                                inNightBonus = isInNightBonus(playerBonus.start_hour, playerBonus.end_hour, landTime);
+                            }
+                        }
+
+                        if ((landTime >= earliestLandTime) && (landTime <= latestLandTime) && !inNightBonus) {
                             console.log(landTime)
 
                             // Calculate what units would be sent
@@ -1204,7 +1334,7 @@ async function init() {
                             if (keepFangGreen.checked && totalTroops > 1000) {
                                 let troopsAvailable = 1000;
                                 // Always 1 scout - as long as it would leave 1 behind. Never send out the last scout!
-                                if (troopsToSend['spy'] > 1) {
+                                if (troopsToSend['spy'] >= 1) {
                                     troopsToSend['spy'] = 1;
                                     troopsAvailable -= 1;
                                 }
