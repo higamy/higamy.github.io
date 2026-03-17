@@ -1,0 +1,856 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TW Mint Village Optimizer</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: #1a1a2e; color: #e0e0e0; padding: 20px; }
+        h1 { text-align: center; color: #e94560; margin-bottom: 20px; font-size: 1.6em; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        .input-section { background: #16213e; border-radius: 8px; padding: 20px; margin-bottom: 20px; }
+        .input-section label { display: block; margin-bottom: 4px; font-weight: 600; color: #a8d8ea; }
+        .input-section textarea {
+            width: 100%; height: 80px; background: #0f3460; color: #e0e0e0;
+            border: 1px solid #533483; border-radius: 4px; padding: 8px; font-family: monospace; font-size: 14px;
+            resize: vertical; margin-bottom: 12px;
+        }
+        .input-row { display: flex; gap: 20px; flex-wrap: wrap; align-items: flex-end; margin-bottom: 12px; }
+        .input-group { flex: 1; min-width: 180px; }
+        .input-group input {
+            width: 100%; background: #0f3460; color: #e0e0e0; border: 1px solid #533483;
+            border-radius: 4px; padding: 8px; font-size: 14px;
+        }
+        .input-group small { display: block; color: #888; margin-top: 2px; }
+        button#calcBtn {
+            background: #e94560; color: white; border: none; border-radius: 6px;
+            padding: 12px 32px; font-size: 16px; font-weight: 600; cursor: pointer; margin-top: 8px;
+        }
+        button#calcBtn:hover { background: #c73650; }
+        .results-section { background: #16213e; border-radius: 8px; padding: 20px; margin-bottom: 20px; display: none; }
+        .results-section h2 { color: #e94560; margin-bottom: 12px; font-size: 1.2em; }
+        .mint-badge {
+            display: inline-block; background: #e94560; color: white; padding: 3px 10px;
+            border-radius: 12px; font-weight: 600; margin: 2px 4px; font-family: monospace;
+        }
+        .group-block { background: #0f3460; border-radius: 6px; padding: 12px; margin-bottom: 10px; }
+        .group-block h3 { margin-bottom: 6px; }
+        .group-villages { font-family: monospace; color: #a8d8ea; word-break: break-word; }
+        .filter-section { background: #16213e; border-radius: 8px; padding: 20px; margin-bottom: 20px; display: none; }
+        .filter-section h2 { color: #e94560; margin-bottom: 12px; font-size: 1.2em; }
+        .filter-rule {
+            background: #0f3460; border-left: 4px solid #e94560; border-radius: 0 6px 6px 0;
+            padding: 10px 14px; margin-bottom: 8px; font-family: monospace; font-size: 14px;
+        }
+        .filter-rule .label { font-weight: 600; color: #f6b93b; }
+        .filter-accuracy { color: #2ecc71; margin-top: 4px; font-size: 12px; }
+        .filter-accuracy.warn { color: #f39c12; }
+        .misclassified { color: #e74c3c; font-size: 12px; margin-top: 2px; }
+        .chart-section { background: #16213e; border-radius: 8px; padding: 20px; margin-bottom: 20px; display: none; text-align: center; }
+        .chart-section h2 { color: #e94560; margin-bottom: 12px; font-size: 1.2em; }
+        canvas#chart { background: #0f3460; border-radius: 6px; max-width: 100%; }
+        .legend { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-top: 10px; }
+        .legend-item { display: flex; align-items: center; gap: 4px; font-size: 13px; }
+        .legend-swatch { width: 14px; height: 14px; border-radius: 50%; display: inline-block; }
+        .legend-swatch.mint { border: 2px solid white; }
+        .stats-row { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 12px; }
+        .stat-card { background: #0f3460; border-radius: 6px; padding: 10px 16px; flex: 1; min-width: 140px; text-align: center; }
+        .stat-card .val { font-size: 1.4em; font-weight: 700; color: #f6b93b; }
+        .stat-card .lbl { font-size: 0.8em; color: #888; }
+        .tooltip {
+            position: absolute; background: #16213e; border: 1px solid #533483; border-radius: 4px;
+            padding: 4px 8px; font-family: monospace; font-size: 12px; pointer-events: none; display: none; z-index: 10;
+        }
+        .error { color: #e74c3c; background: #2d1b1b; padding: 10px; border-radius: 6px; margin-top: 10px; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Tribal Wars - Mint Village Optimizer</h1>
+
+    <div class="input-section">
+        <label for="coords">Village Coordinates (format: XXX|YYY separated by spaces)</label>
+        <textarea id="coords" placeholder="e.g. 143|563 231|634 400|500 321|533 456|612"></textarea>
+        <div class="input-row">
+            <div class="input-group">
+                <label for="numMints">Number of Mint Villages</label>
+                <input type="number" id="numMints" value="1" min="1" step="1">
+            </div>
+            <div class="input-group">
+                <label for="deliveries">Deliveries per Village</label>
+                <input type="number" id="deliveries" value="10" min="1" step="1">
+                <small>Max round-trip deliveries each village can make</small>
+            </div>
+        </div>
+        <button id="calcBtn" onclick="calculate()">Find Optimal Mint Villages</button>
+        <div id="errorBox"></div>
+    </div>
+
+    <div class="results-section" id="resultsSection">
+        <h2>Optimization Results</h2>
+        <div id="statsRow" class="stats-row"></div>
+        <div id="mintResult"></div>
+        <div id="groupResults"></div>
+    </div>
+
+    <div class="chart-section" id="chartSection">
+        <h2>Village Map</h2>
+        <div style="position: relative; display: inline-block;">
+            <canvas id="chart" width="800" height="650"></canvas>
+            <div class="tooltip" id="tooltip"></div>
+        </div>
+        <div class="legend" id="legend"></div>
+    </div>
+
+    <div class="filter-section" id="filterSection">
+        <h2>Dynamic Group Filters (for in-game setup)</h2>
+        <div id="filterResults"></div>
+    </div>
+</div>
+
+<script>
+const GROUP_COLORS = ['#e74c3c','#3498db','#2ecc71','#f39c12','#9b59b6','#1abc9c','#e67e22','#34495e','#d35400','#16a085'];
+
+function euclidean(a, b) {
+    return Math.sqrt((a.x - b.x) ** 2 + (a.y - b.y) ** 2);
+}
+
+function parseCoordinates(text) {
+    const tokens = text.trim().split(/[\s,;]+/).filter(Boolean);
+    const villages = [];
+    const seen = new Set();
+    for (const t of tokens) {
+        const m = t.match(/^(\d{1,3})\|(\d{1,3})$/);
+        if (!m) throw new Error(`Invalid coordinate: "${t}". Expected format: XXX|YYY`);
+        const x = parseInt(m[1], 10);
+        const y = parseInt(m[2], 10);
+        const key = `${x}|${y}`;
+        if (seen.has(key)) continue;
+        seen.add(key);
+        villages.push({ x, y, label: key });
+    }
+    return villages;
+}
+
+function binomial(n, k) {
+    if (k > n) return Infinity;
+    if (k === 0 || k === n) return 1;
+    if (k > n - k) k = n - k;
+    let r = 1;
+    for (let i = 0; i < k; i++) {
+        r = r * (n - i) / (i + 1);
+        if (r > 100000) return Infinity;
+    }
+    return Math.round(r);
+}
+
+function scoreMintSet(villages, mintSet) {
+    let total = 0;
+    for (let i = 0; i < villages.length; i++) {
+        if (mintSet.has(i)) continue;
+        let minD = Infinity;
+        for (const mi of mintSet) {
+            const d = euclidean(villages[i], villages[mi]);
+            if (d < minD) minD = d;
+        }
+        total += minD;
+    }
+    return total;
+}
+
+function* combinations(arr, k) {
+    if (k === 0) { yield []; return; }
+    for (let i = 0; i <= arr.length - k; i++) {
+        for (const rest of combinations(arr.slice(i + 1), k - 1)) {
+            yield [arr[i], ...rest];
+        }
+    }
+}
+
+function bruteForceMints(villages, k) {
+    const indices = villages.map((_, i) => i);
+    let bestScore = Infinity;
+    let bestMints = null;
+    for (const combo of combinations(indices, k)) {
+        const s = new Set(combo);
+        const score = scoreMintSet(villages, s);
+        if (score < bestScore) {
+            bestScore = score;
+            bestMints = combo;
+        }
+    }
+    return bestMints;
+}
+
+function greedyMints(villages, k) {
+    const n = villages.length;
+    const mints = [];
+
+    // Pick best first medoid
+    let bestFirst = 0, bestDist = Infinity;
+    for (let i = 0; i < n; i++) {
+        let total = 0;
+        for (let j = 0; j < n; j++) {
+            if (j !== i) total += euclidean(villages[i], villages[j]);
+        }
+        if (total < bestDist) { bestDist = total; bestFirst = i; }
+    }
+    mints.push(bestFirst);
+
+    // Greedy add
+    while (mints.length < k) {
+        let bestNext = -1, bestScore = Infinity;
+        const currentSet = new Set(mints);
+        for (let i = 0; i < n; i++) {
+            if (currentSet.has(i)) continue;
+            const candidate = new Set([...mints, i]);
+            const score = scoreMintSet(villages, candidate);
+            if (score < bestScore) { bestScore = score; bestNext = i; }
+        }
+        mints.push(bestNext);
+    }
+
+    // Local swap improvement
+    let improved = true;
+    let maxIter = 50;
+    while (improved && maxIter-- > 0) {
+        improved = false;
+        const curScore = scoreMintSet(villages, new Set(mints));
+        for (let mi = 0; mi < mints.length; mi++) {
+            for (let vi = 0; vi < n; vi++) {
+                if (mints.includes(vi)) continue;
+                const newMints = [...mints];
+                newMints[mi] = vi;
+                const newScore = scoreMintSet(villages, new Set(newMints));
+                if (newScore < curScore - 0.001) {
+                    mints[mi] = vi;
+                    improved = true;
+                    break;
+                }
+            }
+            if (improved) break;
+        }
+    }
+    return mints;
+}
+
+function findOptimalMints(villages, k) {
+    if (k >= villages.length) return villages.map((_, i) => i);
+    const n = villages.length;
+    if (binomial(n, k) <= 100000) {
+        return bruteForceMints(villages, k);
+    }
+    return greedyMints(villages, k);
+}
+
+function assignGroups(villages, mintIndices) {
+    const groups = new Array(villages.length).fill(-1);
+    for (const mi of mintIndices) groups[mi] = mintIndices.indexOf(mi);
+    for (let i = 0; i < villages.length; i++) {
+        if (mintIndices.includes(i)) continue;
+        let minD = Infinity, bestG = 0;
+        for (let g = 0; g < mintIndices.length; g++) {
+            const d = euclidean(villages[i], villages[mintIndices[g]]);
+            if (d < minD) { minD = d; bestG = g; }
+        }
+        groups[i] = bestG;
+    }
+    return groups;
+}
+
+// --- Filter Finding ---
+
+function findBestCircleForGroup(villages, targetIdx, otherIdx) {
+    if (targetIdx.length === 0 || otherIdx.length === 0) return null;
+
+    const allIdx = [...targetIdx, ...otherIdx];
+    const bbox = getBoundingBox(allIdx.map(i => villages[i]));
+    const candidates = [];
+
+    // All village coords as candidates
+    for (const v of villages) candidates.push({ x: v.x, y: v.y });
+
+    // Grid search in bounding box area with step 3
+    const pad = 15;
+    const step = 3;
+    for (let x = bbox.minX - pad; x <= bbox.maxX + pad; x += step) {
+        for (let y = bbox.minY - pad; y <= bbox.maxY + pad; y += step) {
+            candidates.push({ x, y });
+        }
+    }
+
+    let bestScore = -1, bestCenter = null, bestRadius = 0, bestInside = true;
+
+    for (const center of candidates) {
+        // Compute distances for target and other
+        const tDists = targetIdx.map(i => euclidean(center, villages[i]));
+        const oDists = otherIdx.map(i => euclidean(center, villages[i]));
+
+        // Try "target inside circle" and "target outside circle"
+        for (const targetInside of [true, false]) {
+            const all = [];
+            for (const d of tDists) all.push({ d, isTarget: true });
+            for (const d of oDists) all.push({ d, isTarget: false });
+            all.sort((a, b) => a.d - b.d);
+
+            // Sweep radius from 0 to max
+            let tp = 0, fp = 0;
+            const nTarget = tDists.length, nOther = oDists.length;
+
+            // At radius = -1 (nothing inside): score depends on orientation
+            if (targetInside) {
+                // target inside, other outside -> tp=0, tn=nOther
+                let score = nOther;
+                let bLocalR = 0, bLocalS = score;
+                for (let i = 0; i < all.length; i++) {
+                    if (all[i].isTarget) tp++; else fp++;
+                    const tn = nOther - fp;
+                    const s = targetInside ? (tp + tn) : ((nTarget - tp) + fp);
+                    if (s > bLocalS) {
+                        bLocalS = s;
+                        // Radius midway to next or at this point
+                        bLocalR = (i + 1 < all.length) ? (all[i].d + all[i + 1].d) / 2 : all[i].d + 1;
+                    }
+                }
+                if (bLocalS > bestScore) {
+                    bestScore = bLocalS;
+                    bestCenter = center;
+                    bestRadius = bLocalR;
+                    bestInside = true;
+                }
+            } else {
+                // target outside circle
+                // At radius = -1: all outside -> tp_outside = nTarget
+                let score = nTarget;
+                let bLocalR = 0, bLocalS = score;
+                let insideTarget = 0, insideOther = 0;
+                for (let i = 0; i < all.length; i++) {
+                    if (all[i].isTarget) insideTarget++; else insideOther++;
+                    const outsideTarget = nTarget - insideTarget;
+                    const s = outsideTarget + insideOther;
+                    if (s > bLocalS) {
+                        bLocalS = s;
+                        bLocalR = (i + 1 < all.length) ? (all[i].d + all[i + 1].d) / 2 : all[i].d + 1;
+                    }
+                }
+                if (bLocalS > bestScore) {
+                    bestScore = bLocalS;
+                    bestCenter = center;
+                    bestRadius = bLocalR;
+                    bestInside = false;
+                }
+            }
+        }
+    }
+
+    // Refine around best center with step 1
+    if (bestCenter) {
+        const refCandidates = [];
+        for (let x = bestCenter.x - 5; x <= bestCenter.x + 5; x++) {
+            for (let y = bestCenter.y - 5; y <= bestCenter.y + 5; y++) {
+                refCandidates.push({ x, y });
+            }
+        }
+        for (const center of refCandidates) {
+            const tDists = targetIdx.map(i => euclidean(center, villages[i]));
+            const oDists = otherIdx.map(i => euclidean(center, villages[i]));
+            const all = [];
+            for (const d of tDists) all.push({ d, isTarget: true });
+            for (const d of oDists) all.push({ d, isTarget: false });
+            all.sort((a, b) => a.d - b.d);
+
+            for (const targetInside of [true, false]) {
+                let tp = 0, fp = 0;
+                const nTarget = tDists.length, nOther = oDists.length;
+                let bLocalS = targetInside ? nOther : nTarget;
+                let bLocalR = 0;
+
+                let iT = 0, iO = 0;
+                for (let i = 0; i < all.length; i++) {
+                    if (all[i].isTarget) iT++; else iO++;
+                    let s;
+                    if (targetInside) {
+                        s = iT + (nOther - iO);
+                    } else {
+                        s = (nTarget - iT) + iO;
+                    }
+                    if (s > bLocalS) {
+                        bLocalS = s;
+                        bLocalR = (i + 1 < all.length) ? (all[i].d + all[i + 1].d) / 2 : all[i].d + 1;
+                    }
+                }
+                if (bLocalS > bestScore) {
+                    bestScore = bLocalS;
+                    bestCenter = center;
+                    bestRadius = bLocalR;
+                    bestInside = targetInside;
+                }
+            }
+        }
+    }
+
+    // Classify and find misclassified
+    const roundedRadius = Math.round(bestRadius);
+    const misclassified = [];
+    for (const i of targetIdx) {
+        const d = euclidean(bestCenter, villages[i]);
+        if (bestInside ? (d > roundedRadius) : (d <= roundedRadius)) {
+            misclassified.push({ idx: i, label: villages[i].label, dist: d });
+        }
+    }
+    for (const i of otherIdx) {
+        const d = euclidean(bestCenter, villages[i]);
+        if (bestInside ? (d <= roundedRadius) : (d > roundedRadius)) {
+            misclassified.push({ idx: i, label: villages[i].label, dist: d });
+        }
+    }
+
+    return {
+        center: { x: Math.round(bestCenter.x), y: Math.round(bestCenter.y) },
+        radius: roundedRadius,
+        targetInside: bestInside,
+        score: bestScore,
+        total: targetIdx.length + otherIdx.length,
+        misclassified
+    };
+}
+
+function buildFilters(villages, groups, mintIndices) {
+    const k = mintIndices.length;
+    if (k <= 1) return [{ groupIdx: 0, rules: ['All villages'], circles: [], accuracy: 100, misclassified: [] }];
+
+    // Group village indices (excluding mints)
+    const groupMembers = Array.from({ length: k }, () => []);
+    for (let i = 0; i < villages.length; i++) {
+        if (mintIndices.includes(i)) continue;
+        groupMembers[groups[i]].push(i);
+    }
+
+    const filters = [];
+    const circles = [];
+    const coveredRules = []; // accumulated NOT rules for later groups
+
+    for (let g = 0; g < k; g++) {
+        if (g === k - 1) {
+            // Last group: everything not captured by previous filters
+            const rules = [];
+            if (coveredRules.length === 0) {
+                rules.push('All remaining villages');
+            } else if (coveredRules.length === 1) {
+                rules.push(`NOT (${coveredRules[0]})`);
+            } else {
+                rules.push(coveredRules.map(r => `NOT (${r})`).join(' AND '));
+            }
+            // Compute accuracy for remainder group by checking what actually ends up here
+            const misclass = [];
+            let correctCount = 0;
+            const allNonMint = [];
+            for (let gg = 0; gg < k; gg++) allNonMint.push(...groupMembers[gg]);
+
+            for (const vi of allNonMint) {
+                // Simulate filter chain: is this village captured by any previous filter?
+                let captured = false;
+                for (const c of circles) {
+                    const d = euclidean(c.center, villages[vi]);
+                    const inside = d <= c.radius;
+                    if (c.targetInside ? inside : !inside) { captured = true; break; }
+                }
+                const shouldBeHere = groupMembers[g].includes(vi);
+                const endsUpHere = !captured;
+                if (endsUpHere && shouldBeHere) correctCount++;
+                else if (endsUpHere && !shouldBeHere) misclass.push({ idx: vi, label: villages[vi].label });
+                else if (!endsUpHere && shouldBeHere) misclass.push({ idx: vi, label: villages[vi].label });
+            }
+            const totalRelevant = groupMembers[g].length;
+            const accuracy = totalRelevant > 0 ? Math.round((correctCount / totalRelevant) * 100) : 100;
+
+            filters.push({ groupIdx: g, rules, circles: [], accuracy, misclassified: misclass });
+            break;
+        }
+
+        // Find circle to separate this group from remaining uncaptured groups
+        const otherIdx = [];
+        for (let gg = g + 1; gg < k; gg++) {
+            otherIdx.push(...groupMembers[gg]);
+        }
+
+        const result = findBestCircleForGroup(villages, groupMembers[g], otherIdx);
+        if (!result) {
+            filters.push({ groupIdx: g, rules: ['(could not determine filter)'], circles: [], accuracy: 0, misclassified: [] });
+            continue;
+        }
+
+        const circle = {
+            center: result.center,
+            radius: result.radius,
+            targetInside: result.targetInside,
+            groupIdx: g
+        };
+        circles.push(circle);
+
+        const op = result.targetInside ? '\u2264' : '>';
+        const ruleText = `Distance from ${result.center.x}|${result.center.y} ${op} ${result.radius} fields`;
+
+        const rules = [];
+        if (coveredRules.length > 0) {
+            // Must also NOT be in previous groups
+            for (const prev of coveredRules) {
+                rules.push(`NOT (${prev})`);
+            }
+        }
+        rules.push(ruleText);
+
+        coveredRules.push(ruleText);
+
+        filters.push({
+            groupIdx: g,
+            rules,
+            circles: [circle],
+            accuracy: Math.round((result.score / result.total) * 100),
+            misclassified: result.misclassified
+        });
+    }
+
+    return filters;
+}
+
+function getBoundingBox(points) {
+    let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+    for (const p of points) {
+        if (p.x < minX) minX = p.x;
+        if (p.x > maxX) maxX = p.x;
+        if (p.y < minY) minY = p.y;
+        if (p.y > maxY) maxY = p.y;
+    }
+    return { minX, maxX, minY, maxY };
+}
+
+// --- Drawing ---
+
+let chartVillages = [], chartGroups = [], chartMintIndices = [], chartFilters = [];
+
+function drawChart(villages, groups, mintIndices, filterData) {
+    chartVillages = villages;
+    chartGroups = groups;
+    chartMintIndices = mintIndices;
+    chartFilters = filterData;
+
+    const canvas = document.getElementById('chart');
+    const ctx = canvas.getContext('2d');
+    const W = canvas.width, H = canvas.height;
+    const margin = { top: 40, right: 30, bottom: 50, left: 60 };
+    const plotW = W - margin.left - margin.right;
+    const plotH = H - margin.top - margin.bottom;
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = '#0f3460';
+    ctx.fillRect(0, 0, W, H);
+
+    const bbox = getBoundingBox(villages);
+    const padX = Math.max((bbox.maxX - bbox.minX) * 0.08, 5);
+    const padY = Math.max((bbox.maxY - bbox.minY) * 0.08, 5);
+    const dataMinX = bbox.minX - padX, dataMaxX = bbox.maxX + padX;
+    const dataMinY = bbox.minY - padY, dataMaxY = bbox.maxY + padY;
+    const rangeX = dataMaxX - dataMinX || 1;
+    const rangeY = dataMaxY - dataMinY || 1;
+    const scale = Math.min(plotW / rangeX, plotH / rangeY);
+    const offsetX = margin.left + (plotW - rangeX * scale) / 2;
+    const offsetY = margin.top + (plotH - rangeY * scale) / 2;
+
+    function toCanvas(gx, gy) {
+        return {
+            cx: offsetX + (gx - dataMinX) * scale,
+            cy: offsetY + (gy - dataMinY) * scale  // Y increases downward, matching game map
+        };
+    }
+
+    // Store transform for tooltip
+    canvas._transform = { toCanvas, dataMinX, dataMaxX, dataMinY, dataMaxY, scale, offsetX, offsetY, margin };
+
+    // Grid lines
+    ctx.strokeStyle = '#1a325a';
+    ctx.lineWidth = 0.5;
+    const stepX = niceStep(rangeX);
+    const stepY = niceStep(rangeY);
+    ctx.font = '11px monospace';
+    ctx.fillStyle = '#667';
+
+    for (let gx = Math.ceil(dataMinX / stepX) * stepX; gx <= dataMaxX; gx += stepX) {
+        const { cx } = toCanvas(gx, 0);
+        ctx.beginPath(); ctx.moveTo(cx, margin.top); ctx.lineTo(cx, H - margin.bottom); ctx.stroke();
+        ctx.fillText(gx.toString(), cx - 8, H - margin.bottom + 16);
+    }
+    for (let gy = Math.ceil(dataMinY / stepY) * stepY; gy <= dataMaxY; gy += stepY) {
+        const { cy } = toCanvas(0, gy);
+        ctx.beginPath(); ctx.moveTo(margin.left, cy); ctx.lineTo(W - margin.right, cy); ctx.stroke();
+        ctx.fillText(gy.toString(), margin.left - 35, cy + 4);
+    }
+
+    // Axis labels
+    ctx.fillStyle = '#a8d8ea';
+    ctx.font = '13px Segoe UI, sans-serif';
+    ctx.fillText('X', W / 2, H - 8);
+    ctx.save();
+    ctx.translate(14, H / 2);
+    ctx.rotate(-Math.PI / 2);
+    ctx.fillText('Y (increases southward)', 0, 0);
+    ctx.restore();
+
+    // Draw filter circles
+    const allCircles = [];
+    for (const f of filterData) {
+        for (const c of f.circles) {
+            allCircles.push(c);
+        }
+    }
+    for (const c of allCircles) {
+        const { cx, cy } = toCanvas(c.center.x, c.center.y);
+        const rPx = c.radius * scale;
+        const color = GROUP_COLORS[c.groupIdx % GROUP_COLORS.length];
+        ctx.beginPath();
+        ctx.arc(cx, cy, rPx, 0, Math.PI * 2);
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 2;
+        ctx.setLineDash([6, 4]);
+        ctx.stroke();
+        ctx.setLineDash([]);
+        // Label
+        ctx.fillStyle = color;
+        ctx.font = '11px monospace';
+        const labelText = `r=${c.radius} from ${c.center.x}|${c.center.y}`;
+        ctx.fillText(labelText, cx + rPx + 4, cy - 4);
+        // Center cross
+        ctx.beginPath();
+        ctx.moveTo(cx - 4, cy); ctx.lineTo(cx + 4, cy);
+        ctx.moveTo(cx, cy - 4); ctx.lineTo(cx, cy + 4);
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 1;
+        ctx.stroke();
+    }
+
+    // Draw villages
+    for (let i = 0; i < villages.length; i++) {
+        const v = villages[i];
+        const g = groups[i];
+        const { cx, cy } = toCanvas(v.x, v.y);
+        const isMint = mintIndices.includes(i);
+        const color = GROUP_COLORS[g % GROUP_COLORS.length];
+
+        if (isMint) {
+            // Star shape for mints
+            ctx.beginPath();
+            ctx.fillStyle = color;
+            const outerR = 9, innerR = 4;
+            for (let s = 0; s < 10; s++) {
+                const angle = (s * Math.PI / 5) - Math.PI / 2;
+                const rad = s % 2 === 0 ? outerR : innerR;
+                const px = cx + rad * Math.cos(angle);
+                const py = cy + rad * Math.sin(angle);
+                if (s === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+            }
+            ctx.closePath();
+            ctx.fill();
+            ctx.strokeStyle = '#fff';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+
+            // Label
+            ctx.fillStyle = '#fff';
+            ctx.font = 'bold 11px monospace';
+            ctx.fillText(v.label, cx + 12, cy + 4);
+        } else {
+            ctx.beginPath();
+            ctx.arc(cx, cy, 4, 0, Math.PI * 2);
+            ctx.fillStyle = color;
+            ctx.fill();
+            ctx.strokeStyle = 'rgba(255,255,255,0.3)';
+            ctx.lineWidth = 0.5;
+            ctx.stroke();
+        }
+    }
+
+    // Build legend
+    const legendDiv = document.getElementById('legend');
+    legendDiv.innerHTML = '';
+    for (let g = 0; g < mintIndices.length; g++) {
+        const mi = mintIndices[g];
+        const color = GROUP_COLORS[g % GROUP_COLORS.length];
+        const item = document.createElement('span');
+        item.className = 'legend-item';
+        item.innerHTML = `<span class="legend-swatch mint" style="background:${color};"></span> Group ${g + 1} (Mint: ${villages[mi].label})`;
+        legendDiv.appendChild(item);
+    }
+}
+
+function niceStep(range) {
+    const rough = range / 8;
+    const mag = Math.pow(10, Math.floor(Math.log10(rough)));
+    const norm = rough / mag;
+    if (norm < 1.5) return mag;
+    if (norm < 3.5) return 2 * mag;
+    if (norm < 7.5) return 5 * mag;
+    return 10 * mag;
+}
+
+// --- Tooltip ---
+(function setupTooltip() {
+    const canvas = document.getElementById('chart');
+    const tooltip = document.getElementById('tooltip');
+    canvas.addEventListener('mousemove', (e) => {
+        if (!chartVillages.length) return;
+        const rect = canvas.getBoundingClientRect();
+        const scaleX = canvas.width / rect.width;
+        const scaleY = canvas.height / rect.height;
+        const mx = (e.clientX - rect.left) * scaleX;
+        const my = (e.clientY - rect.top) * scaleY;
+        const t = canvas._transform;
+        if (!t) return;
+
+        let closest = null, closestDist = 20;
+        for (let i = 0; i < chartVillages.length; i++) {
+            const v = chartVillages[i];
+            const { cx, cy } = t.toCanvas(v.x, v.y);
+            const d = Math.sqrt((mx - cx) ** 2 + (my - cy) ** 2);
+            if (d < closestDist) { closestDist = d; closest = i; }
+        }
+        if (closest !== null) {
+            const v = chartVillages[closest];
+            const isMint = chartMintIndices.includes(closest);
+            const g = chartGroups[closest];
+            const mintV = chartVillages[chartMintIndices[g]];
+            const dist = euclidean(v, mintV).toFixed(1);
+            tooltip.style.display = 'block';
+            tooltip.style.left = (e.clientX - canvas.parentElement.getBoundingClientRect().left + 14) + 'px';
+            tooltip.style.top = (e.clientY - canvas.parentElement.getBoundingClientRect().top - 10) + 'px';
+            tooltip.innerHTML = `<b>${v.label}</b>${isMint ? ' (MINT)' : ''}<br>Group ${g + 1} | Dist to mint: ${dist}`;
+        } else {
+            tooltip.style.display = 'none';
+        }
+    });
+    canvas.addEventListener('mouseleave', () => { tooltip.style.display = 'none'; });
+})();
+
+// --- Main Calculation ---
+
+function calculate() {
+    const errorBox = document.getElementById('errorBox');
+    errorBox.innerHTML = '';
+
+    try {
+        const villages = parseCoordinates(document.getElementById('coords').value);
+        const k = parseInt(document.getElementById('numMints').value, 10);
+        const deliveries = parseInt(document.getElementById('deliveries').value, 10);
+
+        if (villages.length < 2) throw new Error('Need at least 2 villages.');
+        if (!Number.isInteger(k) || k < 1) throw new Error('Number of mints must be an integer >= 1.');
+        if (k >= villages.length) throw new Error(`Number of mints (${k}) must be less than total villages (${villages.length}).`);
+        if (!Number.isInteger(deliveries) || deliveries < 1) throw new Error('Deliveries must be an integer >= 1.');
+
+        // Run optimization
+        const mintIndices = findOptimalMints(villages, k);
+        const groups = assignGroups(villages, mintIndices);
+
+        // Compute stats
+        let totalDist = 0;
+        const groupStats = Array.from({ length: k }, () => ({ count: 0, totalDist: 0, maxDist: 0 }));
+        for (let i = 0; i < villages.length; i++) {
+            if (mintIndices.includes(i)) continue;
+            const g = groups[i];
+            const d = euclidean(villages[i], villages[mintIndices[g]]);
+            totalDist += d;
+            groupStats[g].count++;
+            groupStats[g].totalDist += d;
+            groupStats[g].maxDist = Math.max(groupStats[g].maxDist, d);
+        }
+
+        // Display results
+        const resultsSection = document.getElementById('resultsSection');
+        resultsSection.style.display = 'block';
+
+        const nonMintCount = villages.length - k;
+        document.getElementById('statsRow').innerHTML = `
+            <div class="stat-card"><div class="val">${villages.length}</div><div class="lbl">Total Villages</div></div>
+            <div class="stat-card"><div class="val">${k}</div><div class="lbl">Mint Villages</div></div>
+            <div class="stat-card"><div class="val">${(totalDist * deliveries).toFixed(0)}</div><div class="lbl">Total Field-Trips (dist x deliveries)</div></div>
+            <div class="stat-card"><div class="val">${(totalDist / nonMintCount).toFixed(1)}</div><div class="lbl">Avg Distance to Mint</div></div>
+        `;
+
+        document.getElementById('mintResult').innerHTML = '<p style="margin-bottom:8px"><b>Selected Mint Villages:</b> ' +
+            mintIndices.map(i => `<span class="mint-badge">${villages[i].label}</span>`).join(' ') + '</p>';
+
+        let groupHTML = '';
+        for (let g = 0; g < k; g++) {
+            const color = GROUP_COLORS[g % GROUP_COLORS.length];
+            const members = [];
+            for (let i = 0; i < villages.length; i++) {
+                if (groups[i] === g && !mintIndices.includes(i)) members.push(villages[i].label);
+            }
+            const gs = groupStats[g];
+            groupHTML += `<div class="group-block" style="border-left: 4px solid ${color};">
+                <h3 style="color:${color}">Group ${g + 1} — Mint: ${villages[mintIndices[g]].label} (${members.length} villages)</h3>
+                <div style="font-size:13px; color:#aaa; margin-bottom:4px;">
+                    Avg dist: ${gs.count ? (gs.totalDist / gs.count).toFixed(1) : 0} | Max dist: ${gs.maxDist.toFixed(1)} |
+                    Total deliveries: ${gs.count * deliveries} | Field-trips: ${(gs.totalDist * deliveries).toFixed(0)}
+                </div>
+                <div class="group-villages">${members.join('  ')}</div>
+            </div>`;
+        }
+        document.getElementById('groupResults').innerHTML = groupHTML;
+
+        // Find filters
+        const filterData = buildFilters(villages, groups, mintIndices);
+
+        // Draw chart
+        document.getElementById('chartSection').style.display = 'block';
+        drawChart(villages, groups, mintIndices, filterData);
+
+        // Display filters
+        const filterSection = document.getElementById('filterSection');
+        filterSection.style.display = 'block';
+        let filterHTML = '';
+
+        if (k === 1) {
+            filterHTML = '<div class="filter-rule"><span class="label">All Villages</span> — No filter needed, send all to mint.</div>';
+        } else {
+            for (let g = 0; g < k; g++) {
+                const f = filterData[g];
+                const color = GROUP_COLORS[g % GROUP_COLORS.length];
+                const mintLabel = villages[mintIndices[g]].label;
+                const ruleStr = f.rules.join(' AND ');
+
+                let accClass = f.accuracy >= 100 ? '' : (f.accuracy >= 90 ? ' warn' : ' warn');
+                let accText = f.accuracy >= 100
+                    ? 'Exact match (100%)'
+                    : `${f.accuracy}% accurate`;
+
+                let misText = '';
+                if (f.misclassified.length > 0) {
+                    misText = `<div class="misclassified">Misclassified (manually adjust): ${f.misclassified.map(m => m.label).join(', ')}</div>`;
+                }
+
+                filterHTML += `<div class="filter-rule" style="border-left-color:${color};">
+                    <span class="label">Group ${g + 1}</span> (send to <b>${mintLabel}</b>): ${ruleStr}
+                    <div class="filter-accuracy${accClass}">${accText}</div>
+                    ${misText}
+                </div>`;
+            }
+
+            filterHTML += `<div style="margin-top:16px; padding:12px; background:#0f3460; border-radius:6px; font-size:13px; color:#a8d8ea;">
+                <b>How to set up in-game:</b><br>
+                Go to <i>Groups &gt; Dynamic groups</i>. For each group above, create a new dynamic group with the distance filter(s) shown.<br>
+                Filters using AND: add multiple conditions in the same group filter.<br>
+                Filters using NOT: use the "NOT" / negate option on the condition.<br>
+                If any villages are misclassified by the circular filter, manually move them to the correct group.
+            </div>`;
+        }
+
+        document.getElementById('filterResults').innerHTML = filterHTML;
+
+    } catch (err) {
+        errorBox.innerHTML = `<div class="error">${err.message}</div>`;
+    }
+}
+</script>
+</body>
+</html>
