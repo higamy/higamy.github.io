@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact | Hoosier Hops & Raw</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <div class="header-inner">
+      <a href="index.html" class="logo">
+        <div class="logo-icon">&#x1f430;</div>
+        <span>Hoosier Hops & Raw</span>
+      </a>
+      <button class="hamburger" onclick="document.querySelector('nav').classList.toggle('open')" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+      <nav>
+        <a href="index.html">Home</a>
+        <a href="products.html">Shop</a>
+        <a href="calendar.html">Calendar</a>
+        <a href="contact.html" class="active">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Contact Hero -->
+  <div class="photo-banner farm" style="padding: 3rem 1.5rem;">
+    <h2>Get in Touch</h2>
+    <p>Interested in a rabbit, raw feed order, or have questions? We'd love to hear from you.</p>
+  </div>
+
+  <!-- Contact Section -->
+  <section>
+    <div class="container">
+
+      <div class="contact-layout">
+        <!-- Form -->
+        <div class="contact-form">
+          <h3 style="color: var(--primary-dark); margin-bottom: 1rem;">Send Us a Message</h3>
+          <form id="contactForm" onsubmit="submitContact(event)">
+            <div class="form-group">
+              <label for="contactName">Full Name *</label>
+              <input type="text" id="contactName" required placeholder="Your name">
+            </div>
+            <div class="form-group">
+              <label for="contactPhone">Phone Number *</label>
+              <input type="tel" id="contactPhone" required placeholder="(555) 123-4567">
+            </div>
+            <div class="form-group">
+              <label for="contactEmail">Email Address</label>
+              <input type="email" id="contactEmail" placeholder="you@email.com">
+            </div>
+            <div class="form-group">
+              <label for="contactSubject">What are you interested in? *</label>
+              <select id="contactSubject" required>
+                <option value="">Select one...</option>
+                <option value="rabbits">Rabbits / Animals</option>
+                <option value="raw-feed">Raw Dog Feed</option>
+                <option value="trinkets">Trinkets & Goods</option>
+                <option value="breeding">Breeding Inquiries</option>
+                <option value="general">General Question</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="contactMessage">Message / Details *</label>
+              <textarea id="contactMessage" rows="5" required placeholder="Tell us what you're looking for, any questions, preferred pickup times, etc."></textarea>
+            </div>
+            <div class="form-group">
+              <label for="contactPreferred">Preferred Contact Method</label>
+              <select id="contactPreferred">
+                <option value="phone">Phone Call</option>
+                <option value="text">Text Message</option>
+                <option value="email">Email</option>
+              </select>
+            </div>
+            <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 0.5rem;">Send Message</button>
+          </form>
+        </div>
+
+        <!-- Info Sidebar -->
+        <div class="contact-info">
+          <h3>Contact Info</h3>
+          <div class="info-item">
+            <span class="info-icon">&#x1f4cd;</span>
+            <span>Indiana, USA</span>
+          </div>
+          <div class="info-item">
+            <span class="info-icon">&#x1f4f1;</span>
+            <span>Phone number available upon request</span>
+          </div>
+          <div class="info-item">
+            <span class="info-icon">&#x1f4e7;</span>
+            <span>Fill out the form and we'll get back to you!</span>
+          </div>
+
+          <hr style="margin: 1.5rem 0; border: none; border-top: 1px solid var(--border);">
+
+          <h3>Hours & Availability</h3>
+          <p>We respond to inquiries as quickly as possible. Animal viewings and pickups are by appointment only.</p>
+          <p style="margin-top: 0.5rem;"><strong>Typical Response Time:</strong> Within 24 hours</p>
+
+          <hr style="margin: 1.5rem 0; border: none; border-top: 1px solid var(--border);">
+
+          <h3>Quick Links</h3>
+          <p><a href="products.html">&#x1f6d2; Browse Our Products</a></p>
+          <p><a href="calendar.html">&#x1f4c5; View Availability Calendar</a></p>
+        </div>
+      </div>
+
+      <!-- Saved Messages (Admin View) -->
+      <div style="margin-top: 3rem;">
+        <button class="admin-toggle" onclick="toggleMessages()">View Saved Messages</button>
+        <div id="messagesPanel" class="admin-panel">
+          <h3>Received Messages</h3>
+          <p style="color: var(--text-light); margin-bottom: 1rem;">Messages submitted through the contact form are saved here in your browser.</p>
+          <div id="messagesList"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <p>&copy; 2026 Hoosier Hops & Raw LLC &mdash; Indiana | <a href="contact.html">Get in Touch</a></p>
+  </footer>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <script src="js/contact.js"></script>
+</body>
+</html>

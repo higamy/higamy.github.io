@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calendar | Hoosier Hops & Raw</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <div class="header-inner">
+      <a href="index.html" class="logo">
+        <div class="logo-icon">&#x1f430;</div>
+        <span>Hoosier Hops & Raw</span>
+      </a>
+      <button class="hamburger" onclick="document.querySelector('nav').classList.toggle('open')" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+      <nav>
+        <a href="index.html">Home</a>
+        <a href="products.html">Shop</a>
+        <a href="calendar.html" class="active">Calendar</a>
+        <a href="contact.html">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Calendar Hero -->
+  <div class="photo-banner rabbits" style="padding: 3rem 1.5rem;">
+    <h2>Planning Calendar</h2>
+    <p>See when animals and products will be ready. Plan your visit or reserve ahead of time.</p>
+  </div>
+
+  <!-- Calendar Section -->
+  <section>
+    <div class="container">
+
+      <!-- Admin: Add Event -->
+      <button class="admin-toggle" onclick="openAddEvent()">+ Add Event</button>
+
+      <!-- Calendar -->
+      <div class="calendar-wrapper">
+        <div class="calendar-header">
+          <button class="calendar-nav" onclick="changeMonth(-1)">&#x276E; Prev</button>
+          <h2 id="calendarMonthYear"></h2>
+          <button class="calendar-nav" onclick="changeMonth(1)">Next &#x276F;</button>
+        </div>
+        <div class="calendar-grid" id="calendarGrid">
+          <!-- Built by JS -->
+        </div>
+      </div>
+
+      <!-- Upcoming Events List -->
+      <div class="event-list" id="upcomingEvents">
+        <h3>Upcoming Events</h3>
+        <div id="eventListItems">
+          <!-- Built by JS -->
+        </div>
+      </div>
+
+      <!-- Legend -->
+      <div style="margin-top: 1.5rem; display: flex; gap: 1.5rem; flex-wrap: wrap;">
+        <span><span class="event-dot animals" style="display:inline-block; vertical-align:middle;"></span> Animals</span>
+        <span><span class="event-dot products" style="display:inline-block; vertical-align:middle;"></span> Products / Feed</span>
+        <span><span class="event-dot general" style="display:inline-block; vertical-align:middle;"></span> General</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Add/Edit Event Modal -->
+  <div class="modal-overlay" id="eventModal">
+    <div class="modal">
+      <h3 id="modalTitle">Add Event</h3>
+      <form id="eventForm" onsubmit="saveEvent(event)">
+        <input type="hidden" id="eventId">
+        <div class="form-group">
+          <label for="eventName">Event Title *</label>
+          <input type="text" id="eventName" required placeholder="e.g. Holland Lop litter ready">
+        </div>
+        <div class="form-group">
+          <label for="eventDate">Date *</label>
+          <input type="date" id="eventDate" required>
+        </div>
+        <div class="form-group">
+          <label for="eventType">Category</label>
+          <select id="eventType">
+            <option value="animals">Animals</option>
+            <option value="products">Products / Feed</option>
+            <option value="general">General</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="eventNotes">Notes</label>
+          <textarea id="eventNotes" rows="3" placeholder="Additional details..."></textarea>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn btn-danger" id="deleteEventBtn" onclick="deleteEvent()" style="display:none; margin-right:auto;">Delete</button>
+          <button type="button" class="btn" style="background: var(--border);" onclick="closeModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save Event</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <p>&copy; 2026 Hoosier Hops & Raw LLC &mdash; Indiana | <a href="contact.html">Get in Touch</a></p>
+  </footer>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <script src="js/calendar.js"></script>
+</body>
+</html>
