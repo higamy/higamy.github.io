@@ -176,6 +176,28 @@
         [data-theme="light"] .tw-nav-theme-btn {
             color: #fff;
         }
+        @media (max-width: 600px) {
+            .tw-nav-header {
+                height: 40px;
+                padding: 0 8px;
+            }
+            .tw-nav-brand {
+                font-size: 13px;
+            }
+            .tw-nav-page-title {
+                font-size: 11px;
+            }
+            .tw-nav-sidebar {
+                top: 40px;
+                width: 180px;
+            }
+            .tw-nav-overlay {
+                top: 40px;
+            }
+            body.tw-tool {
+                padding-top: 54px !important;
+            }
+        }
     `;
     document.head.appendChild(style);
 
