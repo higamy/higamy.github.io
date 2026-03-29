@@ -4,106 +4,51 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TW Mint Village Optimizer</title>
-    <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: #1a1a2e; color: #e0e0e0; padding: 20px; }
-        h1 { text-align: center; color: #e94560; margin-bottom: 20px; font-size: 1.6em; }
-        .container { max-width: 1200px; margin: 0 auto; }
-        .input-section { background: #16213e; border-radius: 8px; padding: 20px; margin-bottom: 20px; }
-        .input-section label { display: block; margin-bottom: 4px; font-weight: 600; color: #a8d8ea; }
-        .input-section textarea {
-            width: 100%; height: 80px; background: #0f3460; color: #e0e0e0;
-            border: 1px solid #533483; border-radius: 4px; padding: 8px; font-family: monospace; font-size: 14px;
-            resize: vertical; margin-bottom: 12px;
-        }
-        .input-row { display: flex; gap: 20px; flex-wrap: wrap; align-items: flex-end; margin-bottom: 12px; }
-        .input-group { flex: 1; min-width: 180px; }
-        .input-group input {
-            width: 100%; background: #0f3460; color: #e0e0e0; border: 1px solid #533483;
-            border-radius: 4px; padding: 8px; font-size: 14px;
-        }
-        .input-group small { display: block; color: #888; margin-top: 2px; }
-        button#calcBtn {
-            background: #e94560; color: white; border: none; border-radius: 6px;
-            padding: 12px 32px; font-size: 16px; font-weight: 600; cursor: pointer; margin-top: 8px;
-        }
-        button#calcBtn:hover { background: #c73650; }
-        .results-section { background: #16213e; border-radius: 8px; padding: 20px; margin-bottom: 20px; display: none; }
-        .results-section h2 { color: #e94560; margin-bottom: 12px; font-size: 1.2em; }
-        .mint-badge {
-            display: inline-block; background: #e94560; color: white; padding: 3px 10px;
-            border-radius: 12px; font-weight: 600; margin: 2px 4px; font-family: monospace;
-        }
-        .group-block { background: #0f3460; border-radius: 6px; padding: 12px; margin-bottom: 10px; }
-        .group-block h3 { margin-bottom: 6px; }
-        .group-villages { font-family: monospace; color: #a8d8ea; word-break: break-word; }
-        .filter-section { background: #16213e; border-radius: 8px; padding: 20px; margin-bottom: 20px; display: none; }
-        .filter-section h2 { color: #e94560; margin-bottom: 12px; font-size: 1.2em; }
-        .filter-rule {
-            background: #0f3460; border-left: 4px solid #e94560; border-radius: 0 6px 6px 0;
-            padding: 10px 14px; margin-bottom: 8px; font-family: monospace; font-size: 14px;
-        }
-        .filter-rule .label { font-weight: 600; color: #f6b93b; }
-        .filter-accuracy { color: #2ecc71; margin-top: 4px; font-size: 12px; }
-        .filter-accuracy.warn { color: #f39c12; }
-        .misclassified { color: #e74c3c; font-size: 12px; margin-top: 2px; }
-        .chart-section { background: #16213e; border-radius: 8px; padding: 20px; margin-bottom: 20px; display: none; text-align: center; }
-        .chart-section h2 { color: #e94560; margin-bottom: 12px; font-size: 1.2em; }
-        canvas#chart { background: #0f3460; border-radius: 6px; max-width: 100%; }
-        .legend { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-top: 10px; }
-        .legend-item { display: flex; align-items: center; gap: 4px; font-size: 13px; }
-        .legend-swatch { width: 14px; height: 14px; border-radius: 50%; display: inline-block; }
-        .legend-swatch.mint { border: 2px solid white; }
-        .stats-row { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 12px; }
-        .stat-card { background: #0f3460; border-radius: 6px; padding: 10px 16px; flex: 1; min-width: 140px; text-align: center; }
-        .stat-card .val { font-size: 1.4em; font-weight: 700; color: #f6b93b; }
-        .stat-card .lbl { font-size: 0.8em; color: #888; }
-        .tooltip {
-            position: absolute; background: #16213e; border: 1px solid #533483; border-radius: 4px;
-            padding: 4px 8px; font-family: monospace; font-size: 12px; pointer-events: none; display: none; z-index: 10;
-        }
-        .error { color: #e74c3c; background: #2d1b1b; padding: 10px; border-radius: 6px; margin-top: 10px; }
-    </style>
+    <link rel="icon" href="https://dsen.innogamescdn.com/asset/7d1f39b6/graphic/favicon-32x32.webp">
+    <link rel="stylesheet" href="tw-tools.css">
 </head>
-<body>
-<div class="container">
-    <h1>Tribal Wars - Mint Village Optimizer</h1>
+<body class="tw-tool">
+<script src="tw-nav.js"></script>
+<div class="tw-container">
+    <div class="tw-header">
+        <h1>Tribal Wars - Mint Village Optimizer</h1>
+    </div>
 
-    <div class="input-section">
+    <div class="tw-section">
         <label for="coords">Village Coordinates (format: XXX|YYY separated by spaces)</label>
         <textarea id="coords" placeholder="e.g. 143|563 231|634 400|500 321|533 456|612"></textarea>
-        <div class="input-row">
-            <div class="input-group">
+        <div class="tw-input-row">
+            <div class="tw-input-group">
                 <label for="numMints">Number of Mint Villages</label>
                 <input type="number" id="numMints" value="1" min="1" step="1">
             </div>
-            <div class="input-group">
+            <div class="tw-input-group">
                 <label for="deliveries">Deliveries per Village</label>
                 <input type="number" id="deliveries" value="10" min="1" step="1">
                 <small>Max round-trip deliveries each village can make</small>
             </div>
         </div>
-        <button id="calcBtn" onclick="calculate()">Find Optimal Mint Villages</button>
+        <button class="tw-btn" id="calcBtn" onclick="calculate()">Find Optimal Mint Villages</button>
         <div id="errorBox"></div>
     </div>
 
-    <div class="results-section" id="resultsSection">
+    <div class="tw-section tw-hidden" id="resultsSection">
         <h2>Optimization Results</h2>
-        <div id="statsRow" class="stats-row"></div>
+        <div id="statsRow" class="tw-stats-row"></div>
         <div id="mintResult"></div>
         <div id="groupResults"></div>
     </div>
 
-    <div class="chart-section" id="chartSection">
+    <div class="tw-section tw-chart-section tw-hidden" id="chartSection">
         <h2>Village Map</h2>
         <div style="position: relative; display: inline-block;">
             <canvas id="chart" width="800" height="650"></canvas>
-            <div class="tooltip" id="tooltip"></div>
+            <div class="tw-tooltip" id="tooltip"></div>
         </div>
-        <div class="legend" id="legend"></div>
+        <div class="tw-legend" id="legend"></div>
     </div>
 
-    <div class="filter-section" id="filterSection">
+    <div class="tw-section tw-hidden" id="filterSection">
         <h2>Dynamic Group Filters (for in-game setup)</h2>
         <div id="filterResults"></div>
     </div>
@@ -117,12 +62,12 @@ function euclidean(a, b) {
 }
 
 function parseCoordinates(text) {
-    const tokens = text.trim().split(/[\s,;]+/).filter(Boolean);
+    const matches = text.match(/\d{1,3}\|\d{1,3}/g);
+    if (!matches || matches.length === 0) throw new Error('No valid coordinates found. Expected format: XXX|YYY');
     const villages = [];
     const seen = new Set();
-    for (const t of tokens) {
+    for (const t of matches) {
         const m = t.match(/^(\d{1,3})\|(\d{1,3})$/);
-        if (!m) throw new Error(`Invalid coordinate: "${t}". Expected format: XXX|YYY`);
         const x = parseInt(m[1], 10);
         const y = parseInt(m[2], 10);
         const key = `${x}|${y}`;
@@ -268,10 +213,8 @@ function findBestCircleForGroup(villages, targetIdx, otherIdx) {
     const bbox = getBoundingBox(allIdx.map(i => villages[i]));
     const candidates = [];
 
-    // All village coords as candidates
     for (const v of villages) candidates.push({ x: v.x, y: v.y });
 
-    // Grid search in bounding box area with step 3
     const pad = 15;
     const step = 3;
     for (let x = bbox.minX - pad; x <= bbox.maxX + pad; x += step) {
@@ -283,24 +226,19 @@ function findBestCircleForGroup(villages, targetIdx, otherIdx) {
     let bestScore = -1, bestCenter = null, bestRadius = 0, bestInside = true;
 
     for (const center of candidates) {
-        // Compute distances for target and other
         const tDists = targetIdx.map(i => euclidean(center, villages[i]));
         const oDists = otherIdx.map(i => euclidean(center, villages[i]));
 
-        // Try "target inside circle" and "target outside circle"
         for (const targetInside of [true, false]) {
             const all = [];
             for (const d of tDists) all.push({ d, isTarget: true });
             for (const d of oDists) all.push({ d, isTarget: false });
             all.sort((a, b) => a.d - b.d);
 
-            // Sweep radius from 0 to max
             let tp = 0, fp = 0;
             const nTarget = tDists.length, nOther = oDists.length;
 
-            // At radius = -1 (nothing inside): score depends on orientation
             if (targetInside) {
-                // target inside, other outside -> tp=0, tn=nOther
                 let score = nOther;
                 let bLocalR = 0, bLocalS = score;
                 for (let i = 0; i < all.length; i++) {
@@ -309,7 +247,6 @@ function findBestCircleForGroup(villages, targetIdx, otherIdx) {
                     const s = targetInside ? (tp + tn) : ((nTarget - tp) + fp);
                     if (s > bLocalS) {
                         bLocalS = s;
-                        // Radius midway to next or at this point
                         bLocalR = (i + 1 < all.length) ? (all[i].d + all[i + 1].d) / 2 : all[i].d + 1;
                     }
                 }
@@ -320,8 +257,6 @@ function findBestCircleForGroup(villages, targetIdx, otherIdx) {
                     bestInside = true;
                 }
             } else {
-                // target outside circle
-                // At radius = -1: all outside -> tp_outside = nTarget
                 let score = nTarget;
                 let bLocalR = 0, bLocalS = score;
                 let insideTarget = 0, insideOther = 0;
@@ -420,7 +355,6 @@ function buildFilters(villages, groups, mintIndices) {
     const k = mintIndices.length;
     if (k <= 1) return [{ groupIdx: 0, rules: ['All villages'], circles: [], accuracy: 100, misclassified: [] }];
 
-    // Group village indices (excluding mints)
     const groupMembers = Array.from({ length: k }, () => []);
     for (let i = 0; i < villages.length; i++) {
         if (mintIndices.includes(i)) continue;
@@ -429,11 +363,10 @@ function buildFilters(villages, groups, mintIndices) {
 
     const filters = [];
     const circles = [];
-    const coveredRules = []; // accumulated NOT rules for later groups
+    const coveredRules = [];
 
     for (let g = 0; g < k; g++) {
         if (g === k - 1) {
-            // Last group: everything not captured by previous filters
             const rules = [];
             if (coveredRules.length === 0) {
                 rules.push('All remaining villages');
@@ -442,14 +375,12 @@ function buildFilters(villages, groups, mintIndices) {
             } else {
                 rules.push(coveredRules.map(r => `NOT (${r})`).join(' AND '));
             }
-            // Compute accuracy for remainder group by checking what actually ends up here
             const misclass = [];
             let correctCount = 0;
             const allNonMint = [];
             for (let gg = 0; gg < k; gg++) allNonMint.push(...groupMembers[gg]);
 
             for (const vi of allNonMint) {
-                // Simulate filter chain: is this village captured by any previous filter?
                 let captured = false;
                 for (const c of circles) {
                     const d = euclidean(c.center, villages[vi]);
@@ -469,7 +400,6 @@ function buildFilters(villages, groups, mintIndices) {
             break;
         }
 
-        // Find circle to separate this group from remaining uncaptured groups
         const otherIdx = [];
         for (let gg = g + 1; gg < k; gg++) {
             otherIdx.push(...groupMembers[gg]);
@@ -494,7 +424,6 @@ function buildFilters(villages, groups, mintIndices) {
 
         const rules = [];
         if (coveredRules.length > 0) {
-            // Must also NOT be in previous groups
             for (const prev of coveredRules) {
                 rules.push(`NOT (${prev})`);
             }
@@ -529,6 +458,20 @@ function getBoundingBox(points) {
 // --- Drawing ---
 
 let chartVillages = [], chartGroups = [], chartMintIndices = [], chartFilters = [];
+let zoomLevel = 1, panX = 0, panY = 0;
+
+function getThemeColors() {
+    const style = getComputedStyle(document.documentElement);
+    return {
+        canvasBg: style.getPropertyValue('--tw-bg-canvas').trim(),
+        gridLine: style.getPropertyValue('--tw-grid-line').trim(),
+        axisLabel: style.getPropertyValue('--tw-axis-label').trim(),
+        textLabel: style.getPropertyValue('--tw-text-label').trim(),
+        villageStroke: style.getPropertyValue('--tw-village-stroke').trim(),
+        starStroke: style.getPropertyValue('--tw-star-stroke').trim(),
+        starLabel: style.getPropertyValue('--tw-star-label').trim(),
+    };
+}
 
 function drawChart(villages, groups, mintIndices, filterData) {
     chartVillages = villages;
@@ -543,15 +486,25 @@ function drawChart(villages, groups, mintIndices, filterData) {
     const plotW = W - margin.left - margin.right;
     const plotH = H - margin.top - margin.bottom;
 
+    const colors = getThemeColors();
+
     ctx.clearRect(0, 0, W, H);
-    ctx.fillStyle = '#0f3460';
+    ctx.fillStyle = colors.canvasBg;
     ctx.fillRect(0, 0, W, H);
 
     const bbox = getBoundingBox(villages);
     const padX = Math.max((bbox.maxX - bbox.minX) * 0.08, 5);
     const padY = Math.max((bbox.maxY - bbox.minY) * 0.08, 5);
-    const dataMinX = bbox.minX - padX, dataMaxX = bbox.maxX + padX;
-    const dataMinY = bbox.minY - padY, dataMaxY = bbox.maxY + padY;
+    const baseCenterX = (bbox.minX + bbox.maxX) / 2;
+    const baseCenterY = (bbox.minY + bbox.maxY) / 2;
+    const baseRangeX = (bbox.maxX - bbox.minX + 2 * padX) || 1;
+    const baseRangeY = (bbox.maxY - bbox.minY + 2 * padY) || 1;
+    const viewRangeX = baseRangeX / zoomLevel;
+    const viewRangeY = baseRangeY / zoomLevel;
+    const dataMinX = baseCenterX + panX - viewRangeX / 2;
+    const dataMaxX = baseCenterX + panX + viewRangeX / 2;
+    const dataMinY = baseCenterY + panY - viewRangeY / 2;
+    const dataMaxY = baseCenterY + panY + viewRangeY / 2;
     const rangeX = dataMaxX - dataMinX || 1;
     const rangeY = dataMaxY - dataMinY || 1;
     const scale = Math.min(plotW / rangeX, plotH / rangeY);
@@ -561,20 +514,19 @@ function drawChart(villages, groups, mintIndices, filterData) {
     function toCanvas(gx, gy) {
         return {
             cx: offsetX + (gx - dataMinX) * scale,
-            cy: offsetY + (gy - dataMinY) * scale  // Y increases downward, matching game map
+            cy: offsetY + (gy - dataMinY) * scale
         };
     }
 
-    // Store transform for tooltip
     canvas._transform = { toCanvas, dataMinX, dataMaxX, dataMinY, dataMaxY, scale, offsetX, offsetY, margin };
 
     // Grid lines
-    ctx.strokeStyle = '#1a325a';
+    ctx.strokeStyle = colors.gridLine;
     ctx.lineWidth = 0.5;
     const stepX = niceStep(rangeX);
     const stepY = niceStep(rangeY);
     ctx.font = '11px monospace';
-    ctx.fillStyle = '#667';
+    ctx.fillStyle = colors.axisLabel;
 
     for (let gx = Math.ceil(dataMinX / stepX) * stepX; gx <= dataMaxX; gx += stepX) {
         const { cx } = toCanvas(gx, 0);
@@ -588,7 +540,7 @@ function drawChart(villages, groups, mintIndices, filterData) {
     }
 
     // Axis labels
-    ctx.fillStyle = '#a8d8ea';
+    ctx.fillStyle = colors.textLabel;
     ctx.font = '13px Segoe UI, sans-serif';
     ctx.fillText('X', W / 2, H - 8);
     ctx.save();
@@ -615,12 +567,10 @@ function drawChart(villages, groups, mintIndices, filterData) {
         ctx.setLineDash([6, 4]);
         ctx.stroke();
         ctx.setLineDash([]);
-        // Label
         ctx.fillStyle = color;
         ctx.font = '11px monospace';
         const labelText = `r=${c.radius} from ${c.center.x}|${c.center.y}`;
         ctx.fillText(labelText, cx + rPx + 4, cy - 4);
-        // Center cross
         ctx.beginPath();
         ctx.moveTo(cx - 4, cy); ctx.lineTo(cx + 4, cy);
         ctx.moveTo(cx, cy - 4); ctx.lineTo(cx, cy + 4);
@@ -638,7 +588,6 @@ function drawChart(villages, groups, mintIndices, filterData) {
         const color = GROUP_COLORS[g % GROUP_COLORS.length];
 
         if (isMint) {
-            // Star shape for mints
             ctx.beginPath();
             ctx.fillStyle = color;
             const outerR = 9, innerR = 4;
@@ -651,20 +600,19 @@ function drawChart(villages, groups, mintIndices, filterData) {
             }
             ctx.closePath();
             ctx.fill();
-            ctx.strokeStyle = '#fff';
+            ctx.strokeStyle = colors.starStroke;
             ctx.lineWidth = 2;
             ctx.stroke();
 
-            // Label
-            ctx.fillStyle = '#fff';
+            ctx.fillStyle = colors.starLabel;
             ctx.font = 'bold 11px monospace';
             ctx.fillText(v.label, cx + 12, cy + 4);
         } else {
             ctx.beginPath();
             ctx.arc(cx, cy, 4, 0, Math.PI * 2);
-            ctx.fillStyle = color;
+            ctx.fillStyle = '#f0c800';
             ctx.fill();
-            ctx.strokeStyle = 'rgba(255,255,255,0.3)';
+            ctx.strokeStyle = colors.villageStroke;
             ctx.lineWidth = 0.5;
             ctx.stroke();
         }
@@ -677,8 +625,8 @@ function drawChart(villages, groups, mintIndices, filterData) {
         const mi = mintIndices[g];
         const color = GROUP_COLORS[g % GROUP_COLORS.length];
         const item = document.createElement('span');
-        item.className = 'legend-item';
-        item.innerHTML = `<span class="legend-swatch mint" style="background:${color};"></span> Group ${g + 1} (Mint: ${villages[mi].label})`;
+        item.className = 'tw-legend-item';
+        item.innerHTML = `<span class="tw-legend-swatch mint" style="background:${color};"></span> Group ${g + 1} (Mint: ${villages[mi].label})`;
         legendDiv.appendChild(item);
     }
 }
@@ -729,7 +677,62 @@ function niceStep(range) {
         }
     });
     canvas.addEventListener('mouseleave', () => { tooltip.style.display = 'none'; });
+
+    // Zoom with mouse wheel
+    canvas.addEventListener('wheel', (e) => {
+        if (!chartVillages.length) return;
+        e.preventDefault();
+        const factor = e.deltaY < 0 ? 1.2 : 1 / 1.2;
+        zoomLevel = Math.max(0.5, Math.min(20, zoomLevel * factor));
+        redrawChart();
+    }, { passive: false });
+
+    // Pan with click-drag
+    let dragging = false, dragStartX = 0, dragStartY = 0, panStartX = 0, panStartY = 0;
+    canvas.addEventListener('mousedown', (e) => {
+        if (!chartVillages.length) return;
+        dragging = true;
+        dragStartX = e.clientX;
+        dragStartY = e.clientY;
+        panStartX = panX;
+        panStartY = panY;
+        canvas.style.cursor = 'grabbing';
+    });
+    window.addEventListener('mousemove', (e) => {
+        if (!dragging) return;
+        const t = canvas._transform;
+        if (!t) return;
+        const dx = (e.clientX - dragStartX);
+        const dy = (e.clientY - dragStartY);
+        const rect = canvas.getBoundingClientRect();
+        const scaleX = canvas.width / rect.width;
+        panX = panStartX - (dx * scaleX) / t.scale;
+        panY = panStartY - (dy * scaleX) / t.scale;
+        redrawChart();
+    });
+    window.addEventListener('mouseup', () => {
+        if (dragging) {
+            dragging = false;
+            canvas.style.cursor = 'default';
+        }
+    });
+
+    // Double-click to reset zoom
+    canvas.addEventListener('dblclick', (e) => {
+        e.preventDefault();
+        zoomLevel = 1;
+        panX = 0;
+        panY = 0;
+        redrawChart();
+    });
 })();
+
+function redrawChart() {
+    if (chartVillages.length) {
+        const filterData = buildFilters(chartVillages, chartGroups, chartMintIndices);
+        drawChart(chartVillages, chartGroups, chartMintIndices, filterData);
+    }
+}
 
 // --- Main Calculation ---
 
@@ -747,11 +750,9 @@ function calculate() {
         if (k >= villages.length) throw new Error(`Number of mints (${k}) must be less than total villages (${villages.length}).`);
         if (!Number.isInteger(deliveries) || deliveries < 1) throw new Error('Deliveries must be an integer >= 1.');
 
-        // Run optimization
         const mintIndices = findOptimalMints(villages, k);
         const groups = assignGroups(villages, mintIndices);
 
-        // Compute stats
         let totalDist = 0;
         const groupStats = Array.from({ length: k }, () => ({ count: 0, totalDist: 0, maxDist: 0 }));
         for (let i = 0; i < villages.length; i++) {
@@ -764,20 +765,19 @@ function calculate() {
             groupStats[g].maxDist = Math.max(groupStats[g].maxDist, d);
         }
 
-        // Display results
         const resultsSection = document.getElementById('resultsSection');
-        resultsSection.style.display = 'block';
+        resultsSection.classList.remove('tw-hidden');
 
         const nonMintCount = villages.length - k;
         document.getElementById('statsRow').innerHTML = `
-            <div class="stat-card"><div class="val">${villages.length}</div><div class="lbl">Total Villages</div></div>
-            <div class="stat-card"><div class="val">${k}</div><div class="lbl">Mint Villages</div></div>
-            <div class="stat-card"><div class="val">${(totalDist * deliveries).toFixed(0)}</div><div class="lbl">Total Field-Trips (dist x deliveries)</div></div>
-            <div class="stat-card"><div class="val">${(totalDist / nonMintCount).toFixed(1)}</div><div class="lbl">Avg Distance to Mint</div></div>
+            <div class="tw-stat-card"><div class="val">${villages.length}</div><div class="lbl">Total Villages</div></div>
+            <div class="tw-stat-card"><div class="val">${k}</div><div class="lbl">Mint Villages</div></div>
+            <div class="tw-stat-card"><div class="val">${(totalDist * deliveries).toFixed(0)}</div><div class="lbl">Total Field-Trips (dist x deliveries)</div></div>
+            <div class="tw-stat-card"><div class="val">${(totalDist / nonMintCount).toFixed(1)}</div><div class="lbl">Avg Distance to Mint</div></div>
         `;
 
         document.getElementById('mintResult').innerHTML = '<p style="margin-bottom:8px"><b>Selected Mint Villages:</b> ' +
-            mintIndices.map(i => `<span class="mint-badge">${villages[i].label}</span>`).join(' ') + '</p>';
+            mintIndices.map(i => `<span class="tw-badge">${villages[i].label}</span>`).join(' ') + '</p>';
 
         let groupHTML = '';
         for (let g = 0; g < k; g++) {
@@ -787,31 +787,29 @@ function calculate() {
                 if (groups[i] === g && !mintIndices.includes(i)) members.push(villages[i].label);
             }
             const gs = groupStats[g];
-            groupHTML += `<div class="group-block" style="border-left: 4px solid ${color};">
+            groupHTML += `<div class="tw-group-block" style="border-left: 4px solid ${color};">
                 <h3 style="color:${color}">Group ${g + 1} — Mint: ${villages[mintIndices[g]].label} (${members.length} villages)</h3>
-                <div style="font-size:13px; color:#aaa; margin-bottom:4px;">
+                <div style="font-size:13px; color:var(--tw-text-muted); margin-bottom:4px;">
                     Avg dist: ${gs.count ? (gs.totalDist / gs.count).toFixed(1) : 0} | Max dist: ${gs.maxDist.toFixed(1)} |
                     Total deliveries: ${gs.count * deliveries} | Field-trips: ${(gs.totalDist * deliveries).toFixed(0)}
                 </div>
-                <div class="group-villages">${members.join('  ')}</div>
+                <div class="tw-group-villages">${members.join('  ')}</div>
             </div>`;
         }
         document.getElementById('groupResults').innerHTML = groupHTML;
 
-        // Find filters
         const filterData = buildFilters(villages, groups, mintIndices);
 
-        // Draw chart
-        document.getElementById('chartSection').style.display = 'block';
+        zoomLevel = 1; panX = 0; panY = 0;
+        document.getElementById('chartSection').classList.remove('tw-hidden');
         drawChart(villages, groups, mintIndices, filterData);
 
-        // Display filters
         const filterSection = document.getElementById('filterSection');
-        filterSection.style.display = 'block';
+        filterSection.classList.remove('tw-hidden');
         let filterHTML = '';
 
         if (k === 1) {
-            filterHTML = '<div class="filter-rule"><span class="label">All Villages</span> — No filter needed, send all to mint.</div>';
+            filterHTML = '<div class="tw-filter-rule"><span class="label">All Villages</span> — No filter needed, send all to mint.</div>';
         } else {
             for (let g = 0; g < k; g++) {
                 const f = filterData[g];
@@ -819,24 +817,24 @@ function calculate() {
                 const mintLabel = villages[mintIndices[g]].label;
                 const ruleStr = f.rules.join(' AND ');
 
-                let accClass = f.accuracy >= 100 ? '' : (f.accuracy >= 90 ? ' warn' : ' warn');
+                let accClass = f.accuracy >= 100 ? '' : ' warn';
                 let accText = f.accuracy >= 100
                     ? 'Exact match (100%)'
                     : `${f.accuracy}% accurate`;
 
                 let misText = '';
                 if (f.misclassified.length > 0) {
-                    misText = `<div class="misclassified">Misclassified (manually adjust): ${f.misclassified.map(m => m.label).join(', ')}</div>`;
+                    misText = `<div class="tw-misclassified">Misclassified (manually adjust): ${f.misclassified.map(m => m.label).join(', ')}</div>`;
                 }
 
-                filterHTML += `<div class="filter-rule" style="border-left-color:${color};">
+                filterHTML += `<div class="tw-filter-rule" style="border-left-color:${color};">
                     <span class="label">Group ${g + 1}</span> (send to <b>${mintLabel}</b>): ${ruleStr}
-                    <div class="filter-accuracy${accClass}">${accText}</div>
+                    <div class="tw-filter-accuracy${accClass}">${accText}</div>
                     ${misText}
                 </div>`;
             }
 
-            filterHTML += `<div style="margin-top:16px; padding:12px; background:#0f3460; border-radius:6px; font-size:13px; color:#a8d8ea;">
+            filterHTML += `<div class="tw-info-box">
                 <b>How to set up in-game:</b><br>
                 Go to <i>Groups &gt; Dynamic groups</i>. For each group above, create a new dynamic group with the distance filter(s) shown.<br>
                 Filters using AND: add multiple conditions in the same group filter.<br>
@@ -848,9 +846,35 @@ function calculate() {
         document.getElementById('filterResults').innerHTML = filterHTML;
 
     } catch (err) {
-        errorBox.innerHTML = `<div class="error">${err.message}</div>`;
+        errorBox.innerHTML = `<div class="tw-error">${err.message}</div>`;
     }
 }
+
+// --- Theme Toggle ---
+function toggleTheme() {
+    const html = document.documentElement;
+    const current = html.getAttribute('data-theme');
+    const next = current === 'light' ? 'dark' : 'light';
+    html.setAttribute('data-theme', next);
+    localStorage.setItem('tw-tools-theme', next);
+
+    // Redraw chart if visible
+    if (chartVillages.length) {
+        const filterData = buildFilters(chartVillages, chartGroups, chartMintIndices);
+        drawChart(chartVillages, chartGroups, chartMintIndices, filterData);
+    }
+}
+
+// Theme is loaded by tw-nav.js
+
+// Clean coordinates on paste
+document.getElementById('coords').addEventListener('input', function() {
+    const raw = this.value;
+    const matches = raw.match(/\d{1,3}\|\d{1,3}/g);
+    if (matches && raw !== matches.join(' ')) {
+        this.value = matches.join(' ');
+    }
+});
 </script>
 </body>
 </html>

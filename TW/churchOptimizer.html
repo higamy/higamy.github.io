@@ -1,0 +1,1014 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TW Church Placement Optimizer</title>
+    <link rel="icon" href="https://dsen.innogamescdn.com/asset/7d1f39b6/graphic/favicon-32x32.webp">
+    <link rel="stylesheet" href="tw-tools.css">
+</head>
+<body class="tw-tool">
+<script src="tw-nav.js"></script>
+<div class="tw-container">
+    <div class="tw-header">
+        <img src="https://dsen.innogamescdn.com/asset/7d1f39b6/graphic/big_buildings/church3.webp" class="tw-header-icon" alt="Church">
+        <h1>Tribal Wars - Church Placement Optimizer</h1>
+    </div>
+
+    <div class="tw-section">
+        <label for="coords">Village Coordinates (format: XXX|YYY separated by spaces)</label>
+        <textarea id="coords" placeholder="e.g. 143|563 231|634 400|500 321|533 456|612"></textarea>
+
+        <div class="tw-input-row">
+            <div class="tw-input-group">
+                <label for="maxLevel">Maximum Church Level Available</label>
+                <select id="maxLevel">
+                    <option value="3" selected>Level 3 (radius 8)</option>
+                    <option value="2">Level 2 (radius 6)</option>
+                    <option value="1">Level 1 (radius 4)</option>
+                </select>
+                <small>Highest church level you are willing to build</small>
+            </div>
+        </div>
+
+        <button class="tw-btn" id="calcBtn" onclick="calculate()">Find Optimal Church Placement</button>
+        <div id="errorBox"></div>
+    </div>
+
+    <div class="tw-section tw-hidden" id="resultsSection">
+        <h2>Optimization Results</h2>
+        <div id="statsRow" class="tw-stats-row"></div>
+        <div id="churchResult"></div>
+        <div id="coverageResults"></div>
+    </div>
+
+    <div class="tw-section tw-chart-section tw-hidden" id="chartSection">
+        <h2>Village Map</h2>
+        <div style="position: relative; display: inline-block;">
+            <canvas id="chart" width="800" height="650"></canvas>
+            <div class="tw-tooltip" id="tooltip"></div>
+        </div>
+        <div class="tw-legend" id="legend"></div>
+    </div>
+
+    <div class="tw-loading" id="loadingOverlay">
+        <div class="tw-loading-spinner">&#9203;</div>
+        <div class="tw-loading-text">Optimizing church placement...</div>
+    </div>
+
+    <div class="tw-section tw-hidden" id="uncoveredSection">
+        <h2>Uncovered Villages</h2>
+        <div id="uncoveredResults"></div>
+    </div>
+</div>
+
+<script>
+const CHURCH_LEVELS = { 1: 4, 2: 6, 3: 8 };
+const CHURCH_COLORS = { 1: '#2ecc71', 2: '#3498db', 3: '#e94560' };
+const CHURCH_LABELS = { 1: 'Church Lv1 (r=4)', 2: 'Church Lv2 (r=6)', 3: 'Church Lv3 (r=8)' };
+const VILLAGE_COLOR = '#f0c800';
+
+function euclidean(a, b) {
+    return Math.sqrt((a.x - b.x) ** 2 + (a.y - b.y) ** 2);
+}
+
+function parseCoordinates(text) {
+    const matches = text.match(/\d{1,3}\|\d{1,3}/g);
+    if (!matches || matches.length === 0) throw new Error('No valid coordinates found. Expected format: XXX|YYY');
+    const villages = [];
+    const seen = new Set();
+    for (const t of matches) {
+        const m = t.match(/^(\d{1,3})\|(\d{1,3})$/);
+        const x = parseInt(m[1], 10);
+        const y = parseInt(m[2], 10);
+        const key = `${x}|${y}`;
+        if (seen.has(key)) continue;
+        seen.add(key);
+        villages.push({ x, y, label: key });
+    }
+    return villages;
+}
+
+// Build coverage map: for each village, which villages it covers at each level
+function buildCoverage(villages, maxLevel) {
+    const n = villages.length;
+    const coverage = []; // coverage[i][level] = Set of village indices within radius
+    for (let i = 0; i < n; i++) {
+        coverage[i] = {};
+        for (let lvl = 1; lvl <= maxLevel; lvl++) {
+            const r = CHURCH_LEVELS[lvl];
+            const covered = new Set();
+            for (let j = 0; j < n; j++) {
+                if (euclidean(villages[i], villages[j]) <= r) {
+                    covered.add(j);
+                }
+            }
+            coverage[i][lvl] = covered;
+        }
+    }
+    return coverage;
+}
+
+// Check if a set of church indices covers all n villages
+function checkCoverage(churchIndices, coverage, maxLevel, n) {
+    const covered = new Set();
+    for (const ci of churchIndices) {
+        for (const j of coverage[ci][maxLevel]) covered.add(j);
+    }
+    return covered.size === n;
+}
+
+// Get uncovered villages
+function getUncovered(churchIndices, coverage, maxLevel, n) {
+    const covered = new Set();
+    for (const ci of churchIndices) {
+        for (const j of coverage[ci][maxLevel]) covered.add(j);
+    }
+    const uncovered = [];
+    for (let j = 0; j < n; j++) {
+        if (!covered.has(j)) uncovered.push(j);
+    }
+    return uncovered;
+}
+
+// Greedy set cover
+function greedySetCover(coverage, maxLevel, n) {
+    const uncovered = new Set(Array.from({ length: n }, (_, i) => i));
+    const churches = [];
+    while (uncovered.size > 0) {
+        let bestIdx = -1, bestCount = 0;
+        for (let i = 0; i < n; i++) {
+            let count = 0;
+            for (const j of uncovered) {
+                if (coverage[i][maxLevel].has(j)) count++;
+            }
+            if (count > bestCount) { bestCount = count; bestIdx = i; }
+        }
+        if (bestCount === 0) break;
+        churches.push(bestIdx);
+        for (const j of coverage[bestIdx][maxLevel]) uncovered.delete(j);
+    }
+    return churches;
+}
+
+// Remove redundant churches from a solution
+function removeRedundant(churchIndices, coverage, maxLevel, n) {
+    let result = [...churchIndices];
+    let changed = true;
+    while (changed) {
+        changed = false;
+        for (let i = 0; i < result.length; i++) {
+            const without = result.filter((_, j) => j !== i);
+            if (checkCoverage(without, coverage, maxLevel, n)) {
+                result = without;
+                changed = true;
+                break;
+            }
+        }
+    }
+    return result;
+}
+
+// Lower bound: count villages that can ONLY be covered by one specific church location
+// Also: LP relaxation lower bound
+function computeLowerBound(coverage, maxLevel, n) {
+    // For each village, count how many potential churches can cover it
+    // Villages that can only be covered by 1 church location require that church
+    const requiredChurches = new Set();
+    for (let j = 0; j < n; j++) {
+        const canCover = [];
+        for (let i = 0; i < n; i++) {
+            if (coverage[i][maxLevel].has(j)) canCover.push(i);
+        }
+        if (canCover.length === 1) {
+            requiredChurches.add(canCover[0]);
+        }
+    }
+
+    // LP relaxation lower bound: sum(1/maxCoverageSize) over all villages
+    // Each village needs to be "fractionally" covered
+    let lpBound = 0;
+    for (let j = 0; j < n; j++) {
+        let maxCovSize = 0;
+        for (let i = 0; i < n; i++) {
+            if (coverage[i][maxLevel].has(j)) {
+                maxCovSize = Math.max(maxCovSize, coverage[i][maxLevel].size);
+            }
+        }
+        if (maxCovSize > 0) lpBound += 1 / maxCovSize;
+    }
+
+    return Math.max(requiredChurches.size, Math.ceil(lpBound));
+}
+
+// Try to find a solution of exactly targetK churches
+// Uses randomized local search: start from greedy, try swaps and removals
+function tryFindSolutionOfSize(targetK, coverage, maxLevel, n, timeLimit) {
+    const startTime = Date.now();
+
+    // Multiple attempts with different starting points
+    for (let attempt = 0; attempt < 50; attempt++) {
+        if (Date.now() - startTime > timeLimit) break;
+
+        // Start from greedy with randomization
+        let solution;
+        if (attempt === 0) {
+            solution = greedySetCover(coverage, maxLevel, n);
+        } else {
+            // Randomized greedy: add random noise to coverage counts
+            const uncov = new Set(Array.from({ length: n }, (_, i) => i));
+            solution = [];
+            while (uncov.size > 0) {
+                const candidates = [];
+                for (let i = 0; i < n; i++) {
+                    let count = 0;
+                    for (const j of uncov) {
+                        if (coverage[i][maxLevel].has(j)) count++;
+                    }
+                    if (count > 0) candidates.push({ idx: i, count });
+                }
+                if (candidates.length === 0) break;
+                // Pick from top candidates with randomization
+                candidates.sort((a, b) => b.count - a.count);
+                const topN = Math.min(3, candidates.length);
+                const pick = candidates[Math.floor(Math.random() * topN)];
+                solution.push(pick.idx);
+                for (const j of coverage[pick.idx][maxLevel]) uncov.delete(j);
+            }
+        }
+
+        // Remove redundant
+        solution = removeRedundant(solution, coverage, maxLevel, n);
+
+        if (solution.length <= targetK) return solution;
+
+        // Try swap+remove to reduce size
+        let improved = true;
+        while (improved && solution.length > targetK) {
+            if (Date.now() - startTime > timeLimit) break;
+            improved = false;
+
+            for (let ci = 0; ci < solution.length; ci++) {
+                const without = solution.filter((_, i) => i !== ci);
+                const uncovered = getUncovered(without, coverage, maxLevel, n);
+                if (uncovered.length === 0) {
+                    solution = without;
+                    improved = true;
+                    break;
+                }
+
+                // Can we replace this church with one that covers all uncovered
+                // AND makes another church redundant?
+                for (let vi = 0; vi < n; vi++) {
+                    if (without.includes(vi)) continue;
+                    let coversAll = true;
+                    for (const m of uncovered) {
+                        if (!coverage[vi][maxLevel].has(m)) { coversAll = false; break; }
+                    }
+                    if (coversAll) {
+                        const swapped = [...without, vi];
+                        const reduced = removeRedundant(swapped, coverage, maxLevel, n);
+                        if (reduced.length < solution.length) {
+                            solution = reduced;
+                            improved = true;
+                            break;
+                        }
+                    }
+                }
+                if (improved) break;
+            }
+        }
+
+        if (solution.length <= targetK) return solution;
+    }
+
+    return null; // Couldn't find solution of this size
+}
+
+function binomial(n, k) {
+    if (k > n) return Infinity;
+    if (k === 0 || k === n) return 1;
+    if (k > n - k) k = n - k;
+    let r = 1;
+    for (let i = 0; i < k; i++) {
+        r = r * (n - i) / (i + 1);
+        if (r > 200000) return Infinity;
+    }
+    return Math.round(r);
+}
+
+function* combinations(arr, k) {
+    if (k === 0) { yield []; return; }
+    for (let i = 0; i <= arr.length - k; i++) {
+        for (const rest of combinations(arr.slice(i + 1), k - 1)) {
+            yield [arr[i], ...rest];
+        }
+    }
+}
+
+function bruteForceMinChurches(coverage, maxLevel, n) {
+    for (let k = 1; k <= n; k++) {
+        if (binomial(n, k) > 200000) return null;
+        for (const combo of combinations(Array.from({ length: n }, (_, i) => i), k)) {
+            if (checkCoverage(combo, coverage, maxLevel, n)) {
+                return combo;
+            }
+        }
+    }
+    return null;
+}
+
+// Optimize church levels: try to reduce each church's level
+function optimizeLevels(villages, churches, coverage, maxLevel) {
+    const n = villages.length;
+    const numChurches = churches.length;
+    const levels = churches.map(c => c.level);
+
+    function allCovered(lvls) {
+        const covered = new Set();
+        for (let c = 0; c < numChurches; c++) {
+            for (const j of coverage[churches[c].index][lvls[c]]) {
+                covered.add(j);
+            }
+        }
+        return covered.size === n;
+    }
+
+    if (numChurches <= 12) {
+        // Try all level combinations (3^12 = 531441 max)
+        let bestLevels = [...levels];
+        let bestTotal = levels.reduce((a, b) => a + b, 0);
+
+        function tryAll(idx, current, currentTotal) {
+            if (currentTotal >= bestTotal) return; // prune
+            if (idx === numChurches) {
+                if (allCovered(current)) {
+                    bestTotal = currentTotal;
+                    bestLevels = [...current];
+                }
+                return;
+            }
+            for (let lvl = 1; lvl <= maxLevel; lvl++) {
+                current[idx] = lvl;
+                tryAll(idx + 1, current, currentTotal - levels[idx] + lvl);
+            }
+            current[idx] = levels[idx]; // restore
+        }
+
+        const temp = [...levels];
+        tryAll(0, temp, bestTotal);
+        return bestLevels;
+    }
+
+    // Greedy reduction for larger sets
+    let improved = true;
+    while (improved) {
+        improved = false;
+        for (let c = 0; c < numChurches; c++) {
+            while (levels[c] > 1) {
+                levels[c]--;
+                if (!allCovered(levels)) {
+                    levels[c]++;
+                    break;
+                } else {
+                    improved = true;
+                }
+            }
+        }
+    }
+    return levels;
+}
+
+// Score a church solution by total unique grid area covered (higher = more spread)
+// Counts integer grid points within at least one church circle
+function spreadScore(villages, churchIndices, maxLevel) {
+    const gridPoints = new Set();
+    for (const ci of churchIndices) {
+        const v = villages[ci];
+        const r = CHURCH_LEVELS[maxLevel];
+        const r2 = r * r;
+        for (let dx = -r; dx <= r; dx++) {
+            for (let dy = -r; dy <= r; dy++) {
+                if (dx * dx + dy * dy <= r2) {
+                    gridPoints.add(`${v.x + dx},${v.y + dy}`);
+                }
+            }
+        }
+    }
+    return gridPoints.size;
+}
+
+// Quick spread score using sum of pairwise distances (for use during search)
+function quickSpreadScore(villages, churchIndices) {
+    let sum = 0;
+    for (let i = 0; i < churchIndices.length; i++) {
+        for (let j = i + 1; j < churchIndices.length; j++) {
+            sum += euclidean(villages[churchIndices[i]], villages[churchIndices[j]]);
+        }
+    }
+    return sum;
+}
+
+// Optimize spread: given a valid solution of size K, try swapping churches
+// for alternatives that maintain coverage but maximize spread
+function optimizeSpread(villages, churchIndices, coverage, maxLevel, n, timeLimit) {
+    const startTime = Date.now();
+    let best = [...churchIndices];
+    let bestScore = spreadScore(villages, best, maxLevel);
+
+    let improved = true;
+    while (improved) {
+        if (Date.now() - startTime > timeLimit) break;
+        improved = false;
+
+        for (let ci = 0; ci < best.length; ci++) {
+            if (Date.now() - startTime > timeLimit) break;
+
+            // Try replacing this church with every other village
+            const without = best.filter((_, i) => i !== ci);
+            let bestSwap = best[ci];
+            let bestSwapScore = bestScore;
+
+            for (let vi = 0; vi < n; vi++) {
+                if (without.includes(vi)) continue;
+                if (vi === best[ci]) continue;
+
+                const candidate = [...without, vi];
+                if (!checkCoverage(candidate, coverage, maxLevel, n)) continue;
+
+                const score = spreadScore(villages, candidate, maxLevel);
+                if (score > bestSwapScore) {
+                    bestSwapScore = score;
+                    bestSwap = vi;
+                }
+            }
+
+            if (bestSwap !== best[ci]) {
+                best[ci] = bestSwap;
+                bestScore = bestSwapScore;
+                improved = true;
+            }
+        }
+    }
+
+    return best;
+}
+
+function findOptimalChurches(villages, maxLevel) {
+    const n = villages.length;
+    const coverage = buildCoverage(villages, maxLevel);
+
+    // Try brute force for small instances
+    let churchIndices = bruteForceMinChurches(coverage, maxLevel, n);
+
+    if (!churchIndices) {
+        // Compute lower bound
+        const lowerBound = computeLowerBound(coverage, maxLevel, n);
+
+        // Get greedy upper bound
+        let greedy = greedySetCover(coverage, maxLevel, n);
+        greedy = removeRedundant(greedy, coverage, maxLevel, n);
+
+        churchIndices = greedy;
+
+        // Try to reduce: attempt solutions of decreasing size
+        // Time budget: 4 seconds
+        const reduceLimit = 4000;
+        const startTime = Date.now();
+        for (let targetK = greedy.length - 1; targetK >= lowerBound; targetK--) {
+            if (Date.now() - startTime > reduceLimit) break;
+            // Give each target K multiple attempts with half remaining time
+            const perK = Math.min(2000, (reduceLimit - (Date.now() - startTime)) / 2);
+            const found = tryFindSolutionOfSize(targetK, coverage, maxLevel, n, perK);
+            if (found) {
+                churchIndices = found;
+            } else {
+                break;
+            }
+        }
+    }
+
+    // Phase: Optimize spread - swap churches for more spread-out alternatives
+    // while maintaining same count and full coverage (2 second budget)
+    churchIndices = optimizeSpread(villages, churchIndices, coverage, maxLevel, n, 2000);
+
+    // Check for any uncovered (safety check)
+    const uncoveredList = getUncovered(churchIndices, coverage, maxLevel, n);
+    if (uncoveredList.length > 0) {
+        return {
+            churches: churchIndices.map(idx => ({ index: idx, level: maxLevel })),
+            uncovered: uncoveredList,
+            coverage
+        };
+    }
+
+    let churches = churchIndices.map(idx => ({ index: idx, level: maxLevel }));
+
+    // Optimize levels
+    const optimizedLevels = optimizeLevels(villages, churches, coverage, maxLevel);
+    for (let i = 0; i < churches.length; i++) {
+        churches[i].level = optimizedLevels[i];
+    }
+
+    // Sort churches by level descending for display
+    churches.sort((a, b) => b.level - a.level || a.index - b.index);
+
+    return { churches, uncovered: [], coverage };
+}
+
+// Assign each village to its nearest church
+function assignVillagesToChurches(villages, churches) {
+    const assignments = new Array(villages.length).fill(-1);
+    const churchIndices = new Set(churches.map(c => c.index));
+
+    for (let i = 0; i < villages.length; i++) {
+        let minDist = Infinity, bestC = 0;
+        for (let c = 0; c < churches.length; c++) {
+            const d = euclidean(villages[i], villages[churches[c].index]);
+            const r = CHURCH_LEVELS[churches[c].level];
+            if (d <= r && d < minDist) {
+                minDist = d;
+                bestC = c;
+            }
+        }
+        // If not within any church radius, assign to nearest church anyway
+        if (minDist === Infinity) {
+            for (let c = 0; c < churches.length; c++) {
+                const d = euclidean(villages[i], villages[churches[c].index]);
+                if (d < minDist) { minDist = d; bestC = c; }
+            }
+        }
+        assignments[i] = bestC;
+    }
+    return assignments;
+}
+
+// --- Drawing ---
+
+let chartVillages = [], chartChurches = [], chartAssignments = [];
+let zoomLevel = 1, panX = 0, panY = 0;
+
+function getBoundingBox(points) {
+    let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+    for (const p of points) {
+        if (p.x < minX) minX = p.x;
+        if (p.x > maxX) maxX = p.x;
+        if (p.y < minY) minY = p.y;
+        if (p.y > maxY) maxY = p.y;
+    }
+    return { minX, maxX, minY, maxY };
+}
+
+function niceStep(range) {
+    const rough = range / 8;
+    const mag = Math.pow(10, Math.floor(Math.log10(rough)));
+    const norm = rough / mag;
+    if (norm < 1.5) return mag;
+    if (norm < 3.5) return 2 * mag;
+    if (norm < 7.5) return 5 * mag;
+    return 10 * mag;
+}
+
+function getThemeColors() {
+    const style = getComputedStyle(document.documentElement);
+    return {
+        canvasBg: style.getPropertyValue('--tw-bg-canvas').trim(),
+        gridLine: style.getPropertyValue('--tw-grid-line').trim(),
+        axisLabel: style.getPropertyValue('--tw-axis-label').trim(),
+        textLabel: style.getPropertyValue('--tw-text-label').trim(),
+        villageStroke: style.getPropertyValue('--tw-village-stroke').trim(),
+        starStroke: style.getPropertyValue('--tw-star-stroke').trim(),
+        starLabel: style.getPropertyValue('--tw-star-label').trim(),
+    };
+}
+
+function drawChart(villages, churches, assignments) {
+    chartVillages = villages;
+    chartChurches = churches;
+    chartAssignments = assignments;
+
+    const canvas = document.getElementById('chart');
+    const ctx = canvas.getContext('2d');
+    const W = canvas.width, H = canvas.height;
+    const margin = { top: 40, right: 30, bottom: 50, left: 60 };
+    const plotW = W - margin.left - margin.right;
+    const plotH = H - margin.top - margin.bottom;
+
+    const colors = getThemeColors();
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = colors.canvasBg;
+    ctx.fillRect(0, 0, W, H);
+
+    const bbox = getBoundingBox(villages);
+    const padX = Math.max((bbox.maxX - bbox.minX) * 0.08, 5);
+    const padY = Math.max((bbox.maxY - bbox.minY) * 0.08, 5);
+    const baseCenterX = (bbox.minX + bbox.maxX) / 2;
+    const baseCenterY = (bbox.minY + bbox.maxY) / 2;
+    const baseRangeX = (bbox.maxX - bbox.minX + 2 * padX) || 1;
+    const baseRangeY = (bbox.maxY - bbox.minY + 2 * padY) || 1;
+    const viewRangeX = baseRangeX / zoomLevel;
+    const viewRangeY = baseRangeY / zoomLevel;
+    const dataMinX = baseCenterX + panX - viewRangeX / 2;
+    const dataMaxX = baseCenterX + panX + viewRangeX / 2;
+    const dataMinY = baseCenterY + panY - viewRangeY / 2;
+    const dataMaxY = baseCenterY + panY + viewRangeY / 2;
+    const rangeX = dataMaxX - dataMinX || 1;
+    const rangeY = dataMaxY - dataMinY || 1;
+    const scale = Math.min(plotW / rangeX, plotH / rangeY);
+    const offsetX = margin.left + (plotW - rangeX * scale) / 2;
+    const offsetY = margin.top + (plotH - rangeY * scale) / 2;
+
+    function toCanvas(gx, gy) {
+        return {
+            cx: offsetX + (gx - dataMinX) * scale,
+            cy: offsetY + (gy - dataMinY) * scale  // Y increases downward, matching game map
+        };
+    }
+
+    canvas._transform = { toCanvas, dataMinX, dataMaxX, dataMinY, dataMaxY, scale, offsetX, offsetY, margin };
+
+    // Grid lines
+    ctx.strokeStyle = colors.gridLine;
+    ctx.lineWidth = 0.5;
+    const stepX = niceStep(rangeX);
+    const stepY = niceStep(rangeY);
+    ctx.font = '11px monospace';
+    ctx.fillStyle = colors.axisLabel;
+
+    for (let gx = Math.ceil(dataMinX / stepX) * stepX; gx <= dataMaxX; gx += stepX) {
+        const { cx } = toCanvas(gx, 0);
+        ctx.beginPath(); ctx.moveTo(cx, margin.top); ctx.lineTo(cx, H - margin.bottom); ctx.stroke();
+        ctx.fillText(gx.toString(), cx - 8, H - margin.bottom + 16);
+    }
+    for (let gy = Math.ceil(dataMinY / stepY) * stepY; gy <= dataMaxY; gy += stepY) {
+        const { cy } = toCanvas(0, gy);
+        ctx.beginPath(); ctx.moveTo(margin.left, cy); ctx.lineTo(W - margin.right, cy); ctx.stroke();
+        ctx.fillText(gy.toString(), margin.left - 35, cy + 4);
+    }
+
+    // Axis labels
+    ctx.fillStyle = colors.textLabel;
+    ctx.font = '13px Segoe UI, sans-serif';
+    ctx.fillText('X', W / 2, H - 8);
+    ctx.save();
+    ctx.translate(14, H / 2);
+    ctx.rotate(-Math.PI / 2);
+    ctx.fillText('Y (increases southward)', 0, 0);
+    ctx.restore();
+
+    // Draw church radius circles
+    const churchSet = new Set(churches.map(c => c.index));
+    for (const c of churches) {
+        const v = villages[c.index];
+        const { cx, cy } = toCanvas(v.x, v.y);
+        const rPx = CHURCH_LEVELS[c.level] * scale;
+        const color = CHURCH_COLORS[c.level];
+
+        ctx.beginPath();
+        ctx.arc(cx, cy, rPx, 0, Math.PI * 2);
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 2;
+        ctx.setLineDash([6, 4]);
+        ctx.stroke();
+        ctx.setLineDash([]);
+
+        // Translucent fill
+        ctx.beginPath();
+        ctx.arc(cx, cy, rPx, 0, Math.PI * 2);
+        ctx.fillStyle = color + '15';
+        ctx.fill();
+    }
+
+    // Draw villages
+    for (let i = 0; i < villages.length; i++) {
+        const v = villages[i];
+        const { cx, cy } = toCanvas(v.x, v.y);
+        const isChurch = churchSet.has(i);
+
+        if (isChurch) {
+            const church = churches.find(c => c.index === i);
+            const color = CHURCH_COLORS[church.level];
+
+            // Cross/church shape for church villages
+            ctx.beginPath();
+            ctx.fillStyle = color;
+            const outerR = 9, innerR = 4;
+            for (let s = 0; s < 10; s++) {
+                const angle = (s * Math.PI / 5) - Math.PI / 2;
+                const rad = s % 2 === 0 ? outerR : innerR;
+                const px = cx + rad * Math.cos(angle);
+                const py = cy + rad * Math.sin(angle);
+                if (s === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+            }
+            ctx.closePath();
+            ctx.fill();
+            ctx.strokeStyle = colors.starStroke;
+            ctx.lineWidth = 2;
+            ctx.stroke();
+
+            // Label
+            ctx.fillStyle = colors.starLabel;
+            ctx.font = 'bold 11px monospace';
+            ctx.fillText(`${v.label} (Lv${church.level})`, cx + 12, cy + 4);
+        } else {
+            const churchIdx = assignments[i];
+            const church = churches[churchIdx];
+            const dist = euclidean(v, villages[church.index]);
+            const withinRadius = dist <= CHURCH_LEVELS[church.level];
+            const color = withinRadius ? VILLAGE_COLOR : '#e74c3c';
+
+            ctx.beginPath();
+            ctx.arc(cx, cy, 4, 0, Math.PI * 2);
+            ctx.fillStyle = color;
+            ctx.fill();
+            ctx.strokeStyle = colors.villageStroke;
+            ctx.lineWidth = 0.5;
+            ctx.stroke();
+
+            // Mark uncovered villages with an X
+            if (!withinRadius) {
+                ctx.strokeStyle = '#e74c3c';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.moveTo(cx - 5, cy - 5); ctx.lineTo(cx + 5, cy + 5);
+                ctx.moveTo(cx + 5, cy - 5); ctx.lineTo(cx - 5, cy + 5);
+                ctx.stroke();
+            }
+        }
+    }
+
+    // Build legend
+    const legendDiv = document.getElementById('legend');
+    legendDiv.innerHTML = '';
+
+    const levelsUsed = [...new Set(churches.map(c => c.level))].sort();
+    for (const lvl of levelsUsed) {
+        const color = CHURCH_COLORS[lvl];
+        const count = churches.filter(c => c.level === lvl).length;
+        const item = document.createElement('span');
+        item.className = 'tw-legend-item';
+        item.innerHTML = `<span class="tw-legend-swatch church" style="background:${color};"></span> ${CHURCH_LABELS[lvl]} (${count}x)`;
+        legendDiv.appendChild(item);
+    }
+
+    const nonChurchItem = document.createElement('span');
+    nonChurchItem.className = 'tw-legend-item';
+    nonChurchItem.innerHTML = `<span class="tw-legend-swatch" style="background:#f0c800;"></span> Your village`;
+    legendDiv.appendChild(nonChurchItem);
+}
+
+// --- Tooltip ---
+(function setupTooltip() {
+    const canvas = document.getElementById('chart');
+    const tooltip = document.getElementById('tooltip');
+    canvas.addEventListener('mousemove', (e) => {
+        if (!chartVillages.length) return;
+        const rect = canvas.getBoundingClientRect();
+        const scaleX = canvas.width / rect.width;
+        const scaleY = canvas.height / rect.height;
+        const mx = (e.clientX - rect.left) * scaleX;
+        const my = (e.clientY - rect.top) * scaleY;
+        const t = canvas._transform;
+        if (!t) return;
+
+        let closest = null, closestDist = 20;
+        for (let i = 0; i < chartVillages.length; i++) {
+            const v = chartVillages[i];
+            const { cx, cy } = t.toCanvas(v.x, v.y);
+            const d = Math.sqrt((mx - cx) ** 2 + (my - cy) ** 2);
+            if (d < closestDist) { closestDist = d; closest = i; }
+        }
+        if (closest !== null) {
+            const v = chartVillages[closest];
+            const churchSet = new Set(chartChurches.map(c => c.index));
+            const isChurch = churchSet.has(closest);
+
+            let info = `<b>${v.label}</b>`;
+            if (isChurch) {
+                const ch = chartChurches.find(c => c.index === closest);
+                info += ` <b>(CHURCH Lv${ch.level}, r=${CHURCH_LEVELS[ch.level]})</b>`;
+            } else {
+                const assignedChurch = chartChurches[chartAssignments[closest]];
+                const dist = euclidean(v, chartVillages[assignedChurch.index]).toFixed(1);
+                const covered = parseFloat(dist) <= CHURCH_LEVELS[assignedChurch.level];
+                info += `<br>Nearest church: ${chartVillages[assignedChurch.index].label} (Lv${assignedChurch.level})`;
+                info += `<br>Distance: ${dist} | ${covered ? 'Covered' : 'NOT COVERED'}`;
+            }
+
+            tooltip.style.display = 'block';
+            tooltip.style.left = (e.clientX - canvas.parentElement.getBoundingClientRect().left + 14) + 'px';
+            tooltip.style.top = (e.clientY - canvas.parentElement.getBoundingClientRect().top - 10) + 'px';
+            tooltip.innerHTML = info;
+        } else {
+            tooltip.style.display = 'none';
+        }
+    });
+    canvas.addEventListener('mouseleave', () => { tooltip.style.display = 'none'; });
+
+    // Zoom with mouse wheel
+    canvas.addEventListener('wheel', (e) => {
+        if (!chartVillages.length) return;
+        e.preventDefault();
+        const factor = e.deltaY < 0 ? 1.2 : 1 / 1.2;
+        zoomLevel = Math.max(0.5, Math.min(20, zoomLevel * factor));
+        redrawChart();
+    }, { passive: false });
+
+    // Pan with click-drag
+    let dragging = false, dragStartX = 0, dragStartY = 0, panStartX = 0, panStartY = 0;
+    canvas.addEventListener('mousedown', (e) => {
+        if (!chartVillages.length) return;
+        dragging = true;
+        dragStartX = e.clientX;
+        dragStartY = e.clientY;
+        panStartX = panX;
+        panStartY = panY;
+        canvas.style.cursor = 'grabbing';
+    });
+    window.addEventListener('mousemove', (e) => {
+        if (!dragging) return;
+        const t = canvas._transform;
+        if (!t) return;
+        const dx = (e.clientX - dragStartX);
+        const dy = (e.clientY - dragStartY);
+        const rect = canvas.getBoundingClientRect();
+        const scaleX = canvas.width / rect.width;
+        panX = panStartX - (dx * scaleX) / t.scale;
+        panY = panStartY - (dy * scaleX) / t.scale;
+        redrawChart();
+    });
+    window.addEventListener('mouseup', () => {
+        if (dragging) {
+            dragging = false;
+            canvas.style.cursor = 'default';
+        }
+    });
+
+    // Double-click to reset zoom
+    canvas.addEventListener('dblclick', (e) => {
+        e.preventDefault();
+        zoomLevel = 1;
+        panX = 0;
+        panY = 0;
+        redrawChart();
+    });
+})();
+
+function redrawChart() {
+    if (chartVillages.length) {
+        drawChart(chartVillages, chartChurches, chartAssignments);
+    }
+}
+
+// --- Main Calculation ---
+function calculate() {
+    const errorBox = document.getElementById('errorBox');
+    errorBox.innerHTML = '';
+
+    // Show loading overlay, then run heavy computation async
+    // Double rAF ensures the overlay actually renders before blocking computation starts
+    const loading = document.getElementById('loadingOverlay');
+    loading.classList.add('active');
+
+    requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+            try { _doCalculate(); } finally { loading.classList.remove('active'); }
+        });
+    });
+}
+
+function _doCalculate() {
+    const errorBox = document.getElementById('errorBox');
+
+    try {
+        const villages = parseCoordinates(document.getElementById('coords').value);
+        const maxLevel = parseInt(document.getElementById('maxLevel').value, 10);
+
+        if (villages.length < 2) throw new Error('Need at least 2 villages.');
+
+        const result = findOptimalChurches(villages, maxLevel);
+        const { churches, uncovered } = result;
+
+        // Assign villages to nearest church
+        const assignments = assignVillagesToChurches(villages, churches);
+
+        // Count covered
+        const churchSet = new Set(churches.map(c => c.index));
+        let coveredCount = 0;
+        for (let i = 0; i < villages.length; i++) {
+            for (const c of churches) {
+                if (euclidean(villages[i], villages[c.index]) <= CHURCH_LEVELS[c.level]) {
+                    coveredCount++;
+                    break;
+                }
+            }
+        }
+
+        const totalLevels = churches.reduce((sum, c) => sum + c.level, 0);
+        const lv1 = churches.filter(c => c.level === 1).length;
+        const lv2 = churches.filter(c => c.level === 2).length;
+        const lv3 = churches.filter(c => c.level === 3).length;
+
+        // Display results
+        const resultsSection = document.getElementById('resultsSection');
+        resultsSection.classList.remove('tw-hidden');
+
+        document.getElementById('statsRow').innerHTML = `
+            <div class="tw-stat-card"><div class="val">${villages.length}</div><div class="lbl">Total Villages</div></div>
+            <div class="tw-stat-card"><div class="val">${churches.length}</div><div class="lbl">Churches Needed</div></div>
+            <div class="tw-stat-card"><div class="val">${coveredCount}/${villages.length}</div><div class="lbl">Villages Covered</div></div>
+            <div class="tw-stat-card"><div class="val">${lv1 ? lv1 + 'x Lv1 ' : ''}${lv2 ? lv2 + 'x Lv2 ' : ''}${lv3 ? lv3 + 'x Lv3' : ''}</div><div class="lbl">Church Levels</div></div>
+        `;
+
+        // Copyable coordinate boxes
+        const allCoords = churches.map(c => villages[c.index].label).join(' ');
+        const lv3Coords = churches.filter(c => c.level === 3).map(c => villages[c.index].label).join(' ');
+        const lv2Coords = churches.filter(c => c.level === 2).map(c => villages[c.index].label).join(' ');
+        const lv1Coords = churches.filter(c => c.level === 1).map(c => villages[c.index].label).join(' ');
+
+        let churchHTML = `<div class="tw-coord-box" style="margin-bottom:10px;">
+            <label><b>All Church Coordinates</b> (${churches.length})</label>
+            <div class="tw-coord-copy" onclick="this.querySelector('input').select()">
+                <input type="text" value="${allCoords}" readonly>
+            </div>
+        </div>`;
+
+        if (lv3Coords) {
+            churchHTML += `<div class="tw-coord-box" style="margin-bottom:8px;">
+                <label style="color:${CHURCH_COLORS[3]}"><b>Church Level 3</b> (radius 8) — ${lv3}</label>
+                <div class="tw-coord-copy" onclick="this.querySelector('input').select()">
+                    <input type="text" value="${lv3Coords}" readonly>
+                </div>
+            </div>`;
+        }
+        if (lv2Coords) {
+            churchHTML += `<div class="tw-coord-box" style="margin-bottom:8px;">
+                <label style="color:${CHURCH_COLORS[2]}"><b>Church Level 2</b> (radius 6) — ${lv2}</label>
+                <div class="tw-coord-copy" onclick="this.querySelector('input').select()">
+                    <input type="text" value="${lv2Coords}" readonly>
+                </div>
+            </div>`;
+        }
+        if (lv1Coords) {
+            churchHTML += `<div class="tw-coord-box" style="margin-bottom:8px;">
+                <label style="color:${CHURCH_COLORS[1]}"><b>Church Level 1</b> (radius 4) — ${lv1}</label>
+                <div class="tw-coord-copy" onclick="this.querySelector('input').select()">
+                    <input type="text" value="${lv1Coords}" readonly>
+                </div>
+            </div>`;
+        }
+
+        document.getElementById('churchResult').innerHTML = churchHTML;
+        document.getElementById('coverageResults').innerHTML = '';
+
+        // Uncovered section
+        const uncoveredSection = document.getElementById('uncoveredSection');
+        if (uncovered.length > 0) {
+            uncoveredSection.classList.remove('tw-hidden');
+            document.getElementById('uncoveredResults').innerHTML = `
+                <div class="tw-error">
+                    <b>${uncovered.length} village(s) cannot be covered</b> (no church location within radius ${CHURCH_LEVELS[maxLevel]}):<br>
+                    ${uncovered.map(i => villages[i].label).join(', ')}
+                </div>`;
+        } else {
+            uncoveredSection.classList.add('tw-hidden');
+        }
+
+        // Draw chart
+        zoomLevel = 1; panX = 0; panY = 0;
+        document.getElementById('chartSection').classList.remove('tw-hidden');
+        drawChart(villages, churches, assignments);
+
+    } catch (err) {
+        errorBox.innerHTML = `<div class="tw-error">${err.message}</div>`;
+    }
+}
+
+// --- Theme Toggle ---
+function toggleTheme() {
+    const html = document.documentElement;
+    const current = html.getAttribute('data-theme');
+    const next = current === 'light' ? 'dark' : 'light';
+    html.setAttribute('data-theme', next);
+    localStorage.setItem('tw-tools-theme', next);
+
+    // Redraw chart if visible
+    if (chartVillages.length) {
+        drawChart(chartVillages, chartChurches, chartAssignments);
+    }
+}
+
+// Theme is loaded by tw-nav.js
+
+// Clean coordinates on paste
+document.getElementById('coords').addEventListener('input', function() {
+    const raw = this.value;
+    const matches = raw.match(/\d{1,3}\|\d{1,3}/g);
+    if (matches && raw !== matches.join(' ')) {
+        this.value = matches.join(' ');
+    }
+});
+</script>
+</body>
+</html>

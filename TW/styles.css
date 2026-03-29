@@ -259,3 +259,106 @@ input[type="checkbox"] {
     flex-wrap: wrap;
     gap: 5px;
 }
+
+/*********** Dark Mode ************/
+
+[data-theme="dark"] body {
+    background-image: none;
+    background-color: #1a1a2e;
+    color: #e0e0e0;
+}
+
+[data-theme="dark"] .text-muted {
+    color: #a8d8ea !important;
+}
+
+[data-theme="dark"] .dropdown-toggle {
+    color: #e0e0e0;
+    background: #0f3460 !important;
+    border-color: #533483;
+}
+
+[data-theme="dark"] .dropdown-toggle:hover,
+[data-theme="dark"] .dropdown-toggle:focus {
+    color: #fff;
+    background: #16213e !important;
+}
+
+[data-theme="dark"] .dropdown-menu {
+    background: #16213e;
+    border-color: #533483;
+}
+
+[data-theme="dark"] .dropdown-menu .dropdown-item {
+    color: #e0e0e0;
+}
+
+[data-theme="dark"] .dropdown-menu .dropdown-item:hover {
+    background: #0f3460;
+    color: #fff;
+}
+
+[data-theme="dark"] #graphAdder {
+    background: #0f3460;
+    color: #e0e0e0;
+    border: 1px solid #533483;
+}
+
+[data-theme="dark"] #tribePopupContainer {
+    background-color: rgba(22, 33, 62, 0.95);
+}
+
+[data-theme="dark"] .tribe-popup:hover {
+    background-color: rgba(15, 52, 96, 0.9);
+}
+
+[data-theme="dark"] .groupContainer {
+    background-color: #16213e;
+    border-color: #533483;
+    color: #e0e0e0;
+}
+
+[data-theme="dark"] .playerContainer {
+    background-color: #0f3460;
+}
+
+[data-theme="dark"] .topPlayersContainer {
+    background-color: #2d1f0e;
+    border-color: #e94560;
+}
+
+[data-theme="dark"] .group-popup-top {
+    background-color: #2d1f0e;
+}
+
+[data-theme="dark"] .group-popup-player {
+    background-color: #0f3460;
+}
+
+[data-theme="dark"] #topPlayersSection {
+    background-color: rgba(22, 33, 62, 0.7);
+}
+
+[data-theme="dark"] .modal-content {
+    background: #16213e;
+    color: #e0e0e0;
+    border-color: #533483;
+}
+
+[data-theme="dark"] .modal-header {
+    border-color: #533483;
+}
+
+[data-theme="dark"] .modal-footer {
+    border-color: #533483;
+}
+
+[data-theme="dark"] .btn-info {
+    background: #0f3460;
+    border-color: #533483;
+    color: #e0e0e0;
+}
+
+[data-theme="dark"] .btn-info:hover {
+    background: #16213e;
+}
