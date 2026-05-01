@@ -39,7 +39,24 @@ $.ajax({
 // Constants
 const githubLocation = 'https://higamy.github.io/TW/Data';
 const availableStatistics = ['Points', 'Rank', 'Villages', 'OD', 'ODA', 'ODD', 'Daily Defend', 'Daily Attack', 'Daily Support', 'Daily Loot Amount', 'Daily Loot Villages', 'Daily Scavenge', 'Combined Income', 'Daily Conquer'];
+// Daily metrics carry their own dates (the day the activity pertained to).
+// Cumulative metrics use the player.dates capture timestamps.
+const dailyMetrics = new Set(['Daily Defend', 'Daily Attack', 'Daily Support', 'Daily Loot Amount', 'Daily Loot Villages', 'Daily Scavenge', 'Combined Income', 'Daily Conquer']);
 const colourRandomSeed = 42;
+
+// Returns {Dates, Values} for the given metric on the given player. Cumulative
+// metrics are projected onto the player's capture timestamps; daily metrics
+// already carry their own {Dates, Values} structure.
+function getMetricSeries(player, metric) {
+    if (dailyMetrics.has(metric)) {
+        const stored = player[metric];
+        if (stored && Array.isArray(stored.Dates)) {
+            return { Dates: stored.Dates, Values: stored.Values };
+        }
+        return { Dates: [], Values: [] };
+    }
+    return { Dates: player.dates || [], Values: player[metric] || [] };
+}
 
 // DOM Elements
 const statisticSelector = document.getElementById("statisticSelector");
@@ -247,26 +264,21 @@ class ServerSelector {
                     .then(data => {
                         data = data.data;
 
-                        // Add total income (farm + scav)
+                        // Combined Income = Daily Scavenge + Daily Loot Amount, joined on date.
+                        // Both sources have their own {Dates, Values} structures and may have
+                        // different (or partially overlapping) date sets, so we union the dates
+                        // and sum where both sides have a value (treating missing as 0).
                         for (let player of data.players) {
-                            if ((!("Daily Scavenge" in player)) & (!("Daily Loot Amount" in player))) {
-                                player['Combined Income'] = Array(player.dates.length).fill(0);
-                            }
-                            else if ((("Daily Scavenge" in player)) & (!("Daily Loot Amount" in player))) {
-                                player['Combined Income'] = player["Daily Scavenge"]
-                            }
-                            else if ((!("Daily Scavenge" in player)) & (("Daily Loot Amount" in player))) {
-                                player['Combined Income'] = player["Daily Loot Amount"]
-                            }
-                            else {
-                                player['Combined Income'] = player["Daily Scavenge"].map((element, index) => {
-                                    if (element === null) return null;
-                                    else return element + player["Daily Loot Amount"][index];
-                                });
-
-                            }
-
-                            player["current_combined income"] = player['Combined Income'].filter(arg => arg != null).slice(-1)[0]
+                            const ds = getMetricSeries(player, 'Daily Scavenge');
+                            const dl = getMetricSeries(player, 'Daily Loot Amount');
+                            const dsMap = new Map();
+                            for (let i = 0; i < ds.Dates.length; i++) dsMap.set(ds.Dates[i], ds.Values[i]);
+                            const dlMap = new Map();
+                            for (let i = 0; i < dl.Dates.length; i++) dlMap.set(dl.Dates[i], dl.Values[i]);
+                            const allDates = [...new Set([...ds.Dates, ...dl.Dates])].sort((a, b) => a - b);
+                            const ciValues = allDates.map(d => (dsMap.get(d) || 0) + (dlMap.get(d) || 0));
+                            player['Combined Income'] = { Dates: allDates, Values: ciValues };
+                            player['current_combined income'] = ciValues.length ? ciValues[ciValues.length - 1] : 0;
                         }
 
                         console.log(data);
@@ -808,50 +820,56 @@ function updatePlayerList() {
 
         if ((group.Type == Group.TRIBE) & (groupTribe)) {
 
-            // ** Make a date list of all dates **
-            let allDates = [];
-
+            // Cumulative dates: union across all members' player.dates
+            let cumulativeDates = [];
             for (let playerData of group.PlayerData) {
-                allDates = allDates.concat(playerData.dates)
+                cumulativeDates = cumulativeDates.concat(playerData.dates || []);
             }
+            cumulativeDates = [...new Set(cumulativeDates)].sort((a, b) => a - b);
 
-            // Make unique
-            allDates = [...new Set(allDates)];
-
-            // Sort
-            allDates.sort(function (a, b) {
-                return a - b;
-            });
-
-
-            let aggregateDict = {
+            const aggregateDict = {
                 "name": group.Name,
-                "dates": allDates
-            }
+                "dates": cumulativeDates,
+            };
 
             for (let statistic of availableStatistics) {
-                let aggregateVals = [];
-
-                for (let dateVal of allDates) {
-                    let aggregateVal = null;
+                if (dailyMetrics.has(statistic)) {
+                    // Daily metric: aggregate over the union of daily dates from each member's
+                    // own {Dates, Values} for this metric.
+                    const dateSums = new Map();
+                    const dateCounts = new Map();
                     for (let playerData of group.PlayerData) {
-                        let dateIndex = playerData.dates.indexOf(dateVal);
-
-                        if ((dateIndex > -1) & (statistic in playerData)) {
-                            if (playerData[statistic][dateIndex] !== null) {
-                                aggregateVal = aggregateVal + playerData[statistic][dateIndex]
-                            }
+                        const series = getMetricSeries(playerData, statistic);
+                        for (let i = 0; i < series.Dates.length; i++) {
+                            const d = series.Dates[i];
+                            const v = series.Values[i];
+                            if (v === null || v === undefined) continue;
+                            dateSums.set(d, (dateSums.get(d) || 0) + v);
+                            dateCounts.set(d, (dateCounts.get(d) || 0) + 1);
                         }
                     }
-
-                    if ((groupType == "avg") & (aggregateVal !== null)) aggregateVal = aggregateVal / group.PlayerData.length;
-
-                    aggregateVals.push(aggregateVal);
+                    const dailyDates = [...dateSums.keys()].sort((a, b) => a - b);
+                    const dailyValues = dailyDates.map(d => {
+                        const sum = dateSums.get(d);
+                        return groupType == "avg" ? sum / group.PlayerData.length : sum;
+                    });
+                    aggregateDict[statistic] = { Dates: dailyDates, Values: dailyValues };
+                } else {
+                    // Cumulative metric: align to the cumulative-dates union.
+                    const aggregateVals = cumulativeDates.map(dateVal => {
+                        let aggregateVal = null;
+                        for (let playerData of group.PlayerData) {
+                            const dates = playerData.dates || [];
+                            const dateIndex = dates.indexOf(dateVal);
+                            if (dateIndex > -1 && statistic in playerData && playerData[statistic][dateIndex] !== null) {
+                                aggregateVal = (aggregateVal || 0) + playerData[statistic][dateIndex];
+                            }
+                        }
+                        if (groupType == "avg" && aggregateVal !== null) aggregateVal = aggregateVal / group.PlayerData.length;
+                        return aggregateVal;
+                    });
+                    aggregateDict[statistic] = aggregateVals;
                 }
-
-
-                // Assign the aggregate value back to the object
-                aggregateDict[statistic] = aggregateVals;
             }
 
             Array.prototype.push.apply(selectedPlayers, [aggregateDict]);
@@ -879,8 +897,11 @@ function updatePlayerList() {
 
         if (selectedMetric in player) {
             console.log("Metric found", selectedMetric)
-            for (let i = 0; i < player.dates.length; i++) {
-                player_data.push([player.dates[i], player[selectedMetric][i]])
+            // Daily metrics carry their own dates (the date the activity pertained to);
+            // cumulative metrics ride on player.dates capture timestamps.
+            const series = getMetricSeries(player, selectedMetric);
+            for (let i = 0; i < series.Dates.length; i++) {
+                player_data.push([series.Dates[i], series.Values[i]])
             }
 
             // Calculate global rank for this player and metric
