@@ -4,7 +4,7 @@ const screenParam = urlParams.get('screen');
 const modeParam = urlParams.get('mode');
 
 if (typeof serverLocation === 'undefined') {
-    serverLocation = 'https://higamy.com';
+    serverLocation = 'http://127.0.0.1:8000';
 }
 
 if ((modeParam != 'exchange') | (screenParam != 'market')) {
@@ -20,7 +20,7 @@ if ((modeParam != 'exchange') | (screenParam != 'market')) {
 else {
 
     let noChangeMessage = 'No change in PP prices.';
-    let intervalToSendRequests_SECONDS = 5;
+    let intervalToSendRequests_SECONDS = 1;
 
     let worker = new Worker(
         `data:text/javascript,
@@ -60,13 +60,13 @@ else {
 
     worker.onmessage = function (event) {    //Get the result from the worker. This code will be called when postMessage is called in the worker.
         if (event.data == noChangeMessage) {
-            UI.SuccessMessage(noChangeMessage)
+            UI.SuccessMessage(noChangeMessage, intervalToSendRequests_SECONDS * 500)
         }
         else if (event.data.stack) {
             UI.ErrorMessage(`Error: ${event.data}`)
         }
         else {
-            UI.SuccessMessage(`Server response: ${event.data}`)
+            UI.SuccessMessage(`Server response: ${event.data}`, intervalToSendRequests_SECONDS * 500)
         }
 
 
