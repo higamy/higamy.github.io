@@ -13,10 +13,14 @@
                 155,
                 154
             ],
+            "skip_worlds": [
+                155
+            ],
             "date_format": "%d.%m.%Y"
         }
     ],
     "settings": {
-        "min_hours_between_runs": 7
+        "min_hours_between_runs": 7,
+        "max_tribes_json_mb": 95
     }
 }
