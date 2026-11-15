@@ -15,6 +15,17 @@ var wh30_map_buildings=new Map()
 var wh30_map_constants=new Map()
 var wh30MaxLevel=30
 var wh30FullCapacity=400000
+var wh30StrictLevel=22 //villages with warehouse below this level are served strictly lowest level first
+var wh30StrictQueue=3  //...until they can pay for this many warehouse levels
+var wh30NumberSettings=[
+    {id:"wh30_strict_level", key:"settings_resources_balancer_wh30strictlevel", def:22, min:0, max:30},
+    {id:"wh30_strict_queue", key:"settings_resources_balancer_wh30strictqueue", def:3,  min:0, max:30}
+]
+function wh30ReadNumber(setting){
+    let value=parseInt(document.getElementById(setting.id).value)
+    value=Number.isNaN(value) ? setting.def : Math.min(setting.max, Math.max(setting.min, value))
+    return value
+}
 
 if(typeof(TWMap) !="undefined" )
     var  originalSpawnSector = TWMap.mapHandler.spawnSector;
@@ -117,8 +128,14 @@ function createMainInterface(){
         <p>the value for construction time will be set automatically at maximum value \n</p>
         <p>where surplus is higher than deficit for all type of resources\n</p>`
 
+    let message_wh30_strict=`<p>only used in WH30 boost mode\n</p>
+        <p>villages with a warehouse below the strict level are served first, strictly lowest warehouse level first\n</p>
+        <p>each one gets enough resources to pay for the given number of warehouse levels (limited to 95% of its warehouse) before the next village gets anything\n</p>
+        <p>set either value to 0 to switch this step off</p>`
+
     let message_wh30_boost=`<p>resources are sent ONLY to villages with a warehouse below level 30 (levels already in the build queue are counted)\n</p>
-        <p>first every such village gets what it is missing for its next warehouse level, lowest warehouse level first\n</p>
+        <p>first villages below the strict level get resources for several warehouse levels, strictly lowest warehouse level first (see the two settings below)\n</p>
+        <p>then every village gets what it is missing for its next warehouse level, lowest warehouse level first\n</p>
         <p>then whatever is left fills their warehouses up to 95%, again lowest warehouse level first\n</p>
         <p>villages with a level 30 warehouse are the only senders, they keep (average factor x average) + resources for construction time, so lower the average factor to send more\n</p>
         <p>with more than 1 cluster a village is only supplied by level 30 villages of its own cluster</p>`
@@ -206,6 +223,24 @@ function createMainInterface(){
                             </div>
                         </td>
                     </tr>
+                    <tr>
+                        <td>WH30 boost: strict below WH level</td>
+                        <td>
+                            <div style="display:flex;justify-content: center; align-items: center;">
+                                <div><input type="number" id="wh30_strict_level" class="scriptInput wh30_setting" placeholder="22" value="22"></div>
+                                <div><a href="#" onclick="UI.InfoMessage(\`${message_wh30_strict}\`,25000)"><img src="https://dsen.innogamescdn.com/asset/dbeaf8db/graphic/questionmark.png" style="width: 13px; height: 13px"/></a></div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>WH30 boost: WH levels to fund</td>
+                        <td>
+                            <div style="display:flex;justify-content: center; align-items: center;">
+                                <div><input type="number" id="wh30_strict_queue" class="scriptInput wh30_setting" placeholder="3" value="3"></div>
+                                <div><a href="#" onclick="UI.InfoMessage(\`${message_wh30_strict}\`,25000)"><img src="https://dsen.innogamescdn.com/asset/dbeaf8db/graphic/questionmark.png" style="width: 13px; height: 13px"/></a></div>
+                            </div>
+                        </td>
+                    </tr>
                 </table>
             </center>
 
@@ -268,7 +303,7 @@ function createMainInterface(){
     if(localStorage.getItem(game_data.world+"settings_resources_balancer2")!=null ){
         //initialize input numbers
         let list_input=JSON.parse(localStorage.getItem(game_data.world+"settings_resources_balancer2"))
-        $('#div_container input[type=number], #div_container input[type=checkbox]:not(#wh30_boost)').each(function (index,elem) {
+        $('#div_container input[type=number]:not(.wh30_setting), #div_container input[type=checkbox]:not(#wh30_boost)').each(function (index,elem) {
             if(typeof(list_input[index]) == 'boolean'){
                 this.checked=list_input[index]
             }
@@ -283,15 +318,23 @@ function createMainInterface(){
     $("#wh30_boost").on("click change",function(){
         localStorage.setItem(game_data.world+wh30StorageKey, this.checked ? "true" : "false")
     })
+    wh30NumberSettings.forEach(setting=>{
+        let saved=localStorage.getItem(game_data.world+setting.key)
+        if(saved != null && saved !== "")
+            document.getElementById(setting.id).value=saved
+        $("#"+setting.id).on("click input change",function(){
+            localStorage.setItem(game_data.world+setting.key, this.value)
+        })
+    })
 
 
     //save settings
-    $("#div_container input[type=number], #div_container input[type=checkbox]:not(#wh30_boost)").on("click input change",()=>{
+    $("#div_container input[type=number]:not(.wh30_setting), #div_container input[type=checkbox]:not(#wh30_boost)").on("click input change",()=>{
         console.log("save settings")
         let list_input=[]
 
         //save inputs
-        $('#div_container input[type=number]').each(function () {
+        $('#div_container input[type=number]:not(.wh30_setting)').each(function () {
             var value=this.value
             // console.log(value)
             list_input.push(value)
@@ -526,6 +569,10 @@ async function balancingResources(){
     let maxConstruction=document.getElementById("max_construction").checked
     wh30BoostActive=document.getElementById("wh30_boost").checked
     localStorage.setItem(game_data.world+wh30StorageKey, wh30BoostActive ? "true" : "false")
+    wh30StrictLevel=wh30ReadNumber(wh30NumberSettings[0])
+    wh30StrictQueue=wh30ReadNumber(wh30NumberSettings[1])
+    localStorage.setItem(game_data.world+wh30NumberSettings[0].key, wh30StrictLevel)
+    localStorage.setItem(game_data.world+wh30NumberSettings[1].key, wh30StrictQueue)
 
     reserveMerchants=(Number.isNaN(reserveMerchants)==true || reserveMerchants<0 )?0:reserveMerchants //by default are 0 merchants as reserver
     nrClusters=(Number.isNaN(nrClusters)==true || nrClusters<1 )?1:nrClusters //by default is one cluster
@@ -1290,6 +1337,7 @@ function calculateLaunches(
 // Same inputs/outputs as calculateLaunches, only the decision of who sends what to whom is different:
 //  - receivers: villages with warehouse level < 30 (queued levels included)
 //  - senders:   villages with warehouse level 30, they keep (average*factor + AM construction resources)
+//  - pass 0:    receivers below wh30StrictLevel get resources for wh30StrictQueue warehouse levels, strictly lowest warehouse level first
 //  - pass 1:    every receiver gets what it is missing for its next warehouse level, lowest warehouse level first
 //  - pass 2:    what is left fills receivers up to 95% of their warehouse, lowest warehouse level first
 
@@ -1301,17 +1349,21 @@ function wh30GetLevel(village){
     return {level:(village.capacity >= wh30FullCapacity) ? wh30MaxLevel : wh30MaxLevel-1, known:false}
 }
 
-function wh30NextLevelCost(village, level){
+//total cost of the next nr_levels warehouse levels (never above level 30)
+function wh30NextLevelCost(village, level, nr_levels){
     let cost={wood:0, stone:0, iron:0}
+    nr_levels=(nr_levels == undefined) ? 1 : nr_levels
     try {
         let obj_constants=(wh30_map_constants instanceof Map) ? wh30_map_constants.get("storage") : undefined
-        if(obj_constants != undefined && level < wh30MaxLevel){
+        if(obj_constants != undefined){
             let lv_HQ=wh30_map_buildings.get(village.coord+"_main")
             lv_HQ=(typeof(lv_HQ) == "number" && Number.isNaN(lv_HQ) == false) ? lv_HQ : 20
-            let info=calculateTimeAndResConstruction(lv_HQ, level+1, obj_constants)
-            cost.wood =Number.isNaN(info[1]) ? 0 : info[1]
-            cost.stone=Number.isNaN(info[2]) ? 0 : info[2]
-            cost.iron =Number.isNaN(info[3]) ? 0 : info[3]
+            for(let lv=level+1; lv <= Math.min(wh30MaxLevel, level+nr_levels); lv++){
+                let info=calculateTimeAndResConstruction(lv_HQ, lv, obj_constants)
+                cost.wood +=Number.isNaN(info[1]) ? 0 : info[1]
+                cost.stone+=Number.isNaN(info[2]) ? 0 : info[2]
+                cost.iron +=Number.isNaN(info[3]) ? 0 : info[3]
+            }
         }
     } catch (error) {
         console.log("wh30 next level cost error",error)
@@ -1394,33 +1446,50 @@ function calculateLaunchesWH30(
             else{//receiver
                 let capacity=village.capacity*0.95
                 let cost=infoLevel.known ? wh30NextLevelCost(village, infoLevel.level) : {wood:0,stone:0,iron:0}
+                //strict part: resources for several warehouse levels, only for villages below the strict level
+                let is_strict=infoLevel.known && infoLevel.level < wh30StrictLevel && wh30StrictQueue > 0
+                let cost_strict=is_strict ? wh30NextLevelCost(village, infoLevel.level, wh30StrictQueue) : {wood:0,stone:0,iron:0}
                 let obj_get={
                     coord:village.coord, id:village.id, name:village.name,
                     level:infoLevel.level,
+                    is_strict:is_strict,
+                    need_strict:{wood:0,stone:0,iron:0},
                     need_wh:{wood:0,stone:0,iron:0},
                     need_fill:{wood:0,stone:0,iron:0},
                     shortage:0
                 }
                 RES.forEach(r=>{
                     //village[r] already contains resources underway
-                    let need_wh=Math.max(0, Math.min(cost[r], capacity)-village[r])
-                    let need_fill=Math.max(0, capacity-village[r]-need_wh)
+                    let need_strict=Math.max(0, Math.min(cost_strict[r], capacity)-village[r])
+                    let need_wh=Math.max(0, Math.min(cost[r], capacity)-village[r]-need_strict)
+                    let need_fill=Math.max(0, capacity-village[r]-need_strict-need_wh)
+                    obj_get.need_strict[r]=parseInt(need_strict)
                     obj_get.need_wh[r]=parseInt(need_wh)
                     obj_get.need_fill[r]=parseInt(need_fill)
-                    obj_get.shortage+=obj_get.need_wh[r]
-                    total_get[r]+=obj_get.need_wh[r]+obj_get.need_fill[r]
+                    obj_get.shortage+=obj_get.need_strict[r]+obj_get.need_wh[r]
+                    total_get[r]+=obj_get.need_strict[r]+obj_get.need_wh[r]+obj_get.need_fill[r]
                 })
-                //a shortage smaller than one merchant would never be sent, so top it up to a full merchant from the fill part
-                if(obj_get.shortage > 0){
-                    let missing=merchantCapacity-obj_get.shortage
-                    RES.slice().sort((r1,r2)=>obj_get.need_fill[r2]-obj_get.need_fill[r1]).forEach((r,index)=>{
-                        if(missing <= 0)
-                            return
-                        let move=Math.min(obj_get.need_fill[r], Math.ceil(missing/(3-index)))
-                        obj_get.need_fill[r]-=move
-                        obj_get.need_wh[r]+=move
-                        missing-=move
-                    })
+                //merchants only leave (almost) full, so round the first needed part up to whole merchants using the later parts,
+                //otherwise the rest of a merchant would be cut off and the village would stay short
+                let list_parts=[obj_get.need_strict, obj_get.need_wh, obj_get.need_fill]
+                for(let p=0;p<list_parts.length-1;p++){
+                    let part=list_parts[p]
+                    let total_part=part.wood+part.stone+part.iron
+                    if(total_part <= 0)
+                        continue
+                    let missing=(merchantCapacity-total_part%merchantCapacity)%merchantCapacity
+                    for(let q=p+1;q<list_parts.length;q++){
+                        let donor_part=list_parts[q]
+                        RES.slice().sort((r1,r2)=>donor_part[r2]-donor_part[r1]).forEach((r,index)=>{
+                            if(missing <= 0)
+                                return
+                            let move=Math.min(donor_part[r], Math.ceil(missing/(3-index)))
+                            donor_part[r]-=move
+                            part[r]+=move
+                            missing-=move
+                        })
+                    }
+                    break;
                 }
                 list_receivers.push(obj_get)
             }
@@ -1462,6 +1531,11 @@ function calculateLaunchesWH30(
                 })
             }
         }
+        //pass 0: strict, list is sorted by warehouse level so a village is fully served before the next one gets anything
+        for(let j=0;j<list_receivers.length;j++){
+            if(list_receivers[j].is_strict)
+                allocate(list_receivers[j], list_receivers[j].need_strict)
+        }
         for(let j=0;j<list_receivers.length;j++)
             allocate(list_receivers[j], list_receivers[j].need_wh)
         for(let j=0;j<list_receivers.length;j++)
@@ -1485,6 +1559,12 @@ function calculateLaunchesWH30(
             let restDivision=total%merchantCapacity
             if(restDivision < minim_resources){
                 let rest=restDivision
+                //cut proportionally first so no single resource loses everything, then the remainder from the largest
+                RES.forEach(r=>{
+                    let cut=Math.min(send[r], Math.floor(restDivision*send[r]/total))
+                    send[r]-=cut
+                    rest-=cut
+                })
                 RES.slice().sort((r1,r2)=>send[r2]-send[r1]).forEach(r=>{
                     let cut=Math.min(rest, send[r])
                     send[r]-=cut
