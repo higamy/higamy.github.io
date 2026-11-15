@@ -137,8 +137,11 @@ function createMainInterface(){
         <p>first villages below the strict level get resources for several warehouse levels, strictly lowest warehouse level first (see the two settings below)\n</p>
         <p>then every village gets what it is missing for its next warehouse level, lowest warehouse level first\n</p>
         <p>then whatever is left fills their warehouses up to 95%, again lowest warehouse level first\n</p>
-        <p>villages with a level 30 warehouse are the only senders, they keep (average factor x average) + resources for construction time, so lower the average factor to send more\n</p>
-        <p>with more than 1 cluster a village is only supplied by level 30 villages of its own cluster</p>`
+        <p>villages with a level 30 warehouse are the only senders
+</p>
+        <p>while this mode is on the greyed out settings are ignored and the script runs with the values that send the most: average factor 0, construction time 0, 1 cluster, max construction off. level 30 villages keep nothing back, but they only send what the other villages can use
+</p>
+        <p>reserve merchants is still respected</p>`
 
     let html_info=`
     
@@ -326,6 +329,14 @@ function createMainInterface(){
             localStorage.setItem(game_data.world+setting.key, this.value)
         })
     })
+    //in WH30 boost mode the normal balancing settings are overridden (see balancingResources), so grey them out
+    let wh30ToggleInputs=()=>{
+        let active=document.getElementById("wh30_boost").checked
+        $("#time_construction, #nr_average_factor, #nr_clusters, #max_construction").prop("disabled",active).css("opacity",active ? 0.4 : 1)
+        $("#wh30_strict_level, #wh30_strict_queue").prop("disabled",!active).css("opacity",active ? 1 : 0.4)
+    }
+    $("#wh30_boost").on("click change",wh30ToggleInputs)
+    wh30ToggleInputs()
 
 
     //save settings
@@ -581,6 +592,14 @@ async function balancingResources(){
 
     averageFactor=(Number.isNaN(averageFactor)==true)?1:(averageFactor<0)?0:(averageFactor>1)?1:averageFactor //if>1 is 1 if <0 is 0 if is NaN is 1
     merchantCapacity=(Number.isNaN(merchantCapacity)==true)?1000:(merchantCapacity<1000)?1000:(merchantCapacity>1500)?1500:merchantCapacity //capacitiy is 1000 but for .PT might be 1500
+
+    //WH30 boost mode overrides the normal settings with the values that send the most resources to villages below WH30
+    if(wh30BoostActive == true){
+        averageFactor=0          //senders keep nothing of the average
+        time_construction_total=0 //senders keep nothing for their own construction
+        nrClusters=1              //every WH30 village can supply every village
+        maxConstruction=false
+    }
     
     
 
