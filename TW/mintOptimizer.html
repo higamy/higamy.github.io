@@ -28,6 +28,13 @@
                 <small>Max round-trip deliveries each village can make</small>
             </div>
         </div>
+        <div style="margin: 4px 0 12px;">
+            <label for="minimiseMax" style="display: flex; align-items: center; gap: 8px; cursor: pointer; margin: 0;">
+                <input type="checkbox" id="minimiseMax" checked style="width: auto; margin: 0;">
+                Minimise the longest trip to a mint
+            </label>
+            <small style="display: block; color: var(--tw-text-muted); margin-top: 2px;">On: no village is left far from a mint. Off: lowest average distance across all villages.</small>
+        </div>
         <button class="tw-btn" id="calcBtn" onclick="calculate()">Find Optimal Mint Villages</button>
         <div id="errorBox"></div>
     </div>
@@ -90,18 +97,28 @@ function binomial(n, k) {
     return Math.round(r);
 }
 
+// Objective: true = minimise the longest village-to-nearest-mint distance,
+// false = minimise the total (i.e. average) distance. Set from the checkbox in calculate().
+let minimiseMax = true;
+
+// Lower is better. In minimise-max mode the score is the worst squared distance
+// (an integer, since coordinates are integers) scaled so it always outranks the
+// total distance, which then only breaks ties between sets with the same worst trip.
 function scoreMintSet(villages, mintSet) {
-    let total = 0;
+    let total = 0, maxSq = 0;
     for (let i = 0; i < villages.length; i++) {
         if (mintSet.has(i)) continue;
-        let minD = Infinity;
+        let minSq = Infinity;
         for (const mi of mintSet) {
-            const d = euclidean(villages[i], villages[mi]);
-            if (d < minD) minD = d;
+            const dx = villages[i].x - villages[mi].x;
+            const dy = villages[i].y - villages[mi].y;
+            const sq = dx * dx + dy * dy;
+            if (sq < minSq) minSq = sq;
         }
-        total += minD;
+        total += Math.sqrt(minSq);
+        if (minSq > maxSq) maxSq = minSq;
     }
-    return total;
+    return minimiseMax ? maxSq * 1e8 + total : total;
 }
 
 function* combinations(arr, k) {
@@ -135,10 +152,7 @@ function greedyMints(villages, k) {
     // Pick best first medoid
     let bestFirst = 0, bestDist = Infinity;
     for (let i = 0; i < n; i++) {
-        let total = 0;
-        for (let j = 0; j < n; j++) {
-            if (j !== i) total += euclidean(villages[i], villages[j]);
-        }
+        const total = scoreMintSet(villages, new Set([i]));
         if (total < bestDist) { bestDist = total; bestFirst = i; }
     }
     mints.push(bestFirst);
@@ -750,6 +764,7 @@ function calculate() {
         if (k >= villages.length) throw new Error(`Number of mints (${k}) must be less than total villages (${villages.length}).`);
         if (!Number.isInteger(deliveries) || deliveries < 1) throw new Error('Deliveries must be an integer >= 1.');
 
+        minimiseMax = document.getElementById('minimiseMax').checked;
         const mintIndices = findOptimalMints(villages, k);
         const groups = assignGroups(villages, mintIndices);
 
@@ -774,6 +789,7 @@ function calculate() {
             <div class="tw-stat-card"><div class="val">${k}</div><div class="lbl">Mint Villages</div></div>
             <div class="tw-stat-card"><div class="val">${(totalDist * deliveries).toFixed(0)}</div><div class="lbl">Total Field-Trips (dist x deliveries)</div></div>
             <div class="tw-stat-card"><div class="val">${(totalDist / nonMintCount).toFixed(1)}</div><div class="lbl">Avg Distance to Mint</div></div>
+            <div class="tw-stat-card"><div class="val">${Math.max(...groupStats.map(gs => gs.maxDist)).toFixed(1)}</div><div class="lbl">Max Distance to Mint</div></div>
         `;
 
         document.getElementById('mintResult').innerHTML = '<p style="margin-bottom:8px"><b>Selected Mint Villages:</b> ' +

@@ -44,8 +44,9 @@ Used by `mintOptimizer.html` and `churchOptimizer.html`. Provides:
 
 ## Mint Optimizer (mintOptimizer.html)
 
-Finds optimal "mint" (resource distribution) villages to minimise total travel distance.
+Finds optimal "mint" (resource distribution) villages.
 
+- **Objective** (checkbox `minimiseMax`, default on): minimise the longest distance from any village to its nearest mint, with total distance as tie-break. When off: minimise total (average) distance.
 - **Algorithm**: k-medoids clustering
   - Brute force if C(n,k) <= 100,000 combinations
   - Greedy + local swap improvement for larger inputs
