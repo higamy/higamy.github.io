@@ -47,6 +47,7 @@ Used by `mintOptimizer.html` and `churchOptimizer.html`. Provides:
 Finds optimal "mint" (resource distribution) villages.
 
 - **Objective** (checkbox `minimiseMax`, default on): minimise the longest distance from any village to its nearest mint, with total distance as tie-break. When off: minimise total (average) distance.
+- **Required mints** (optional input `requiredMints`): coordinates forced into the mint set; the search only chooses the remaining mints. Validated to be in the village list and no more than the number of mints.
 - **Algorithm**: k-medoids clustering
   - Brute force if C(n,k) <= 100,000 combinations
   - Greedy + local swap improvement for larger inputs
