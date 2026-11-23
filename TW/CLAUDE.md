@@ -56,6 +56,23 @@ Finds optimal "mint" (resource distribution) villages.
 - **Dynamic Filters**: finds circular distance filters for in-game group setup using sweep-line optimisation
 - **Map**: HTML5 Canvas with interactive tooltips, group coloring, filter circle overlays
 
+## Minting and Deliveries (game mechanics, as described by Will unless noted)
+
+- **Coins**: minted in the Academy; Nth noble needs N coins. Wiki default coin cost 28,000 wood / 30,000 clay / 25,000 iron (worlds may lower it).
+- **Coin flag**: reduces coin cost in the village it is set in (-10% at level 1 to -24% at level 9); a flag cannot be moved for 24h after setting.
+- **Flag booster (FB)**: expensive item that doubles the coin flag for 48h. Meta: boost 1-2 (sometimes more) mint villages and funnel all resources there during the window.
+- **Resource packs**: instant grant of X% of warehouse capacity in every owned village. Max warehouse = 400,000 per resource. Up to ~250% used in one FB window, so far villages fill faster than they can empty.
+- **Bonus villages** ("50% more storage capacity and merchants" and similar): seen on en158 with 500k/294, 600k/353 and 700k/411 capacity/merchants instead of 400k/235. NORTH Mint is a 700k/411 village.
+- **Production overview** (`overview_villages&mode=prod&group=0`): rows `#production_table .row_a/.row_b`; village id in `.quickedit-vn[data-id]`; resources in cell 3 as `span.wood/.stone/.iron` (first class is `res`, or `warn_90` when nearly full); cell 4 = warehouse capacity; `a[href*=screen=market]` = `home/total` merchants. Pages are `page=0..n`, with an "all" option.
+- **Autominter**: resources arriving at a mint village are converted to whole coins instantly, so the mint only holds the remainder that does not fit the coin ratio (28:30:25 on en158).
+- **Resource exchange**: for 10 premium points one resource can be converted into another in a village. Will trades iron to clay at the mint in batches, so total resources delivered is what matters, not clay; he prefers sending everything over sending in coin ratio (which strands iron in the villages).
+- **Goal during an FB window**: clear villages as fast as possible so more packs can be used; deliveries keep running overnight. Merchant travel = 6 min/field / world speed (3 min/field on en158).
+- **Route limits**: max 250 trading routes; a village may have several routes. Villages can also be emptied by manual pulls. Will dislikes very small chunks (2 min between firings, and he needs gaps at the mint to trade).
+- **Merchants**: carry 1,000 each, not divisible; wood+clay+iron are pooled before rounding up (1,333 of each = 4 merchants). Market level 25 = 235 merchants.
+- **Trading routes (Account Manager -> Market)**: created by form POST to `game.php?village=<id>&screen=am_market&trading_routes&action=new&mode=market` with body `start_x, start_y, start_input_target, target_x, target_y, target_input_target, resources[wood|stone|iron], days[1..7]=1, is_recurring=1, time, is_arrival_time, h=<game_data.csrf>`. A route only fires if the full amount and merchants are available. Routes cannot be edited, only deleted (`trading_routes[]` checkboxes, `action=delete_selected_routes`).
+- Recurring `time=0.001` fires about every 2 minutes (shown as `00:01` in the list). Will uses 78-merchant chunks (3 fit in 235), in coin ratio to the mint.
+- `Scripts/Unapproved/deliveries.js`: `parseTradingRoutes()` (routes table on am_market) and `fetchVillageResources()` / `parseProductionOverview()` (production overview, selectors taken from the approved Resource Balancer copy in `resBalancerWH30.js`).
+
 ## Church Optimizer (churchOptimizer.html)
 
 Finds minimum number of churches needed to provide religious coverage to all villages.
