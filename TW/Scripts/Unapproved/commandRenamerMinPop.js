@@ -614,6 +614,7 @@ function createTableSettings(){
             </td>
         </tr>`
         html_table+=`<tr class="disabled"><td colspan="3"><center style="margin:5px">min population to label <input type="number" id="min_pop" class="scriptInput" min="0" placeholder="${DEFAULT_MIN_POP}" value="${getMinPop()}"> <a href="#" onclick="UI.InfoMessage('commands with a total population below this number are skipped (not labelled). Use 0 to label everything',5000)"><img src="https://dsen.innogamescdn.com/asset/dbeaf8db/graphic/questionmark.png" style="width: 13px; height: 13px"/></a></center></td></tr>`
+        html_table+=`<tr class="disabled"><td colspan="3"><center style="margin:5px"><label><input type="checkbox" id="include_support" ${getIncludeSupport() ? "checked" : ""}> relabel support commands</label></center></td></tr>`
         if(list_tr!=undefined){
             for(let i=0;i<list_tr.length;i++){
                 html_table+=obj_tr[list_tr[i]]
@@ -629,7 +630,7 @@ function createTableSettings(){
         if(localStorage.getItem(game_data.world+"command_renamer_settings_table")!=null ){
             //initialize checkbox
             let list_checkbox=JSON.parse(localStorage.getItem(game_data.world+"command_renamer_settings_table"))[0]
-            $('#div_settings input[type=checkbox]').each(function (index,elem) {
+            $('#div_settings input[type=checkbox]:not(#include_support)').each(function (index,elem) {
                 this.checked=list_checkbox[index]
                 // console.log(elem.value)
             });
@@ -831,7 +832,15 @@ function getMinPop(){
     return (Number.isNaN(value) || value < 0) ? DEFAULT_MIN_POP : value
 }
 
+// whether support commands are relabelled at all (off by default)
+function getIncludeSupport(){
+    let elem=document.getElementById("include_support")
+    return elem!=null ? elem.checked : localStorage.getItem(game_data.world+"command_renamer_include_support")=="true"
+}
+
 function saveLocalSettings(){
+    if(document.getElementById("include_support")!=null)
+        localStorage.setItem(game_data.world+"command_renamer_include_support",getIncludeSupport())
     if(document.getElementById("min_pop")!=null)
         localStorage.setItem(game_data.world+"command_renamer_min_pop",getMinPop())
     console.log("save settings")
@@ -840,7 +849,7 @@ function saveLocalSettings(){
     let list_input=[]
     let list_order=[]
     //save checkbox
-    $('#div_settings input[type=checkbox]').each(function () {
+    $('#div_settings input[type=checkbox]:not(#include_support)').each(function () {
         var checked = this.checked
         // console.log(this)
         list_checkbox.push(checked)
@@ -930,6 +939,7 @@ function defaultSettings(){
 
     localStorage.setItem(game_data.world+"command_renamer_settings_table",default_settings[1])
     localStorage.setItem(game_data.world+"command_renamer_min_pop",DEFAULT_MIN_POP)
+    localStorage.setItem(game_data.world+"command_renamer_include_support",false)
     createTableSettings()
 
     //save and update conditions
@@ -1332,7 +1342,7 @@ function getAllCommands(){
 async function start(){
     let select_command=document.getElementById("select_command").value
     let list_condition=getConditions()
-    let settings_checkbox = Array.from($("#div_settings input[type=checkbox]:checked")).map(item=>item.value)
+    let settings_checkbox = Array.from($("#div_settings input[type=checkbox]:not(#include_support):checked")).map(item=>item.value)
     let list_update_label=[]
 
     let rows = await getAllCommands().catch(e=>alert(e))
@@ -1345,6 +1355,9 @@ async function start(){
     //skip small commands (e.g. farming runs) below the minimum population
     let min_pop=getMinPop()
     rows=rows.filter(row=>row.availableTroops["pop_total"] >= min_pop)
+    //skip support commands unless the "relabel support commands" checkbox is ticked
+    if(!getIncludeSupport())
+        rows=rows.filter(row=>row.commandType!="support")
     console.log("min_pop",min_pop,"rows left",rows.length)
 
     //remove all supports if offensive is selected
