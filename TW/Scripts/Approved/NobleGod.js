@@ -26,6 +26,9 @@ let divAttackPlan;
 let copyAttackPlan;
 let attackPlanLegend;
 let sendOnlyClosestNoble;
+let includeSmallAttacks;
+let filterSmallByKeyword;
+let smallAttackKeywords;
 
 // variables that will need to be UI elements later
 sendOnlyAfterFinalNuke = false;
@@ -116,6 +119,7 @@ function cleanInput(event) {
         console.log("Found match!")
         document.getElementById('coordsInput').value = match.join(' ');
         updateCoordsTitle(match);
+        storeSettings();
     }
 }
 
@@ -125,32 +129,160 @@ function storeSettings() {
     let settings = { 'version': NOBLE_GOD_VERSION }
 
     for (let settingsInput of settingsInputs) {
-        settings[settingsInput.getAttribute('id')] = settingsInput.value;
+        // Checkboxes are stored as true / false, everything else as its value
+        if (settingsInput.type == 'checkbox') {
+            settings[settingsInput.getAttribute('id')] = settingsInput.checked;
+        }
+        else {
+            settings[settingsInput.getAttribute('id')] = settingsInput.value;
+        }
     }
     localStorage.setItem('NobleGod_Settings', JSON.stringify(settings));
     console.log(settings)
 }
 
 function loadSettings() {
-    let settingsInputs = JSON.parse(localStorage.getItem('NobleGod_Settings')) || false;
+    let settingsInputs;
+    try {
+        settingsInputs = JSON.parse(localStorage.getItem('NobleGod_Settings')) || false;
+    } catch (e) {
+        settingsInputs = false;
+    }
 
     if (settingsInputs) {
         for (let settingName in settingsInputs) {
             let el = document.getElementById(settingName);
 
-            if (el) {
-                if (el.getAttribute('settingType') == 'numeric') {
-                    el.value = settingsInputs[settingName];
+            if (el && el.hasAttribute('settingType')) {
+                let value = settingsInputs[settingName];
+
+                if (el.type == 'checkbox') {
+                    // 'on' is how older versions of the script stored checkboxes
+                    el.checked = (value === true || value === 'on');
                 }
-                else if (settingsInputs[settingName] == 'on') {
-                    el.checked = true;
-                }
-                else if (settingsInputs[settingName] == 'off') {
-                    el.checked = false;
+                else if (value !== null && value !== undefined) {
+                    el.value = value;
                 }
             }
         }
     }
+}
+
+// ---- Small (green) attack keyword handling ----
+
+// Reads the keyword list out of the hidden settings input
+function getSmallAttackKeywords() {
+    let el = document.getElementById('smallAttackKeywords');
+    if (!el) return [];
+    try {
+        let keywords = JSON.parse(el.value);
+        return Array.isArray(keywords) ? keywords.filter(k => typeof k == 'string' && k.trim() != '') : [];
+    } catch (e) {
+        return [];
+    }
+}
+
+function setSmallAttackKeywords(keywords) {
+    document.getElementById('smallAttackKeywords').value = JSON.stringify(keywords);
+    renderSmallAttackKeywords();
+    storeSettings();
+}
+
+// Adds one or more keywords (comma / new line separated), ignoring duplicates
+function addSmallAttackKeywords(text) {
+    let keywords = getSmallAttackKeywords();
+    for (let keyword of text.split(/[,\n]/)) {
+        keyword = keyword.trim();
+        if (keyword == '') continue;
+        if (keywords.some(k => k.toLowerCase() == keyword.toLowerCase())) continue;
+        keywords.push(keyword);
+    }
+    setSmallAttackKeywords(keywords);
+}
+
+// Moves anything typed in the keyword box (but not yet added) into the keyword list
+function commitPendingKeyword() {
+    let keywordInput = document.getElementById('keywordInput');
+    if (keywordInput && keywordInput.value.trim() != '') {
+        addSmallAttackKeywords(keywordInput.value);
+    }
+    if (keywordInput) keywordInput.value = '';
+}
+
+function renderSmallAttackKeywords() {
+    let keywordChips = document.getElementById('keywordChips');
+    let keywords = getSmallAttackKeywords();
+    keywordChips.innerHTML = '';
+
+    keywords.forEach((keyword, index) => {
+        let chip = document.createElement('span');
+        chip.classList.add('keywordChip');
+
+        let chipText = document.createElement('span');
+        chipText.textContent = keyword;
+
+        let chipRemove = document.createElement('span');
+        chipRemove.classList.add('keywordChipRemove');
+        chipRemove.textContent = '×';
+        chipRemove.title = 'Remove keyword';
+        chipRemove.addEventListener('click', () => {
+            let current = getSmallAttackKeywords();
+            current.splice(index, 1);
+            setSmallAttackKeywords(current);
+        });
+
+        chip.appendChild(chipText);
+        chip.appendChild(chipRemove);
+        keywordChips.appendChild(chip);
+    });
+
+    if (keywords.length == 0) {
+        let empty = document.createElement('span');
+        empty.classList.add('keywordEmpty');
+        empty.textContent = 'No keywords added yet';
+        keywordChips.appendChild(empty);
+    }
+}
+
+// Shows / hides the small attack sub-options depending on the checkboxes
+function updateSmallAttackOptionsVisibility() {
+    document.getElementById('smallAttackOptions').classList.toggle('hidden', !includeSmallAttacks.checked);
+    document.getElementById('keywordEditor').classList.toggle('hidden', !filterSmallByKeyword.checked);
+}
+
+// Reads the size and label of an incoming attack row (tr.command-row) on the village info page.
+// Returns null if the row is not an attack with a size icon (e.g. support, returning troops, farm runs).
+function getAttackRowInfo(row) {
+    if (!row.querySelector('[data-command-type="attack"]')) return null;
+
+    let size = null;
+    for (let img of row.querySelectorAll('img')) {
+        let match = (img.getAttribute('src') || '').match(/\/command\/attack_(small|medium|large)\./);
+        if (match) { size = match[1]; break; }
+    }
+    if (!size) return null;
+
+    let labelEl = row.querySelector('.quickedit-label');
+    let label = labelEl ? labelEl.textContent.trim() : '';
+
+    return { size: size, label: label };
+}
+
+// Decides whether nobles should be timed after this attack
+// options: { includeMedium, includeSmall, filterSmallByKeyword, keywords }
+function isAttackRowIncluded(rowInfo, options) {
+    if (!rowInfo) return false;
+    if (rowInfo.size == 'large') return true;
+    if (rowInfo.size == 'medium') return options.includeMedium;
+    if (rowInfo.size == 'small') {
+        if (!options.includeSmall) return false;
+        if (!options.filterSmallByKeyword) return true;
+
+        // Any one keyword being in the label is enough (not case sensitive)
+        let label = rowInfo.label.toLowerCase();
+        return options.keywords.some(keyword => label.includes(keyword.toLowerCase()));
+    }
+    return false;
 }
 
 function getLatestDate(dates) {
@@ -528,6 +660,45 @@ function createNobleGodUI(settingsData) {
     }
 
 
+    #smallAttackOptions {
+        margin: 4px 0px 6px 20px;
+        padding-left: 10px;
+        border-left: 3px solid #c1a264;
+    }
+
+    #keywordChips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 4px;
+        margin: 5px 0px;
+    }
+
+    .keywordChip {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background-color: rgb(193, 162, 100);
+        border: 1px solid #603000;
+        border-radius: 10px;
+        padding: 1px 8px;
+        font-weight: bold;
+    }
+
+    .keywordChipRemove {
+        cursor: pointer;
+        font-size: 14px;
+    }
+
+    .keywordChipRemove:hover {
+        color: rgb(180, 0, 0);
+    }
+
+    .keywordEmpty,
+    .keywordHint {
+        font-style: italic;
+        font-size: 11px;
+    }
+
     #btnCalculateFangs:hover {
         border-radius: 15px;
         background-color: rgb(0, 104, 0);
@@ -567,7 +738,7 @@ function createNobleGodUI(settingsData) {
                     <legend id="lgdCoordinatesTitle">Coordinates (0)</legend>
 
                     <textarea name="" id="coordsInput" style="width: 100%; height: 100px; resize: none;"
-                        onpaste="cleanInput(event)" onchange="updateCoordsTitle()"></textarea>
+                        onpaste="cleanInput(event)" onchange="updateCoordsTitle()" settingType="text"></textarea>
 
                 </fieldset>
 
@@ -605,6 +776,29 @@ function createNobleGodUI(settingsData) {
                                 alt="">
                             attacks?</span>
                         <input type="checkbox" name="" id="includeMediumAttacks" checked settingType="checkbox">
+                    </div>
+                    <div>
+                        <span>Time nobles also after small <img
+                                src="https://dsen.innogamescdn.com/asset/35e971b9/graphic/command/attack_small.png"
+                                alt="">
+                            attacks?</span>
+                        <input type="checkbox" name="" id="includeSmallAttacks" settingType="checkbox">
+                    </div>
+                    <div id="smallAttackOptions" class="hidden">
+                        <div>
+                            <span>Only small attacks with a keyword in the command label?</span>
+                            <input type="checkbox" name="" id="filterSmallByKeyword" checked settingType="checkbox">
+                        </div>
+                        <div id="keywordEditor">
+                            <div id="keywordChips"></div>
+                            <input type="text" id="keywordInput" placeholder="Type a keyword, press Enter"
+                                style="width: 220px;">
+                            <button id="btnAddKeyword" class="btn">Add</button>
+                            <input type="hidden" id="smallAttackKeywords" value="[]" settingType="text">
+                            <div class="keywordHint">A small attack is included if its label contains ANY of the
+                                keywords (not case sensitive). Several can be added at once separated by commas.
+                            </div>
+                        </div>
                     </div>
                     <div>
                         <span>Max Noble travel time (hours)</span>
@@ -702,6 +896,16 @@ function createNobleGodUI(settingsData) {
                         attacks?</span>
                     <span>Counts medium sized attacks as permissible to time fangs after, may not be appropriate in all
                         situations.</span>
+                </div>
+                <div class="settingsDiv">
+                    <span class="settingSpan">Time nobles also after small <img
+                            src="https://dsen.innogamescdn.com/asset/35e971b9/graphic/command/attack_small.png" alt="">
+                        attacks?</span>
+                    <span>Counts small (green) attacks as permissible to time nobles after. Optionally these can be
+                        limited to commands whose label contains at least one of a list of keywords (e.g. "Wall" or
+                        "ram"), so that only the small attacks you have labelled as worth following are used. The
+                        keywords are not case sensitive and only apply to small attacks - medium and large attacks
+                        are never filtered by label.</span>
                 </div>
                 <div class="settingsDiv">
                     <span class="settingSpan">Send closest fang?</span>
@@ -817,6 +1021,9 @@ function createNobleGodUI(settingsData) {
     maxNobleTravelTimeHours = document.getElementById('maxNobleTravelTimeHours');
     attackPlanLegend = document.getElementById('attackPlanLegend');
     sendOnlyClosestNoble = document.getElementById('sendOnlyClosestNoble');
+    includeSmallAttacks = document.getElementById('includeSmallAttacks');
+    filterSmallByKeyword = document.getElementById('filterSmallByKeyword');
+    smallAttackKeywords = document.getElementById('smallAttackKeywords');
 
 
     // Collect the Noble speed
@@ -882,9 +1089,35 @@ function createNobleGodUI(settingsData) {
         // Load the saved settings
         loadSettings();
 
+        // Reflect the loaded settings in the UI
+        updateCoordsTitle();
+        renderSmallAttackKeywords();
+        updateSmallAttackOptionsVisibility();
+
         // Update to store settings when any value is changed
         $('[settingType]').each((i, el) => {
             el.addEventListener('change', () => { storeSettings(); })
+        });
+
+        // Small attack keyword controls
+        includeSmallAttacks.addEventListener('change', updateSmallAttackOptionsVisibility);
+        filterSmallByKeyword.addEventListener('change', updateSmallAttackOptionsVisibility);
+
+        const keywordInput = document.getElementById('keywordInput');
+        keywordInput.addEventListener('keydown', (event) => {
+            if (event.key == 'Enter' || event.key == ',') {
+                event.preventDefault();
+                commitPendingKeyword();
+            }
+        });
+        keywordInput.addEventListener('paste', () => {
+            // Let the paste land first, then split it up if it contains several keywords
+            setTimeout(() => { if (/[,\n]/.test(keywordInput.value)) commitPendingKeyword(); }, 0);
+        });
+        document.getElementById('btnAddKeyword').addEventListener('click', (event) => {
+            event.preventDefault();
+            commitPendingKeyword();
+            keywordInput.focus();
         });
 
 
@@ -894,8 +1127,16 @@ function createNobleGodUI(settingsData) {
         btnCalculateFangs.addEventListener('click', () => {
             //loadingScreen.classList.remove('hidden');
 
+            // Anything typed in the keyword box but not yet added still counts
+            commitPendingKeyword();
+
             // Store settings
             storeSettings();
+
+            if (includeSmallAttacks.checked && filterSmallByKeyword.checked && getSmallAttackKeywords().length == 0) {
+                UI.ErrorMessage('Add at least one keyword for small attacks, or untick the keyword filter.');
+                return;
+            }
 
             // Auto-update localStorage villages list
             if (localStorage.getItem(VILLAGE_TIME) != null) {
@@ -1036,15 +1277,20 @@ async function init() {
             console.log('Results:', results);
             let summaryResults = []
 
+            const attackFilterOptions = {
+                includeMedium: includeMediumAttacks.checked,
+                includeSmall: includeSmallAttacks.checked,
+                filterSmallByKeyword: filterSmallByKeyword.checked,
+                keywords: getSmallAttackKeywords()
+            };
+            console.log('Attack filter options', attackFilterOptions);
+
             for (let result of results) {
                 let all_trs = $(result['response']).find('tr.command-row');
                 const largeAttackRows = all_trs.filter(function () {
-
-                    // Filter for attacks depends whether to include medium attacks as well or not
-                    let filterStatement;
-                    //if (includeMediumAttacks.checked) filterStatement = '[src*="large"], [src*="medium"]'; else filterStatement = '[src*="large"]';
-                    filterStatement = '[src*="large"]';
-                    return ($(this).find(filterStatement).length > 0) & ($(this).find('[data-command-type="attack"]').length > 0);
+                    // Large attacks always count, medium and small depend on the settings
+                    // (small attacks can additionally be filtered by keywords in the command label)
+                    return isAttackRowIncluded(getAttackRowInfo(this), attackFilterOptions);
                 });
 
                 // Calculate the end time
